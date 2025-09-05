@@ -18,20 +18,23 @@ model user {
   codeExpiry      DateTime? 
   isVerified      Boolean   @default(false)
 
-  // العلاقة مع Customer (العميل ممكن يكون إلو حساب مستخدم)
+  
   customer        Customer?
 }
 
 model Customer {
-  id        Int       @id @default(autoincrement())
-  name      String
-  address   String
-  phone     String
-  email     String   @unique
-  userId    Int?     @unique
-  user      user?    @relation(fields: [userId], references: [id])
-  orders    Order[]
-  cartItems CartItem[]
+  id             Int    @id @default(autoincrement())
+  name           String
+  address        String
+  phone          String
+  country_region String @default("")
+  city           String @default("")
+  postal_code    String @default("")
+  email          String @unique
+  userId         Int?    @unique
+  user           user?   @relation(fields: [userId], references: [id])
+  orders         Order[]
+  cartItems      CartItem[]
 }
 
 model Product {
@@ -43,10 +46,10 @@ model Product {
   colors      String
   available   String
   description String
-  stock       Int      @default(0)   // ✅ المخزون الكلي
+  stock       Int      @default(0)   
   createdAt   DateTime @default(now())
 
-  variants    ProductVariant[]       // ✅ تفاصيل الحجم واللون
+  variants    ProductVariant[]       
   orderItems  OrderItem[]
   cartItems   CartItem[]
 }
@@ -57,7 +60,7 @@ model ProductVariant {
   productId Int
   size      String
   color     String
-  stock     Int     @default(0)   // ✅ مخزون هذا الحجم + اللون
+  stock     Int     @default(0)   
 }
 
 model Order {
@@ -73,8 +76,8 @@ model Order {
 model OrderItem {
   id        Int      @id @default(autoincrement())
   quantity  Int
-  color     String?   // اللون اللي انطلب
-  size      String ?  // الحجم اللي انطلب
+  color     String?   
+  size      String ?  
   orderId   Int
   productId Int
 
