@@ -1,0 +1,114 @@
+.verify-page {
+  background-color: #fcf8f0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.verify-card {
+  background-color: #fcf8f0;
+  width: 400px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.verify-header {
+  background-color: #6f3d6d;
+  color: white;
+  padding: 1.5rem;
+  text-align: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.verify-header h2 {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.4rem;
+}
+
+.verify-header p {
+  margin: 0.2rem 0 0.5rem 0;
+  font-size: 0.9rem;
+  font-weight: 300;
+}
+
+.verify-header strong {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.verify-form {
+  padding: 2rem 1.5rem 2rem 1.5rem;
+  background-color: #fcf8f0;
+}
+
+.verify-label {
+  color: #6f3d6d;
+  font-size: 0.85rem;
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.code-inputs {
+  display: flex;
+  justify-content: space-between;
+  max-width: 280px;
+  margin: 0 auto 1.5rem auto;
+}
+
+.code-input {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid #6f3d6d;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #6f3d6d;
+  background-color: transparent;
+  outline: none;
+  transition: border-color 0.3s ease;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.code-input:focus {
+  border-color: #71316d;
+  box-shadow: 0 0 8px rgba(111, 49, 109, 0.4);
+}
+
+.verify-btn {
+  width: 100%;
+  background-color: #6f3d6d;
+  color: #fcf8f0;
+  border: none;
+  padding: 0.75rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  text-transform: lowercase;
+  transition: background-color 0.3s ease;
+}
+
+.verify-btn:hover {
+  background-color: #5b3259;
+}
+
+.timer-text {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #6f3d6d;
+  margin-top: 1rem;
+}
+
+.verify-message {
+  text-align: center;
+  color: #b00020;
+  font-weight: 600;
+  margin-top: 1rem;
+}

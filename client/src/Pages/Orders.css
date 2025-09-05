@@ -1,0 +1,132 @@
+.profile-page {
+  padding: 20px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background-color: #fcf8f0;
+  min-height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #4b2354;
+  font-size: 28px;
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 500vh ; 
+  overflow-y: visible; 
+  padding-right: 10px;
+}
+
+.order-card {
+  border: 1px solid #d4c3d7;
+  border-radius: 12px;
+  padding: 20px;
+  background-color: #fcf8f0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 0; 
+}
+
+.order-card.paid {
+  border-left: 5px solid #4caf50;
+}
+
+.order-summary p {
+  margin: 5px 0;
+  font-size: 15px;
+}
+
+.order-summary button {
+  margin-top: 12px;
+  padding: 6px 12px;
+  cursor: pointer;
+  border: none;
+  background-color: #4b2354;
+  color: #fcf8f0;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.order-summary button:hover {
+  background-color: #6f3d6d;
+}
+
+.order-details {
+  border-top: 1px solid #d4c3d7;
+  padding-top: 10px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  z-index: 0; 
+}
+.product-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 15px;
+}
+
+.product-item img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+}
+
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.product-info p {
+  margin: 0;
+  font-size: 15px;
+  color: #333;
+}
+
+
+@media (max-width: 780px) {
+  .profile-page {
+    padding: 15px;
+  }
+
+  h1 {
+    font-size: 22px;
+    margin-bottom: 20px;
+  }
+  .order-summary p {
+    font-size: 14px;
+  }
+
+  .order-summary button {
+    padding: 5px 10px;
+    font-size: 13px;
+  }
+
+
+  .product-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .product-item img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .product-info {
+    gap: 3px;
+  }
+
+  .product-info p {
+    font-size: 14px;
+  }
+}

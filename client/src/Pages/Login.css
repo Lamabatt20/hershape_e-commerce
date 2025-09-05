@@ -1,0 +1,149 @@
+
+.login-page {
+  background-color: #fcf8f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.login-card {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background: #fcf8f0;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 2rem;
+  width: 900px;
+  height: 500px;
+  max-width: 400px;
+  margin: 3rem auto;
+}
+
+
+.login-title {
+    font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+.brand-name {
+  color: #6f3d6d;
+}
+
+
+.login-subtitle {
+  text-align: center;
+  color: #000000;
+  margin-top: 0.5rem;
+}
+
+
+.signup-link {
+  color: #F7B6FF;
+  text-decoration: none;
+}
+.signup-link:hover {
+  text-decoration: underline;
+}
+
+
+.login-input {
+  background-color: transparent;
+  width: 400px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.login-input:focus {
+  outline: none;
+  border-color: #6f3d6d;
+  box-shadow: 0 0 0 2px rgba(111, 61, 109, 0.2);
+}
+
+
+.password-wrapper {
+  position: relative;
+  width: 400px;
+  margin-top: 1rem;
+}
+
+.password-input {
+  padding-right: 35px; 
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  background-color: transparent;
+  width: 100%;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: #6f3d6d;
+  box-shadow: 0 0 0 2px rgba(111, 61, 109, 0.2);
+}
+
+
+.password-toggle-icon {
+ position: absolute;
+  margin-top: 5px;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+
+.login-btn {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  width: 80%;
+  background-color: #6f3d6d;
+  color: #fcf8f0;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: lowercase;
+  margin-top: 1.5rem;
+  align-items: center;
+  margin-left: 50px;
+}
+
+.login-btn:hover {
+  background-color: #5b3259;
+}
+
+
+.login-message {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #6f3d6d;
+}
+@media (max-width: 780px) {
+  .login-card {
+    width: 80%;      
+    height: auto;     
+    padding: 2.5rem 2rem;
+    margin: 2rem auto;
+    height: 500px;
+  }
+
+   .login-input {
+    width: 100%;  
+  }
+
+  .password-wrapper {
+  position: relative;
+  width: 100% !important; 
+}
+  
+}

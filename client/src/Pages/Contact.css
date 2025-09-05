@@ -1,0 +1,100 @@
+.contact-page {
+  background-color: #fcf8f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  min-height: 100vh; 
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
+.contact-card {
+  background-color: #fcf8f0;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  max-width: 700px;
+  width: 100%;      
+  height: auto;    
+  text-align: center;
+  margin: auto;    
+}
+.support-info a {
+  color:black;
+  text-decoration: none;
+}
+
+.contact-cards{
+  justify-content: center;
+  background-color: #fcf8f0;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 50%;
+
+}
+
+.contact-info {
+  margin: 20px 0;
+}
+
+.info-item {
+  display: flex;
+
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.contact-title{
+    color: #6e3c74;
+}
+
+.info-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.contact-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.icon:hover {
+  transform: scale(1.1);
+}
+@media screen and (max-width: 780px) {
+  .contact-page {
+    padding: 20px 10px;
+  }
+
+  .contact-card {
+    width: 95%;
+    padding: 15px;
+  }
+  .contact-cards {
+    width: 90%;
+    padding: 15px;
+  }
+
+  .contact-title {
+    font-size: 18px;
+  }
+
+  .info-item {
+    flex-direction: row; 
+    gap: 8px;
+  }
+
+  .contact-icons {
+    gap: 12px;
+  }
+}

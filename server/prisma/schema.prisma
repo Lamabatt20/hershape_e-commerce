@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model user {
+  id              Int       @id @default(autoincrement())
+  username        String    @unique
+  email           String    @unique
+  password        String
+  role            String    @default("customer")
+  verificationCode String?  
+  codeExpiry      DateTime? 
+  isVerified      Boolean   @default(false)
+
+  // العلاقة مع Customer (العميل ممكن يكون إلو حساب مستخدم)
+  customer        Customer?
+}
+
+model Customer {
+  id        Int       @id @default(autoincrement())
+  name      String
+  address   String
+  phone     String
+  email     String   @unique
+  userId    Int?     @unique
+  user      user?    @relation(fields: [userId], references: [id])
+  orders    Order[]
+  cartItems CartItem[]
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  name        String
+  price       Int
+  image       String
+  sizes       String
+  colors      String
+  available   String
+  description String
+  stock       Int      @default(0)   // ✅ المخزون الكلي
+  createdAt   DateTime @default(now())
+
+  variants    ProductVariant[]       // ✅ تفاصيل الحجم واللون
+  orderItems  OrderItem[]
+  cartItems   CartItem[]
+}
+
+model ProductVariant {
+  id        Int     @id @default(autoincrement())
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  size      String
+  color     String
+  stock     Int     @default(0)   // ✅ مخزون هذا الحجم + اللون
+}
+
+model Order {
+  id          Int         @id @default(autoincrement())
+  status      String      @default("pending") // pending, shipped, delivered
+  subtotal    Int
+  createdAt   DateTime    @default(now())
+  customerId  Int
+  customer    Customer    @relation(fields: [customerId], references: [id])
+  items       OrderItem[]
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  color     String?   // اللون اللي انطلب
+  size      String ?  // الحجم اللي انطلب
+  orderId   Int
+  productId Int
+
+  order     Order    @relation(fields: [orderId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  customerId Int
+  quantity  Int
+  color     String?
+  size      String?
+  product   Product  @relation(fields: [productId], references: [id])
+ customer    Customer    @relation(fields: [customerId], references: [id])
+}

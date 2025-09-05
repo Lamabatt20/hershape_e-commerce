@@ -1,0 +1,148 @@
+
+.signup-page {
+  background-color: #fcf8f0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-card {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  background: #fcf8f0;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  padding: 2rem;
+  width: 900px;
+  height: 500px;
+  max-width: 400px;
+  margin: 3rem auto;
+}
+
+
+.signup-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+.brand-name {
+  color: #6f3d6d;
+}
+
+
+.signup-subtitle {
+  text-align: center;
+  color: #000000;
+  margin-top: 0.5rem;
+}
+.signin-link {
+  color: #F7B6FF;
+  text-decoration: none;
+}
+.signin-link:hover {
+  text-decoration: underline;
+}
+
+
+.signup-input {
+ background-color: transparent;
+  width: 400px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+.signup-input:focus {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  outline: none;
+  border-color: #6f3d6d;
+  box-shadow: 0 0 0 2px rgba(111, 61, 109, 0.2);
+}
+
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin: 1rem 0;
+  font-size: 0.85rem;
+}
+.checkbox-container input {
+  margin-right: 0.5rem;
+}
+
+
+.signup-btn {
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  width: 80%;
+  background-color: #6f3d6d;
+  color: #fcf8f0;
+  padding: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: lowercase;
+  align-items: center;
+  margin-left: 50px;
+}
+.signup-btn:hover {
+  background-color: #5b3259;
+}
+
+
+.signup-message {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+
+.password-wrapper {
+  position: relative;
+  width: 400px;
+}
+
+.password-input {
+  padding-right: 10px; 
+  margin-top: 8px;
+}
+
+.password-toggle-icon {
+  position: absolute;
+  margin-top: 5px;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+@media (max-width: 780px) {
+  .signup-card {
+    width: 80%;
+    height: 500px;
+    padding: 2.5rem 2rem; 
+    margin: 2rem auto;
+  }
+
+  .signup-input {
+    width: 100%;
+  }
+
+  .password-wrapper {
+    width: 80%;
+  }
+  .password-toggle-icon {
+   position: absolute;
+    margin-top: 5px;
+    top: 50%;
+    right: 20px !important;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+}
+
+
+
