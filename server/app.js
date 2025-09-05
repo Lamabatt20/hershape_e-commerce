@@ -79,7 +79,7 @@ app.post("/signup", async (req, res) => {
           <p style="text-align:center;">Hello,</p>
           <p style="text-align:center;">Thank you for signing up with <strong>Her shape</strong>. To complete your registration, please use the verification code below:</p>
           <div style="display:flex; justify-content:center; margin:30px 0;">
-            <div style="background:#133f3d; padding:10px 30px; border-radius:8px; font-size:28px; font-weight:bold; color:#ffcc00; letter-spacing:5px;">
+            <div style="background:#F7B6FF; padding:10px 30px; border-radius:8px; font-size:28px; font-weight:bold; color:#ffcc00; letter-spacing:5px;">
               ${code}
             </div>
           </div>
