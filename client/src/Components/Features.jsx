@@ -34,9 +34,9 @@ const Features = () => {
     speed: 600,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,         // تفعيل الحركة التلقائية
-    autoplaySpeed: 1200,    // كل 3 ثواني تنتقل
-    pauseOnHover: true,        // إخفاء الأسهم (اختياري)
+    autoplay: true,        
+    autoplaySpeed: 1200,    
+    pauseOnHover: true,        
     adaptiveHeight: true,
   };
 

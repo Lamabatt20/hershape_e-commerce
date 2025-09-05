@@ -57,10 +57,10 @@
 
 .hero-text {
   display: flex;
-  flex-direction: column; /* ترتيب عمودي */
-  align-items: flex-start; /* محاذاة يسار */
-  justify-content: flex-start; /* يبدأ من الأعلى */
-  margin-top: 90px; /* قلل المسافة من الأعلى */
+  flex-direction: column; 
+  align-items: flex-start; 
+  justify-content: flex-start; 
+  margin-top: 90px; 
   max-width: 100%;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 }

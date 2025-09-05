@@ -1,5 +1,5 @@
 .footer {
-  background-color: #6E3C74;/* اللون البنفسجي من الصورة */
+  background-color: #6E3C74;
   color: #FCF8F0;
   padding: 20px 0;
   text-align: center;
@@ -51,7 +51,7 @@
 .footer-divider {
   border-top: 1px solid rgba(255, 255, 255, 0.4);
   margin: 15px 0;
-  width: 100%; /* ياخذ عرض كامل الفوتر */
+  width: 100%; 
 }
 
 .footer-icons {
