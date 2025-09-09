@@ -1,4 +1,3 @@
-// src/pages/Login.jsx
 import React, { useState } from "react";
 import { login } from "../api";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -15,7 +14,6 @@ export default function Login() {
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
- 
   const from = location.state?.from || "/";
 
   const handleChange = (e) => {
@@ -25,33 +23,41 @@ export default function Login() {
   const handleSubmit = async (e) => {
   e.preventDefault();
   try {
+
     const res = await login(form);
 
     if (res.error) {
       setMessage(res.error);
     } else {
-     
       const user = res.user;
-
       const customer = user.customer || { id: null };
-      const userWithCustomer = { ...user, customer };
 
-      localStorage.setItem("userId", user.id); 
+      const userWithCustomer = {
+        id: user.id,
+        name: user.name || user.username, 
+        email: user.email,
+        role: user.role,  
+        image: user.image || "", 
+        customer
+      };
+
+      localStorage.setItem("userId", user.id);
       localStorage.setItem("customerId", customer.id);
       localStorage.setItem("user", JSON.stringify(userWithCustomer));
 
-      
       window.dispatchEvent(new Event("storageUserChanged"));
 
-     
-      navigate(from, { replace: true });
+      if (user.role === "admin") {
+        navigate("/dashboard", { replace: true });
+      } else {
+        navigate(from, { replace: true });
+      }
     }
   } catch (error) {
     setMessage("Something went wrong. Please try again.");
     console.error(error);
   }
 };
-
   return (
     <>
       <div className="login-page">

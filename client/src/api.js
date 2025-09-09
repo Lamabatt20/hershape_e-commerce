@@ -61,11 +61,12 @@ export const createProduct = async (productData) => {
   }
 };
 
-export const updateProduct = async (id, productData) => {
+export const updateProduct = async (id, productData, config = {}) => {
   try {
-    const response = await API.put(`/products/${id}`, productData);
+    const response = await API.put(`/products/${id}`, productData, config);
     return response.data;
   } catch (error) {
+    console.error("updateProduct error:", error.response?.data || error.message);
     return { error: error.response?.data?.error || error.message };
   }
 };
@@ -101,6 +102,14 @@ export const getUserOrders = async (userId) => {
 export const getAllOrders = async () => {
   try {
     const response = await API.get("/orders");
+    return response.data;
+  } catch (error) {
+    return { error: error.response?.data?.error || error.message };
+  }
+};
+export const updateOrderStatus = async (orderId, status) => {
+  try {
+    const response = await API.put(`/orders/${orderId}/status`, { status });
     return response.data;
   } catch (error) {
     return { error: error.response?.data?.error || error.message };

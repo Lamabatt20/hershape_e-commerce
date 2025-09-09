@@ -33,14 +33,23 @@ const OrderCard = ({ order }) => {
       >
         {order.items.map((item) => (
           <div className="product-item" key={item.id}>
-            <img src={item.product.image} alt={item.product.name} />
-            <div className="product-info">
-              <p>{item.product.name}</p>
-              <p>{item.color}/{item.size}</p>
-              <p>x{item.quantity}</p>
-              <p>₪{item.product.price}</p>
-            </div>
+          <div className="product-images">
+            {item.product.images.map((img, idx) => (
+              <img
+                key={idx}
+                src={img.startsWith("/") ? img : `/images/${img}`}
+                alt={`${item.product.name} ${idx + 1}`}
+                style={{ width: 50, height: 50, objectFit: "cover", marginRight: 4 }}
+              />
+            ))}
           </div>
+          <div className="product-info">
+            <p>{item.product.name}</p>
+            <p>{item.color}/{item.size}</p>
+            <p>x{item.quantity}</p>
+            <p>₪{item.product.price}</p>
+          </div>
+        </div>
         ))}
       </div>
     </div>

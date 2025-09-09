@@ -56,7 +56,17 @@ function FeaturedProducts() {
             ref={(el) => (cardsRef.current[index] = el)}
           >
             <Link to={`/product/${product.id}`} className="product-link">
-              <img src={process.env.PUBLIC_URL + product.image} alt={product.name} />
+             <img
+              src={
+                process.env.PUBLIC_URL +
+                (Array.isArray(product.images) && product.images.length > 0
+                   ? product.images[0].startsWith("/")
+                        ? product.images[0]
+                        : `/images/${product.images[0]}`
+                      : "/placeholder.png")
+              }
+              alt={product.name}
+            />
               <h4>{product.name}</h4>
               <p>{product.price} ₪</p>
             </Link>

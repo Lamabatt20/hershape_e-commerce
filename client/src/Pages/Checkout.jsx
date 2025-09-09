@@ -141,9 +141,16 @@ const Checkout = () => {
           {cartItems.map((item) => (
             <div key={item.id} className="summary-item">
               <img
-                src={process.env.PUBLIC_URL + item.product.image}
+                src={
+                  Array.isArray(item.product.images) && item.product.images.length > 0
+                    ? item.product.images[0].startsWith("/")
+                      ? item.product.images[0]  
+                      : `/images/${item.product.images[0]}`  
+                    : "/placeholder.png"  
+                }
                 alt={item.product.name}
               />
+
               <div className="item-info">
                 <p className="item-name">{item.product.name}</p>
                 <div className="item-details">

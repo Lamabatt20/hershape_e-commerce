@@ -36,18 +36,25 @@ const ProductDetails = () => {
   if (!product) return <h2>Product not found</h2>;
 
   const availableSizes = Array.isArray(product.sizes)
-  ? product.sizes
-  : product.sizes
-  ? product.sizes.split(",")
-  : [];
+    ? product.sizes
+    : product.sizes
+    ? product.sizes.split(",")
+    : [];
 
-const availableColors = Array.isArray(product.colors)
-  ? product.colors
-  : product.colors
-  ? product.colors.split(",")
-  : [];
+  const availableColors = Array.isArray(product.colors)
+    ? product.colors
+    : product.colors
+    ? product.colors.split(",")
+    : [];
 
   
+  const mainImage =
+    Array.isArray(product.images) && product.images.length > 0
+       ? product.images[0].startsWith("/")
+                        ? product.images[0]
+                        : `/images/${product.images[0]}`
+                      : "/placeholder.png"
+
   const increment = () => {
     if (quantity < product.stock) setQuantity(quantity + 1);
   };
@@ -100,7 +107,7 @@ const availableColors = Array.isArray(product.colors)
           storedCart.push({
             productId: product.id,
             productName: product.name,
-            productImage: product.image,
+            productImage: mainImage,
             productPrice: product.price,
             quantity,
             size: selectedSize,
@@ -114,7 +121,6 @@ const availableColors = Array.isArray(product.colors)
         alert("Error adding to cart: " + res.error);
       }
 
-      
       const btnRect = addBtnRef.current.getBoundingClientRect();
       const cartIcon = document.querySelector(".cart-icon");
       const cartRect = cartIcon.getBoundingClientRect();
@@ -155,13 +161,13 @@ const availableColors = Array.isArray(product.colors)
       <div className="product-details-container">
         <div className="image-section">
           <img
-            src={process.env.PUBLIC_URL + product.image}
+            src={process.env.PUBLIC_URL + mainImage}
             alt={product.name}
             className="main-image"
           />
           {flyingStyle && (
             <img
-              src={process.env.PUBLIC_URL + product.image}
+              src={process.env.PUBLIC_URL + mainImage}
               style={flyingStyle}
               alt=""
             />
@@ -232,9 +238,7 @@ const availableColors = Array.isArray(product.colors)
               <button onClick={decrement} className="qty-btn" disabled={quantity === 1}>
                 -
               </button>
-
               <span className="qty-number">{quantity}</span>
-
               {quantity < product.stock ? (
                 <button onClick={increment} className="qty-btn">
                   +

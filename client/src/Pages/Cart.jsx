@@ -95,30 +95,39 @@ const Cart = () => {
         <h2>Shopping Cart</h2>
         <div className="cart-content">
           <div className="cart-items">
-            {cartItems.map((item) => (
-              <div key={item.id} className="cart-item">
-                <img src={process.env.PUBLIC_URL + item.product.image} alt={item.product.name} />
-                <div className="item-info">
-                  <p>{item.product.name}</p>
-                  <p>₪{item.product.price}</p>
-                  <p className="item-size">
-                    {item.size} |{" "}
-                    <span
-                      className="color-circle"
-                      style={{ backgroundColor: item.color === "nude" ? "#e0c7a0" : item.color }}
-                    ></span>
-                  </p>
-                </div>
-                <div className="quantity-control">
-                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                  <span>{item.quantity}</span>
-                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-                </div>
-                <button className="delete-btn" onClick={() => deleteItem(item.id)}>
-                  <img src={DeleteIcon} alt="Delete Icon" className="delete-icon" />
-                </button>
+           {cartItems.map((item) => (
+            <div key={item.id} className="cart-item">
+              <img
+                src={
+                  Array.isArray(item.product.images) && item.product.images.length > 0
+                   ? item.product.images[0].startsWith("/")
+                        ? item.product.images[0]
+                        : `/images/${item.product.images[0]}`
+                      : "/placeholder.png"
+                }
+                alt={item.product.name}
+              />
+              <div className="item-info">
+                <p>{item.product.name}</p>
+                <p>₪{item.product.price}</p>
+                <p className="item-size">
+                  {item.size} |{" "}
+                  <span
+                    className="color-circle"
+                    style={{ backgroundColor: item.color === "nude" ? "#e0c7a0" : item.color }}
+                  ></span>
+                </p>
               </div>
-            ))}
+              <div className="quantity-control">
+                <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                <span>{item.quantity}</span>
+                <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+              </div>
+              <button className="delete-btn" onClick={() => deleteItem(item.id)}>
+                <img src={DeleteIcon} alt="Delete Icon" className="delete-icon" />
+              </button>
+            </div>
+          ))}
           </div>
 
           <div className="cart-summary">

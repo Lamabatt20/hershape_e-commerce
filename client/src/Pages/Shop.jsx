@@ -16,30 +16,28 @@ function Shop() {
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [priceRange, setPriceRange] = useState([0, 150]);
-  const [availability, setAvailability] = useState({
-    inStock: false,
-    outOfStock: false,
-  });
+  const [priceRange, setPriceRange] = useState([0, 400]);
+  const [availability, setAvailability] = useState({ inStock: false, outOfStock: false });
   const [loading, setLoading] = useState(true);
 
   const productsPerPage = 6;
 
+  // ======== Fetch All Products from DB ========
+  const fetchProducts = async () => {
+    setLoading(true);
+    const data = await getProducts(); 
+    console.log("Fetched Products:", data);
+    if (!data.error) setProducts(data);
+     setCurrentPage(1);
+    setLoading(false);
+  };
 
+  // ======== Initial Load ========
   useEffect(() => {
-    const fetchProducts = async () => {
-      const data = await getProducts();
-      if (!data.error) {
-        setProducts(data);
-      } else {
-        console.error(data.error);
-      }
-      setLoading(false);
-    };
     fetchProducts();
   }, []);
 
- 
+  // ======== Filters ========
   const clearFilters = () => {
     setSelectedSize(null);
     setSelectedColor(null);
@@ -48,43 +46,43 @@ function Shop() {
     setIsFilterOpen(false);
   };
 
- 
   const filteredProducts = products.filter((product) => {
     if (selectedSize && !product.sizes.includes(selectedSize)) return false;
     if (selectedColor && !product.colors.includes(selectedColor)) return false;
     if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
 
-    if (availability.inStock && availability.outOfStock) {
-    } else {
-      if (availability.inStock && product.available !== "In stock") return false;
-      if (availability.outOfStock && product.available !== "Out of stock") return false;
-    }
+    if (availability.inStock && availability.outOfStock) return true;
+    if (availability.inStock && product.available !== "In stock") return false;
+    if (availability.outOfStock && product.available !== "Out of stock") return false;
+
     return true;
   });
 
-
+  // ======== Sorting ========
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortOrder === "price-low-high") return a.price - b.price;
     if (sortOrder === "price-high-low") return b.price - a.price;
     return a.id - b.id;
   });
 
-
+  // ======== Pagination ========
+  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
+
+  // Reset page if products change and currentPage exceeds totalPages
+  useEffect(() => {
+    if (currentPage > totalPages) setCurrentPage(totalPages || 1);
+  }, [totalPages, currentPage]);
 
   if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
 
   return (
     <>
       <div className="shop-container">
-     
         <aside className={`filter-section ${isFilterOpen ? "open" : ""}`}>
-          <button className="close-filter-btn" onClick={() => setIsFilterOpen(false)}>
-            ✖
-          </button>
+          <button className="close-filter-btn" onClick={() => setIsFilterOpen(false)}>✖</button>
 
           <div className="filter-block">
             <label>Price Filter</label>
@@ -122,9 +120,7 @@ function Shop() {
               <input
                 type="checkbox"
                 checked={availability.inStock}
-                onChange={(e) =>
-                  setAvailability({ ...availability, inStock: e.target.checked })
-                }
+                onChange={(e) => setAvailability({ ...availability, inStock: e.target.checked })}
               />{" "}
               <span>In stock</span>
             </div>
@@ -132,9 +128,7 @@ function Shop() {
               <input
                 type="checkbox"
                 checked={availability.outOfStock}
-                onChange={(e) =>
-                  setAvailability({ ...availability, outOfStock: e.target.checked })
-                }
+                onChange={(e) => setAvailability({ ...availability, outOfStock: e.target.checked })}
               />{" "}
               <span>Out of stock</span>
             </div>
@@ -153,12 +147,9 @@ function Shop() {
             </div>
           </div>
 
-          <button className="clear-filter-btn" onClick={clearFilters}>
-            Clear Filters
-          </button>
+          <button className="clear-filter-btn" onClick={clearFilters}>Clear Filters</button>
         </aside>
 
-       
         <main className="products-section">
           <div className="products-header">
             <h4>All Products</h4>
@@ -179,23 +170,29 @@ function Shop() {
 
           <div className="products-grid">
             {currentProducts.map((product) => (
-            <div key={product.id} className="product-card">
-              <Link to={`/product/${product.id}`} className="product-link">
-                <img src={process.env.PUBLIC_URL + product.image} alt={product.name} />
-                <h3>{product.name}</h3>
-                <p>₪{product.price}</p>
-              </Link>
-            </div>
-          ))}
+              <div key={product.id} className="product-card">
+                <Link to={`/product/${product.id}`} className="product-link">
+                  <img
+                    src={product.images && product.images.length > 0
+                      ? product.images[0].startsWith("/")
+                        ? product.images[0]
+                        : `/images/${product.images[0]}`
+                      : "/placeholder.png"
+                    }
+                    alt={product.name}
+                  />
+                  <h3>{product.name}</h3>
+                  <p>₪{product.price}</p>
+                </Link>
+              </div>
+            ))}
           </div>
 
           <div className="pagination">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
-            >
-              ←
-            </button>
+            >←</button>
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i + 1}
@@ -208,9 +205,7 @@ function Shop() {
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               disabled={currentPage === totalPages}
-            >
-              →
-            </button>
+            >→</button>
           </div>
         </main>
       </div>

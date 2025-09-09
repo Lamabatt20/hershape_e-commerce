@@ -36,9 +36,13 @@ export default function Contact() {
             </a></span>
           </div>
           <div className="info-item">
-            <img src={emailIcon} alt="Email" className="info-icon" />
-            <span>hello@info.com</span>
-          </div>
+          <img src={emailIcon} alt="Email" className="info-icon" />
+          <span className="support-info">
+            <a href="mailto:Larashareef@hotmail.com">
+              Larashareef@hotmail.com
+            </a>
+          </span>
+        </div>
         </div>
 
         <div className="contact-icons">

@@ -7,6 +7,31 @@ import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 
 dotenv.config();
+import multer from "multer";
+
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from 'url';
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      const dir = path.join(__dirname, "../client/public/images/");
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      cb(null, dir);
+    },
+    filename: (req, file, cb) => {
+      cb(null, Date.now() + '-' + file.originalname);
+    },
+  }),
+});
+
 
 const app = express();
 const prisma = new PrismaClient();
@@ -79,7 +104,7 @@ app.post("/signup", async (req, res) => {
           <p style="text-align:center;">Hello,</p>
           <p style="text-align:center;">Thank you for signing up with <strong>Her shape</strong>. To complete your registration, please use the verification code below:</p>
           <div style="display:flex; justify-content:center; margin:30px 0;">
-            <div style="background:#F7B6FF; padding:10px 30px; border-radius:8px; font-size:28px; font-weight:bold; color:#ffcc00; letter-spacing:5px;">
+            <div style="background:#F7B6FF; justify-content:center; align-item:center; padding:10px 30px; border-radius:8px; font-size:28px; font-weight:bold; color:#fcf8f0; letter-spacing:5px;">
               ${code}
             </div>
           </div>
@@ -152,6 +177,7 @@ app.get("/products", async (req, res) => {
       ...p,
       sizes: JSON.parse(p.sizes),
       colors: JSON.parse(p.colors),
+      available: p.available,
     }));
     res.json(formatted);
   } catch (err) {
@@ -169,6 +195,7 @@ app.get("/products/:id", async (req, res) => {
       ...product,
       sizes: JSON.parse(product.sizes),
       colors: JSON.parse(product.colors),
+      available: product.available,
     });
   } catch (err) {
     console.error("Get product error:", err);
@@ -176,19 +203,26 @@ app.get("/products/:id", async (req, res) => {
   }
 });
 
-app.post("/products", async (req, res) => {
-  const { name, description, price, image, sizes, colors } = req.body;
+app.post("/products", upload.array("images"), async (req, res) => {
   try {
+    const { name, description, price, sizes, colors, available, stock } = req.body;
+
+    const images = req.files.map(file => `/images/${file.filename}`);
+
+    
     const newProduct = await prisma.product.create({
       data: {
         name,
         description,
         price: parseFloat(price),
-        image,
-        sizes: JSON.stringify(sizes),
-        colors: JSON.stringify(colors),
+        images: images,
+        sizes: JSON.stringify(JSON.parse(sizes)), 
+        colors: JSON.stringify(colors.split(",")), 
+        available,
+        stock: parseInt(stock),
       },
     });
+
     res.json(newProduct);
   } catch (err) {
     console.error("Add product error:", err);
@@ -196,33 +230,48 @@ app.post("/products", async (req, res) => {
   }
 });
 
-app.put("/products/:id", async (req, res) => {
+app.put("/products/:id", upload.array("images"), async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, image, sizes, colors } = req.body;
+  const { name, description, price, sizes, colors, available, stock } = req.body;
+  const newImages = req.files.map(file => file.filename); 
+
   try {
+   
+    const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+
+    if (!product) return res.status(404).json({ error: "Product not found" });
+
+    
+    const updatedImages = product.images ? [...product.images, ...newImages] : newImages;
+
     const updated = await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
         name,
         description,
         price: parseFloat(price),
-        image,
-        sizes: JSON.stringify(sizes),
-        colors: JSON.stringify(colors),
+        sizes: sizes ? JSON.stringify(JSON.parse(sizes)) : "[]",
+        colors: colors ? JSON.stringify(colors.split(",")) : "[]",
+        available,
+        stock: parseInt(stock),
+        images: updatedImages, 
       },
     });
+
     res.json(updated);
   } catch (err) {
     console.error("Update product error:", err);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-
+// DELETE product
 app.delete("/products/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    await prisma.product.delete({ where: { id: parseInt(id) } });
-    res.json({ message: "Product deleted" });
+    const deleted = await prisma.product.delete({
+      where: { id: parseInt(id) },
+    });
+    res.json({ message: "Product deleted successfully", deleted });
   } catch (err) {
     console.error("Delete product error:", err);
     res.status(500).json({ error: "Something went wrong" });
@@ -253,7 +302,7 @@ app.post("/orders", async (req, res) => {
           })),
         },
       },
-      include: { items: { include: { product: true } } },
+      include: { items: { include: { product: true } }, customer: true,    },
     });
 
     res.json(newOrder);
@@ -274,7 +323,7 @@ app.get("/orders/user/:userId", async (req, res) => {
 
     const orders = await prisma.order.findMany({
       where: { customerId: customer.id },
-      include: { items: { include: { product: true } } },
+      include: { items: { include: { product: true } }, customer: true,   },
     });
 
     res.json(orders);
@@ -286,8 +335,11 @@ app.get("/orders/user/:userId", async (req, res) => {
 
 app.get("/orders", async (req, res) => {
   try {
-    const orders = await prisma.order.findMany({
-      include: { items: { include: { product: true } } },
+     const orders = await prisma.order.findMany({
+      include: { 
+        items: { include: { product: true } },
+        customer: true,   
+      },
     });
     res.json(orders);
   } catch (err) {
@@ -312,11 +364,36 @@ app.post("/customers", async (req, res) => {
 app.get("/customers", async (req, res) => {
   try {
     const customers = await prisma.customer.findMany({
-      include: { user: true },
+      include: { 
+        user: true,
+        orders: { 
+          include: { items: { include: { product: true } } }
+        }
+      },
     });
     res.json(customers);
   } catch (err) {
     console.error("Get customers error:", err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+app.put("/orders/:orderId/status", async (req, res) => {
+  const { orderId } = req.params;
+  const { status } = req.body;
+
+  try {
+    const updatedOrder = await prisma.order.update({
+      where: { id: parseInt(orderId) },
+      data: { status },
+      include: {
+        items: { include: { product: true } },
+        customer: true,
+      },
+    });
+
+    res.json(updatedOrder);
+  } catch (err) {
+    console.error("Update order status error:", err);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
