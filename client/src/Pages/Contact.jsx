@@ -2,20 +2,24 @@ import React from "react";
 import "./Contact.css";
 
 
-import facebookIcon from "../assets/icons/Facebook.png";
+import facebookIcon from "../assets/icons/icons8-facebook-48.png";
 import instagramIcon from "../assets/icons/Instagram (1).png";
 import snapchatIcon from "../assets/icons/snap.png";
 import locationIcon from "../assets/icons/loc.png";
 import phoneIcon from "../assets/icons/whats.png";
 import emailIcon from "../assets/icons/email.png";
 import Footer from "../Components/Footer";
+import contactIcon from "../assets/icons/image.png";
 
 export default function Contact() {
   return (
     <>
     <div className="contact-page">
       <div className="contact-card">
-        <h2 className="contact-title">Get In Touch</h2>
+        <h2 className="contact-title">
+        <img src={contactIcon} alt="Contact Icon" className="contact-title-icon" />
+        Get In Touch
+      </h2>
         <p className="contact-subtitle">
           If you have any questions or would like to know more about our products, delivery options, or order details
         </p>

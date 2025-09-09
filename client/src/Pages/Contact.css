@@ -17,22 +17,26 @@
   width: 100%;      
   height: auto;    
   text-align: center;
-  margin: auto;    
+  margin: auto;   
+  align-items: center; 
 }
 .support-info a {
   color:black;
   text-decoration: none;
 }
 
-.contact-cards{
-  justify-content: center;
+.contact-cards {
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+  justify-content: center; 
   background-color: #fcf8f0;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
   max-width: 400px;
   width: 50%;
-
+  margin: 0 auto; 
 }
 
 .contact-info {
@@ -47,6 +51,16 @@
 }
 .contact-title{
     color: #6e3c74;
+    display: flex;           
+    align-items: center;    
+    justify-content: center; 
+    gap: 10px;    
+
+  }
+  .contact-title-icon {
+    width: 30px;
+    height: 30px;
+    object-fit: contain;
 }
 
 .info-icon {
