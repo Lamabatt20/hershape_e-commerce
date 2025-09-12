@@ -66,9 +66,11 @@
 }
 
 .color.nude {
-  background-color: #d2b48c;
+  background-color: #ecc7b5;
 }
-
+.color.beige {
+  background-color:#e0c7a0;
+}
 
 .products-section {
   flex: 1;

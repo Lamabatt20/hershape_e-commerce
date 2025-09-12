@@ -7,15 +7,15 @@ async function main() {
       customerId: 4,
       status: "delivered",
       items: [
-        { productId: 9, quantity: 2, color: "nude", size: "M" },
-        { productId: 10, quantity: 1, color: "nude", size: "L" },
+        { productId: 16, quantity: 2, color: "nude", size: "M" },
+        { productId: 17, quantity: 1, color: "nude", size: "XS" },
       ],
     },
     {
       customerId: 4,
       status: "pending",
       items: [
-        { productId: 12, quantity: 1, color: "nude", size: "S" },
+        { productId: 20, quantity: 1, color: "black", size: "L" },
       ],
     },
   ];

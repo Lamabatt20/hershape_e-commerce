@@ -9,6 +9,11 @@ const Cart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const colorMap = [
+  { name: "nude", hex: "#ecc7b5" },
+  { name: "black", hex: "#000000" },
+  { name: "beige", hex: "#e0c7a0" },
+];
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -114,7 +119,10 @@ const Cart = () => {
                   {item.size} |{" "}
                   <span
                     className="color-circle"
-                    style={{ backgroundColor: item.color === "nude" ? "#e0c7a0" : item.color }}
+                    style={{
+                      backgroundColor:
+                        colorMap.find((c) => c.name === item.color)?.hex || item.color,
+                    }}
                   ></span>
                 </p>
               </div>

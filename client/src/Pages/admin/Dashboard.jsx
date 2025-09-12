@@ -47,7 +47,7 @@ export default function Dashboard() {
   });
 
   const [ordersData, setOrdersData] = useState([]);
-  const [ordersFilter, setOrdersFilter] = useState("day");
+  const [ordersFilter, setOrdersFilter] = useState("year");
   const [user, setUser] = useState({ name: "Lara", image: LaraImage });
   const [allOrders, setAllOrders] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -343,10 +343,10 @@ export default function Dashboard() {
                   onChange={(e) => setOrdersFilter(e.target.value)}
                   style={{ padding: "4px", borderRadius: "6px" }}
                 >
+                  <option value="year">Year</option>
                   <option value="day">Day</option>
                   <option value="week">Week</option>
                   <option value="month">Month</option>
-                  <option value="year">Year</option>
                 </select>
               </div>
               <ResponsiveContainer width="100%" height={250}>

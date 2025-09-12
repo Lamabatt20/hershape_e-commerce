@@ -39,27 +39,18 @@ model Product {
   id          Int              @id @default(autoincrement())
   name        String
   price       Int
-  image       String[]
   images      String[]        
-  sizes       String
-  colors      String
-  available   String
+  sizes       String?           
+  colors      String?           
+  available   String?
   description String
   createdAt   DateTime         @default(now())
   stock       Int              @default(0)
   cartItems   CartItem[]
   orderItems  OrderItem[]
-  variants    ProductVariant[]
 }
 
-model ProductVariant {
-  id        Int     @id @default(autoincrement())
-  productId Int
-  size      String
-  color     String
-  stock     Int     @default(0)
-  product   Product @relation(fields: [productId], references: [id])
-}
+
 
 model Order {
   id         Int         @id @default(autoincrement())

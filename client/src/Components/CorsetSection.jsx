@@ -1,14 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import fullCorset from "../assets/images/F.png";
-import waistCorset from "../assets/images/W.png";
-import doubleCorset from "../assets/images/D.png";
+import { getProducts } from "../api";
 import "./CorsetSection.css";
-
-const corsetProducts = [
-  { id: 1, name: "Full Corset", price: "₪85", image: fullCorset },
-  { id: 2, name: "Waist Corset", price: "₪65", image: waistCorset },
-  { id: 3, name: "Double Corset", price: "₪95", image: doubleCorset },
-];
+import {  Link } from "react-router-dom";
 
 function CorsetSection() {
   const [products, setProducts] = useState([]);
@@ -16,25 +9,35 @@ function CorsetSection() {
   const cardsRef = useRef([]);
 
   useEffect(() => {
-    setProducts(corsetProducts);
+    const fetchCorsets = async () => {
+      try {
+        const res = await getProducts();
+        const selectedIds = [16, 17, 19];
+        const filtered = res.filter((item) => selectedIds.includes(item.id));
+
+        setProducts(filtered);
+      } catch (err) {
+        console.error("Error fetching corsets:", err);
+      }
+    };
+
+    fetchCorsets();
   }, []);
 
   useEffect(() => {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("visible");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
 
-   
     const elements = cardsRef.current;
-
     elements.forEach((card) => {
       if (card) observer.observe(card);
     });
@@ -57,9 +60,18 @@ function CorsetSection() {
             className="corset-card"
             ref={(el) => (cardsRef.current[index] = el)}
           >
-            <img src={product.image} alt={product.name} />
+             <Link to={`/product/${product.id}`} className="product-link">
+            <img
+              src={
+                product.images && product.images.length > 0
+                  ? product.images[0]
+                  : "/placeholder.png"
+              }
+              alt={product.name}
+            />
             <h4>{product.name}</h4>
-            <p>{product.price}</p>
+            <p>₪{product.price}</p>
+            </Link>
           </div>
         ))}
       </div>

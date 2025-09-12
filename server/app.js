@@ -35,7 +35,6 @@ const upload = multer({
 
 const app = express();
 const prisma = new PrismaClient();
-const port = process.env.PORT || 5000;
 
 
 app.use(cors());
@@ -232,18 +231,34 @@ app.post("/products", upload.array("images"), async (req, res) => {
 
 app.put("/products/:id", upload.array("images"), async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, sizes, colors, available, stock } = req.body;
-  const newImages = req.files.map(file => file.filename); 
+  const { name, description, price, sizes, colors, available, stock, removedImages } = req.body;
+
+  const newImages = req.files.map(file => `/images/${file.filename}`);
 
   try {
-   
     const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
-
     if (!product) return res.status(404).json({ error: "Product not found" });
 
-    
-    const updatedImages = product.images ? [...product.images, ...newImages] : newImages;
+   
+    if (removedImages) {
+      const removedArray = Array.isArray(removedImages) ? removedImages : [removedImages];
+      removedArray.forEach(img => {
+        const filePath = path.join(__dirname, "../client/public", img);
+        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+      });
+    }
 
+    
+    let updatedImages = product.images || [];
+    if (removedImages) {
+      const removedArray = Array.isArray(removedImages) ? removedImages : [removedImages];
+      updatedImages = updatedImages.filter(img => !removedArray.includes(img));
+    }
+
+   
+    updatedImages = [...updatedImages, ...newImages];
+
+    
     const updated = await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
@@ -254,7 +269,7 @@ app.put("/products/:id", upload.array("images"), async (req, res) => {
         colors: colors ? JSON.stringify(colors.split(",")) : "[]",
         available,
         stock: parseInt(stock),
-        images: updatedImages, 
+        images: updatedImages,
       },
     });
 
@@ -515,6 +530,7 @@ app.delete("/cart/customer/:customerId", async (req, res) => {
 });
 
 // ====== SERVER ======
-app.listen(port, "0.0.0.0", () => {
-  console.log(`🚀 Server running on http://0.0.0.0:${port}`);
+const port = process.env.PORT || 5000;
+app.listen(port, () => {
+  console.log(`🚀 Server running on port ${port}`);
 });

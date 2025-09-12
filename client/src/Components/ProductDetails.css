@@ -8,12 +8,41 @@
 
 .image-section {
   flex: 1;
+  position: relative; 
+  display: inline-block;
 }
 
 .main-image {
   width: 100%;
   border-radius: 10px;
+  display: block;
 }
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  color: #6e3c74;
+  z-index: 10;
+}
+
+.arrow.left {
+  left: 10px;  
+}
+
+.arrow.right {
+  right: 10px; 
+}
+
+.arrow:hover {
+  color: #f5a9f2;
+}
+
 
 .info-section {
   flex: 1;
@@ -257,5 +286,8 @@
 
   .price {
     font-size: 22px;
+  }
+  .arrow {
+    font-size: 1.3rem; 
   }
 }

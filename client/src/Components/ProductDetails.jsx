@@ -15,8 +15,14 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [errorMessage, setErrorMessage] = useState("");
   const [flyingStyle, setFlyingStyle] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   const addBtnRef = useRef(null);
+  const colorMap = [
+  { name: "nude", hex: "#ecc7b5" },
+  { name: "black", hex: "#000000" },
+  { name: "beige", hex: "#e0c7a0" },
+];
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -47,19 +53,33 @@ const ProductDetails = () => {
     ? product.colors.split(",")
     : [];
 
-  
-  const mainImage =
+  const images =
     Array.isArray(product.images) && product.images.length > 0
-       ? product.images[0].startsWith("/")
-                        ? product.images[0]
-                        : `/images/${product.images[0]}`
-                      : "/placeholder.png"
+      ? product.images.map((img) =>
+          img.startsWith("/") ? img : `/images/${img}`
+        )
+      : ["/placeholder.png"];
+
+  const mainImage = images[currentImageIndex];
 
   const increment = () => {
     if (quantity < product.stock) setQuantity(quantity + 1);
   };
+
   const decrement = () => {
     if (quantity > 1) setQuantity(quantity - 1);
+  };
+
+  const prevImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === 0 ? images.length - 1 : prev - 1
+    );
+  };
+
+  const nextImage = () => {
+    setCurrentImageIndex((prev) =>
+      prev === images.length - 1 ? 0 : prev + 1
+    );
   };
 
   const addToCart = async () => {
@@ -93,7 +113,6 @@ const ProductDetails = () => {
 
       if (!res.error) {
         const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-
         const existingIndex = storedCart.findIndex(
           (item) =>
             item.productId === product.id &&
@@ -160,11 +179,17 @@ const ProductDetails = () => {
     <>
       <div className="product-details-container">
         <div className="image-section">
+          <button className="arrow left" onClick={prevImage}>
+            &#8592;
+          </button>
           <img
             src={process.env.PUBLIC_URL + mainImage}
             alt={product.name}
             className="main-image"
           />
+          <button className="arrow right" onClick={nextImage}>
+            &#8594;
+          </button>
           {flyingStyle && (
             <img
               src={process.env.PUBLIC_URL + mainImage}
@@ -176,7 +201,11 @@ const ProductDetails = () => {
 
         <div className="info-section">
           <h1>{product.name}</h1>
-          <p className={`status ${product.available === "In stock" ? "in" : "out"}`}>
+          <p
+            className={`status ${
+              product.available === "In stock" ? "in" : "out"
+            }`}
+          >
             {product.available}
           </p>
           <p className="description">{product.description}</p>
@@ -191,17 +220,16 @@ const ProductDetails = () => {
 
           <div className="colors">
             <h4>
-              Color:{" "}
-              <span style={{ color: selectedColor === "nude" ? "#e0c7a0" : selectedColor }}>
-                {selectedColor}
-              </span>
+              Color: <span>{selectedColor || ""}</span>
             </h4>
             <div className="color-options">
               {availableColors.map((color, index) => (
                 <button
                   key={index}
                   className={`color-btn ${selectedColor === color ? "selected" : ""}`}
-                  style={{ backgroundColor: color === "nude" ? "#e0c7a0" : color }}
+                  style={{
+                    backgroundColor: colorMap.find((c) => c.name === color)?.hex || color,
+                  }}
                   onClick={() => {
                     setSelectedColor(color);
                     setErrorMessage("");
@@ -220,7 +248,9 @@ const ProductDetails = () => {
                 <button
                   key={size}
                   disabled={!availableSizes.includes(size)}
-                  className={`size-btn ${selectedSize === size ? "selected" : ""}`}
+                  className={`size-btn ${
+                    selectedSize === size ? "selected" : ""
+                  }`}
                   onClick={() => {
                     setSelectedSize(size);
                     setErrorMessage("");
@@ -235,7 +265,11 @@ const ProductDetails = () => {
           <div className="quantity">
             <label>Quantity</label>
             <div className="quantity-controls">
-              <button onClick={decrement} className="qty-btn" disabled={quantity === 1}>
+              <button
+                onClick={decrement}
+                className="qty-btn"
+                disabled={quantity === 1}
+              >
                 -
               </button>
               <span className="qty-number">{quantity}</span>
@@ -244,7 +278,11 @@ const ProductDetails = () => {
                   +
                 </button>
               ) : (
-                <button className="qty-btn warning" disabled title="Reached stock limit">
+                <button
+                  className="qty-btn warning"
+                  disabled
+                  title="Reached stock limit"
+                >
                   ⚠
                 </button>
               )}

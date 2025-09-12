@@ -19,8 +19,9 @@ import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "2X"];
 const ALL_COLORS = [
-  { name: "nude", hex: "#e0c7a0" },
+  { name: "nude", hex: "#ecc7b5" },
   { name: "black", hex: "#000000" },
+  {name : "beige", hex: "#e0c7a0"}
 ];
 
 export default function ProductDetails() {
@@ -41,60 +42,38 @@ export default function ProductDetails() {
   const [stock, setStock] = useState(0);
   const [description, setDescription] = useState("");
   const [imageFiles, setImageFiles] = useState([]); 
-  const [previewImages, setPreviewImages] = useState([]); 
+  const [previewImages, setPreviewImages] = useState([]);
+  const [removedImages, setRemovedImages] = useState([]);
 
- // Fetch product
-useEffect(() => {
-  const fetchProduct = async () => {
-    const data = await getProductById(id);
-    if (!data.error) {
-      setProduct(data);
-
-      setName(data.name || "");
-      setPrice(data.price || "");
-      setSizes(data.sizes || []);
-
-      if (Array.isArray(data.colors)) {
-        setColors(data.colors);
-      } else if (typeof data.colors === "string") {
-        setColors(data.colors.split(","));
-      } else {
-        setColors([]);
+  useEffect(() => {
+    const fetchProduct = async () => {
+      const data = await getProductById(id);
+      if (!data.error) {
+        setProduct(data);
+        setName(data.name || "");
+        setPrice(data.price || "");
+        setSizes(data.sizes || []);
+        if (Array.isArray(data.colors)) setColors(data.colors);
+        else if (typeof data.colors === "string") setColors(data.colors.split(","));
+        else setColors([]);
+        const avail = String(data.available).toLowerCase().trim();
+        setAvailability(avail === "out of stock" ? "Out of Stock" : "In Stock");
+        setStock(data.stock || 0);
+        setDescription(data.description || "");
+        if (Array.isArray(data.images) && data.images.length > 0) setPreviewImages(data.images);
+        else if (typeof data.images === "string" && data.images) setPreviewImages([data.images]);
+        else if (data.image) setPreviewImages([data.image]);
+        else setPreviewImages([]);
+        setImageFiles([]);
       }
+    };
+    fetchProduct();
+  }, [id]);
 
-      const avail = String(data.available).toLowerCase().trim();
-      setAvailability(avail === "out of stock" ? "Out of Stock" : "In Stock");
-
-      setStock(data.stock || 0);
-      setDescription(data.description || "");
-      if (Array.isArray(data.images) && data.images.length > 0) {
-        setPreviewImages(data.images);
-      } else if (typeof data.images === "string" && data.images) {
-        setPreviewImages([data.images]);
-      } else if (data.image) { 
-        setPreviewImages([data.image]);
-      } else {
-        setPreviewImages([]);
-      }
-
-      setImageFiles([]);
-    }
-  };
-  fetchProduct();
-}, [id]);
-
-
-  // Protect admin
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || storedUser.role !== "admin") {
-      navigate("/login", { replace: true });
-    } else {
-      setUser({
-        name: storedUser.name || "Lara",
-        image: storedUser.image || LaraImage,
-      });
-    }
+    if (!storedUser || storedUser.role !== "admin") navigate("/login", { replace: true });
+    else setUser({ name: storedUser.name || "Lara", image: storedUser.image || LaraImage });
   }, [navigate]);
 
   const handleLogout = () => {
@@ -121,24 +100,23 @@ useEffect(() => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
       setImageFiles((prev) => [...prev, ...filesArray]);
-
       const newPreviews = filesArray.map((file) => URL.createObjectURL(file));
       setPreviewImages((prev) => [...prev, ...newPreviews]);
     }
   };
 
   const handleRemoveImage = (index) => {
-    if (index >= previewImages.length - imageFiles.length) {
+    const removed = previewImages[index];
+    if (!removed.startsWith("blob:")) setRemovedImages((prev) => [...prev, removed]);
+    else {
       const fileIndex = index - (previewImages.length - imageFiles.length);
       setImageFiles((prev) => prev.filter((_, i) => i !== fileIndex));
     }
-
     setPreviewImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("name", name);
     formData.append("price", price);
@@ -147,19 +125,12 @@ useEffect(() => {
     formData.append("available", availability);
     formData.append("stock", stock);
     formData.append("description", description);
-
-    imageFiles.forEach((file) => {
-      formData.append("images", file);
-    });
-
+    imageFiles.forEach((file) => formData.append("images", file));
+    removedImages.forEach((img) => formData.append("removedImages", img));
     try {
-      const res = await updateProduct(product.id, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (res.error) {
-        alert("Failed to update product: " + res.error);
-      } else {
+      const res = await updateProduct(product.id, formData, { headers: { "Content-Type": "multipart/form-data" } });
+      if (res.error) alert("Failed to update product: " + res.error);
+      else {
         alert("Product updated successfully!");
         navigate("/products");
       }
@@ -171,7 +142,6 @@ useEffect(() => {
 
   return (
     <div className="orders-page">
-      {/* Sidebar */}
       <aside className={`orders-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div>
           <div className="orders-logo">
@@ -218,7 +188,6 @@ useEffect(() => {
         </button>
       </aside>
 
-      {/* Main */}
       <div className="orders-main">
         <header className="orders-header">
           <button className="orders-menu-btn" onClick={() => setIsSidebarOpen(true)}>
@@ -238,7 +207,6 @@ useEffect(() => {
 
         <main className="product-details-content">
           <form className="product-edit-form" onSubmit={handleSave}>
-            {/* Name, Price, Sizes, Colors, Availability, Stock, Description */}
             <div className="form-row">
               <label>Product name</label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
@@ -292,35 +260,19 @@ useEffect(() => {
               <textarea rows="3" value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
 
-              {/* Images */}
-                  <div className="image-upload-combined-row">
+            <div className="image-upload-combined-row">
               {(previewImages && previewImages.length > 0) ? (
                 previewImages.map((src, index) => (
                   <div key={index} style={{ position: "relative", display: "inline-block", marginRight: 10 }}>
                     <img
-                      src={
-                        src.startsWith("blob:") || src.startsWith("/") 
-                          ? src
-                          : `/images/${src}` 
-                      }
+                      src={src.startsWith("blob:") || src.startsWith("/") ? src : `/images/${src}`}
                       alt={`Product ${index + 1}`}
                       style={{ width: 100, height: 100, objectFit: "cover" }}
                     />
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(index)}
-                      style={{
-                        position: "absolute",
-                        top: 2,
-                        right: 2,
-                        backgroundColor: "rgba(255,0,0,0.7)",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "50%",
-                        width: 20,
-                        height: 20,
-                        cursor: "pointer"
-                      }}
+                      style={{ position: "absolute", top: 2, right: 2, backgroundColor: "rgba(255,0,0,0.7)", color: "white", border: "none", borderRadius: "50%", width: 20, height: 20, cursor: "pointer" }}
                       aria-label="Remove image"
                     >
                       ×
@@ -328,14 +280,10 @@ useEffect(() => {
                   </div>
                 ))
               ) : (
-                <img src="/placeholder.png" alt="No images" style={{ width: 100, height: 100, objectFit: "cover" }} />
+                <img src="/images/No-Image-Placeholder.svg.png" alt="No images" style={{ width: 100, height: 100, objectFit: "cover" }} />
               )}
-
               <input type="file" accept="image/*" multiple onChange={handleImageChange} className="upload-input" />
             </div>
-
-
-
 
             <div className="form-row button-row">
               <button type="submit" className="edit-product-btn">Edit Product</button>

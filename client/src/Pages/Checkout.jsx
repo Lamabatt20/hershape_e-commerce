@@ -8,6 +8,11 @@ const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [country] = useState("Palestinian Territories");
+  const colorMap = [
+  { name: "nude", hex: "#ecc7b5" },
+  { name: "black", hex: "#000000" },
+  { name: "beige", hex: "#e0c7a0" },
+];
 
   useEffect(() => {
   
@@ -156,12 +161,12 @@ const Checkout = () => {
                 <div className="item-details">
                   <span className="product-size">{item.size}</span>
                   <span
-                    className="color-circle"
-                    style={{
-                      backgroundColor:
-                        item.color === "nude" ? "#e0c7a0" : item.color,
-                    }}
-                  ></span>
+                        className="color-circle"
+                        style={{
+                          backgroundColor:
+                            colorMap.find((c) => c.name === item.color)?.hex || item.color,
+                        }}
+                      ></span>
                   <span className="item-quantity">x{item.quantity}</span>
                 </div>
               </div>

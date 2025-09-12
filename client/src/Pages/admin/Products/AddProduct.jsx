@@ -19,8 +19,9 @@ import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 
 const ALL_SIZES = ["XS", "S", "M", "L", "XL", "2X"];
 const ALL_COLORS = [
-  { name: "nude", hex: "#e0c7a0" },
+  { name: "nude", hex: "#ecc7b5" },
   { name: "black", hex: "#000000" },
+  {name : "beige", hex: "#e0c7a0"}
 ];
 
 export default function AddProduct() {

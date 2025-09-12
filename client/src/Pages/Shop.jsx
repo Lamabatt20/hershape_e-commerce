@@ -7,7 +7,7 @@ import "./Shop.css";
 import filterIcon from "../assets/icons/filter.png";
 
 const sizes = ["XS", "S", "M", "L", "XL", "2XL"];
-const colors = ["black", "nude"]; 
+const colors = ["black", "nude","beige"]; 
 
 function Shop() {
   const [products, setProducts] = useState([]);
@@ -17,7 +17,7 @@ function Shop() {
   const [selectedColor, setSelectedColor] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 400]);
-  const [availability, setAvailability] = useState({ inStock: false, outOfStock: false });
+  const [availability, setAvailability] = useState({ InStock: false, outOfStock: false });
   const [loading, setLoading] = useState(true);
 
   const productsPerPage = 6;
@@ -27,8 +27,8 @@ function Shop() {
     setLoading(true);
     const data = await getProducts(); 
     console.log("Fetched Products:", data);
-    if (!data.error) setProducts(data);
-     setCurrentPage(1);
+    if (!data.error && Array.isArray(data)) setProducts(data);
+    setCurrentPage(1);
     setLoading(false);
   };
 
@@ -37,26 +37,43 @@ function Shop() {
     fetchProducts();
   }, []);
 
-  // ======== Filters ========
+  // ======== Clear Filters ========
   const clearFilters = () => {
     setSelectedSize(null);
     setSelectedColor(null);
-    setPriceRange([0, 150]);
-    setAvailability({ inStock: false, outOfStock: false });
+    setPriceRange([0, 400]); 
+    setAvailability({  InStock: false, outOfStock: false });
     setIsFilterOpen(false);
+    setCurrentPage(1);
   };
 
-  const filteredProducts = products.filter((product) => {
-    if (selectedSize && !product.sizes.includes(selectedSize)) return false;
-    if (selectedColor && !product.colors.includes(selectedColor)) return false;
-    if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
+  // ======== Filter Products ========
+  const filteredProducts = Array.isArray(products)
+    ? products.filter((product) => {
+        const productSizes = Array.isArray(product.sizes)
+          ? product.sizes
+          : product.sizes
+          ? product.sizes.split(",").map(s => s.trim())
+          : [];
 
-    if (availability.inStock && availability.outOfStock) return true;
-    if (availability.inStock && product.available !== "In stock") return false;
-    if (availability.outOfStock && product.available !== "Out of stock") return false;
+        const productColors = Array.isArray(product.colors)
+          ? product.colors
+          : product.colors
+          ? product.colors.split(",").map(c => c.trim())
+          : [];
 
-    return true;
-  });
+        if (selectedSize && !productSizes.includes(selectedSize)) return false;
+        if (selectedColor && !productColors.includes(selectedColor)) return false;
+
+        if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
+
+        if (availability.InStock && availability.outOfStock) return true;
+        if (availability.InStock && product.available !== "In stock") return false;
+        if (availability.outOfStock && product.available !== "Out of stock") return false;
+
+        return true;
+      })
+    : [];
 
   // ======== Sorting ========
   const sortedProducts = [...filteredProducts].sort((a, b) => {
@@ -71,7 +88,6 @@ function Shop() {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = sortedProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  // Reset page if products change and currentPage exceeds totalPages
   useEffect(() => {
     if (currentPage > totalPages) setCurrentPage(totalPages || 1);
   }, [totalPages, currentPage]);
@@ -89,7 +105,7 @@ function Shop() {
             <input
               type="range"
               min="0"
-              max="150"
+              max="400"
               value={priceRange[1]}
               onChange={(e) => setPriceRange([0, parseInt(e.target.value)])}
             />
