@@ -2,7 +2,7 @@
   position: relative;
   height: 570px; 
   display: flex;
-  align-items: center;
+  align-items: center !important;
   justify-content: space-between;
   overflow: hidden;
   padding: 0 40px;

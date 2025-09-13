@@ -171,12 +171,17 @@ app.post("/login", async (req, res) => {
 // ====== PRODUCTS ======
 app.get("/products", async (req, res) => {
   try {
-    const products = await prisma.product.findMany();
+    const products = await prisma.product.findMany({
+    include: {
+      orderItems: true, 
+    },
+});
     const formatted = products.map(p => ({
       ...p,
       sizes: JSON.parse(p.sizes),
       colors: JSON.parse(p.colors),
       available: p.available,
+      sold: p.orderItems.reduce((sum, item) => sum + item.quantity, 0),
     }));
     res.json(formatted);
   } catch (err) {

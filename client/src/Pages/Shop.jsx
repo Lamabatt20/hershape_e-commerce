@@ -77,10 +77,25 @@ function Shop() {
 
   // ======== Sorting ========
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-    if (sortOrder === "price-low-high") return a.price - b.price;
-    if (sortOrder === "price-high-low") return b.price - a.price;
-    return a.id - b.id;
-  });
+  switch (sortOrder) {
+    case "price-low-high":
+      return a.price - b.price;
+    case "price-high-low":
+      return b.price - a.price;
+    case "best-selling":
+      return (b.sold || 0) - (a.sold || 0); 
+    case "newest":
+      return b.id - a.id; 
+    case "oldest":
+      return a.id - b.id;
+    case "alphabetical-asc":
+      return a.name.localeCompare(b.name); 
+    case "alphabetical-desc":
+      return b.name.localeCompare(a.name); 
+    default:
+      return a.id - b.id; 
+  }
+});
 
   // ======== Pagination ========
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
@@ -178,10 +193,15 @@ function Shop() {
             </button>
 
             <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
-              <option value="default">Default Sorting</option>
-              <option value="price-low-high">Price: Low to High</option>
-              <option value="price-high-low">Price: High to Low</option>
-            </select>
+            <option value="default">Default Sorting</option>
+            <option value="price-low-high">Price: Low to High</option>
+            <option value="price-high-low">Price: High to Low</option>
+            <option value="best-selling">Best Selling</option>
+            <option value="newest">Newest</option>
+            <option value="oldest">Oldest</option>
+            <option value="alphabetical-asc">Name: A-Z</option>
+            <option value="alphabetical-desc">Name: Z-A</option>
+          </select>
           </div>
 
           <div className="products-grid">

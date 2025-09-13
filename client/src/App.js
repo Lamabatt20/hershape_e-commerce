@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 
+
 import Home from "./Pages/Home";  
 import Shop from "./Pages/Shop";  
 import Contact from "./Pages/Contact";
@@ -28,7 +29,6 @@ import AddProducts from "./Pages/admin/Products/AddProduct";
 function AppContent() {
   const location = useLocation();
 
-  // المسارات التي نريد إخفاء الـ Navbar فيها
   const noNavbarPrefixes = ["/dashboard", "/orders", "/customers", "/products"];
 
   const hideNavbar = noNavbarPrefixes.some(prefix =>

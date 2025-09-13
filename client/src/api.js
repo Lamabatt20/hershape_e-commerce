@@ -38,8 +38,13 @@ export const verify = async (codeData) => {
 export const getProducts = async () => {
   try {
     const response = await API.get("/products");
-    return response.data;
+    if (Array.isArray(response.data)) {
+      return response.data;
+    } else {
+      return [];
+    }
   } catch (error) {
+    console.error("Error fetching products:", error);
     return { error: error.response?.data?.error || error.message };
   }
 };
