@@ -222,3 +222,25 @@
     margin-bottom: 10px;
   }
 }
+
+
+
+.checkout-form .form-section.payment-method .row {
+  display: flex;
+  justify-content: center; 
+  align-items: center;    
+  gap: 2px;               
+}
+
+.checkout-form .form-section.payment-method .row label {
+  display: flex;
+  align-items: center;
+  gap: 4px; 
+}
+
+.checkout-form .form-section.payment-method .row label input[type="radio"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #6e3c74;
+  margin: 0; 
+}

@@ -9,11 +9,52 @@ const Cart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState("en");
+
   const colorMap = [
-  { name: "nude", hex: "#ecc7b5" },
-  { name: "black", hex: "#000000" },
-  { name: "beige", hex: "#e0c7a0" },
-];
+    { name: "nude", hex: "#ecc7b5" },
+    { name: "black", hex: "#000000" },
+    { name: "beige", hex: "#e0c7a0" },
+  ];
+
+  const translations = {
+    en: {
+      shoppingCart: "Shopping Cart",
+      subtotal: "Subtotal",
+      clearCart: "Clear Cart",
+      proceedToCheckout: "Proceed To Checkout",
+      loading: "Loading...",
+      emptyCartRedirect: "Your cart is empty. Redirecting...",
+      size: "Size",
+      quantity: "Quantity",
+    },
+    ar: {
+      shoppingCart: "عربة التسوق",
+      subtotal: "المجموع الفرعي",
+      clearCart: "تفريغ العربة",
+      proceedToCheckout: "المتابعة للدفع",
+      loading: "جارٍ التحميل...",
+      emptyCartRedirect: "عربة التسوق فارغة. جاري التحويل...",
+      size: "المقاس",
+      quantity: "الكمية",
+    },
+  };
+
+  useEffect(() => {
+    const storedLang = localStorage.getItem("language") || "en";
+    setLanguage(storedLang);
+
+    const handleLangChange = () => {
+      const updatedLang = localStorage.getItem("language") || "en";
+      setLanguage(updatedLang);
+    };
+
+    window.addEventListener("storageLanguageChanged", handleLangChange);
+
+    return () => {
+      window.removeEventListener("storageLanguageChanged", handleLangChange);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchCart = async () => {
@@ -92,61 +133,63 @@ const Cart = () => {
     }
   };
 
-  if (loading) return <h2>Loading...</h2>;
+  if (loading) return <h2>{translations[language].loading}</h2>;
 
   return (
     <>
-      <div className="cart-container">
-        <h2>Shopping Cart</h2>
+      <div className="cart-container" dir={language === "ar" ? "rtl" : "ltr"}>
+        <h2>{translations[language].shoppingCart}</h2>
         <div className="cart-content">
           <div className="cart-items">
-           {cartItems.map((item) => (
-            <div key={item.id} className="cart-item">
-              <img
-                src={
-                  Array.isArray(item.product.images) && item.product.images.length > 0
-                   ? item.product.images[0].startsWith("/")
+            {cartItems.map((item) => (
+              <div key={item.id} className="cart-item">
+                <img
+                  src={
+                    Array.isArray(item.product.images) && item.product.images.length > 0
+                      ? item.product.images[0].startsWith("/")
                         ? item.product.images[0]
                         : `/images/${item.product.images[0]}`
                       : "/placeholder.png"
-                }
-                alt={item.product.name}
-              />
-              <div className="item-info">
-                <p>{item.product.name}</p>
-                <p>₪{item.product.price}</p>
-                <p className="item-size">
-                  {item.size} |{" "}
-                  <span
-                    className="color-circle"
-                    style={{
-                      backgroundColor:
-                        colorMap.find((c) => c.name === item.color)?.hex || item.color,
-                    }}
-                  ></span>
-                </p>
+                  }
+                  alt={language === "ar" ? item.product.name_ar || item.product.name : item.product.name}
+                />
+                <div className="item-info">
+                  <p>{language === "ar" ? item.product.name_ar || item.product.name : item.product.name}</p>
+                  <p>₪{item.product.price}</p>
+                  <p className="item-size">
+                    {translations[language].size}: {item.size} |{" "}
+                    <span
+                      className="color-circle"
+                      style={{
+                        backgroundColor:
+                          colorMap.find((c) => c.name === item.color)?.hex || item.color,
+                      }}
+                    ></span>
+                  </p>
+                </div>
+                <div className="quantity-control">
+                  <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
+                  <span>{item.quantity}</span>
+                  <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
+                </div>
+                <button className="delete-btn" onClick={() => deleteItem(item.id)}>
+                  <img src={DeleteIcon} alt="Delete Icon" className="delete-icon" />
+                </button>
               </div>
-              <div className="quantity-control">
-                <button onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</button>
-                <span>{item.quantity}</span>
-                <button onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</button>
-              </div>
-              <button className="delete-btn" onClick={() => deleteItem(item.id)}>
-                <img src={DeleteIcon} alt="Delete Icon" className="delete-icon" />
-              </button>
-            </div>
-          ))}
+            ))}
           </div>
 
           <div className="cart-summary">
-            <h3>Subtotal</h3>
+            <h3>{translations[language].subtotal}</h3>
             <p>₪{subtotal}</p>
-            <button onClick={clearCart} className="clear-btn">Clear Cart</button>
-            <button 
-              className="checkout-btn" 
+            <button onClick={clearCart} className="clear-btn">
+              {translations[language].clearCart}
+            </button>
+            <button
+              className="checkout-btn"
               onClick={() => navigate("/checkout")}
             >
-              Proceed To Checkout
+              {translations[language].proceedToCheckout}
             </button>
           </div>
         </div>

@@ -1,7 +1,6 @@
-import React from "react";
+
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./Components/Navbar";
-
 
 import Home from "./Pages/Home";  
 import Shop from "./Pages/Shop";  
@@ -15,7 +14,6 @@ import EmptyCart from "./Pages/EmptyCart";
 import Profile from "./Pages/Orders";
 import Checkout from "./Pages/Checkout";
 
-
 import Dashboard from "./Pages/admin/Dashboard";
 import Orders from "./Pages/admin/Orders/Orders";
 import Products from "./Pages/admin/Products/Products";
@@ -26,13 +24,13 @@ import ProductsDetails from "./Pages/admin/Products/ProductDetails";
 import AddProducts from "./Pages/admin/Products/AddProduct";
 
 
+
 function AppContent() {
   const location = useLocation();
-
   const noNavbarPrefixes = ["/dashboard", "/orders", "/customers", "/products"];
-
-  const hideNavbar = noNavbarPrefixes.some(prefix =>
-    location.pathname === prefix || location.pathname.startsWith(prefix + "/")
+  const hideNavbar = noNavbarPrefixes.some(
+    prefix =>
+      location.pathname === prefix || location.pathname.startsWith(prefix + "/")
   );
 
   return (
@@ -51,6 +49,8 @@ function AppContent() {
         <Route path="/empty-cart" element={<EmptyCart />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/checkout" element={<Checkout />} />
+
+        {/* Admin */}
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/orders/:id" element={<OrderDetails />} />
@@ -65,9 +65,12 @@ function AppContent() {
 }
 
 export default function App() {
+ 
+
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    
+      <Router>
+        <AppContent />
+      </Router>
   );
 }

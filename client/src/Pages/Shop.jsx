@@ -17,22 +17,36 @@ function Shop() {
   const [selectedColor, setSelectedColor] = useState(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [priceRange, setPriceRange] = useState([0, 400]);
-  const [availability, setAvailability] = useState({ InStock: false, outOfStock: false });
+  const [availability, setAvailability] = useState({ inStock: false, outOfStock: false });
   const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState("en");
 
   const productsPerPage = 6;
+
+  useEffect(() => {
+    const storedLang = localStorage.getItem("language") || "en";
+    setLanguage(storedLang);
+
+    const handleLangChange = () => {
+      const updatedLang = localStorage.getItem("language") || "en";
+      setLanguage(updatedLang);
+    };
+
+    window.addEventListener("storageLanguageChanged", handleLangChange);
+    return () => {
+      window.removeEventListener("storageLanguageChanged", handleLangChange);
+    };
+  }, []);
 
   // ======== Fetch All Products from DB ========
   const fetchProducts = async () => {
     setLoading(true);
     const data = await getProducts(); 
-    console.log("Fetched Products:", data);
     if (!data.error && Array.isArray(data)) setProducts(data);
     setCurrentPage(1);
     setLoading(false);
   };
 
-  // ======== Initial Load ========
   useEffect(() => {
     fetchProducts();
   }, []);
@@ -42,7 +56,7 @@ function Shop() {
     setSelectedSize(null);
     setSelectedColor(null);
     setPriceRange([0, 400]); 
-    setAvailability({  InStock: false, outOfStock: false });
+    setAvailability({ inStock: false, outOfStock: false });
     setIsFilterOpen(false);
     setCurrentPage(1);
   };
@@ -67,8 +81,8 @@ function Shop() {
 
         if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
 
-        if (availability.InStock && availability.outOfStock) return true;
-        if (availability.InStock && product.available !== "In stock") return false;
+        if (availability.inStock && availability.outOfStock) return true;
+        if (availability.inStock && product.available !== "In stock") return false;
         if (availability.outOfStock && product.available !== "Out of stock") return false;
 
         return true;
@@ -77,25 +91,25 @@ function Shop() {
 
   // ======== Sorting ========
   const sortedProducts = [...filteredProducts].sort((a, b) => {
-  switch (sortOrder) {
-    case "price-low-high":
-      return a.price - b.price;
-    case "price-high-low":
-      return b.price - a.price;
-    case "best-selling":
-      return (b.sold || 0) - (a.sold || 0); 
-    case "newest":
-      return b.id - a.id; 
-    case "oldest":
-      return a.id - b.id;
-    case "alphabetical-asc":
-      return a.name.localeCompare(b.name); 
-    case "alphabetical-desc":
-      return b.name.localeCompare(a.name); 
-    default:
-      return a.id - b.id; 
-  }
-});
+    switch (sortOrder) {
+      case "price-low-high":
+        return a.price - b.price;
+      case "price-high-low":
+        return b.price - a.price;
+      case "best-selling":
+        return (b.sold || 0) - (a.sold || 0); 
+      case "newest":
+        return b.id - a.id; 
+      case "oldest":
+        return a.id - b.id;
+      case "alphabetical-asc":
+        return a.name.localeCompare(b.name); 
+      case "alphabetical-desc":
+        return b.name.localeCompare(a.name); 
+      default:
+        return a.id - b.id; 
+    }
+  });
 
   // ======== Pagination ========
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
@@ -107,7 +121,7 @@ function Shop() {
     if (currentPage > totalPages) setCurrentPage(totalPages || 1);
   }, [totalPages, currentPage]);
 
-  if (loading) return <p style={{ textAlign: "center" }}>Loading...</p>;
+  if (loading) return <p style={{ textAlign: "center" }}>{language === "en" ? "Loading..." : "جارٍ التحميل..."}</p>;
 
   return (
     <>
@@ -116,7 +130,7 @@ function Shop() {
           <button className="close-filter-btn" onClick={() => setIsFilterOpen(false)}>✖</button>
 
           <div className="filter-block">
-            <label>Price Filter</label>
+            <label>{language === "en" ? "Price Filter" : "تصفية بالسعر"}</label>
             <input
               type="range"
               min="0"
@@ -131,7 +145,7 @@ function Shop() {
           </div>
 
           <div className="filter-block">
-            <label>Size</label>
+            <label>{language === "en" ? "Size" : "المقاس"}</label>
             <div className="size-options">
               {sizes.map((size) => (
                 <button
@@ -146,14 +160,14 @@ function Shop() {
           </div>
 
           <div className="filter-block">
-            <label>Availability</label>
+            <label>{language === "en" ? "Availability" : "التوفّر"}</label>
             <div>
               <input
                 type="checkbox"
                 checked={availability.inStock}
                 onChange={(e) => setAvailability({ ...availability, inStock: e.target.checked })}
               />{" "}
-              <span>In stock</span>
+              <span>{language === "en" ? "In stock" : "متوفر"}</span>
             </div>
             <div>
               <input
@@ -161,12 +175,12 @@ function Shop() {
                 checked={availability.outOfStock}
                 onChange={(e) => setAvailability({ ...availability, outOfStock: e.target.checked })}
               />{" "}
-              <span>Out of stock</span>
+              <span>{language === "en" ? "Out of stock" : "غير متوفر"}</span>
             </div>
           </div>
 
           <div className="filter-block">
-            <label>Filter by color</label>
+            <label>{language === "en" ? "Filter by color" : "تصفية حسب اللون"}</label>
             <div className="color-options">
               {colors.map((color) => (
                 <span
@@ -178,30 +192,32 @@ function Shop() {
             </div>
           </div>
 
-          <button className="clear-filter-btn" onClick={clearFilters}>Clear Filters</button>
+          <button className="clear-filter-btn" onClick={clearFilters}>
+            {language === "en" ? "Clear Filters" : "إزالة الفلاتر"}
+          </button>
         </aside>
 
         <main className="products-section">
           <div className="products-header">
-            <h4>All Products</h4>
+            <h4>{language === "en" ? "All Products" : "كل المنتجات"}</h4>
           </div>
 
           <div className="sort-bar">
             <button className="filter-toggle-btn" onClick={() => setIsFilterOpen(true)}>
               <img src={filterIcon} alt="Filter Icon" />
-              <span>Filter</span>
+              <span>{language === "en" ? "Filter" : "فلترة"}</span>
             </button>
 
             <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
-            <option value="default">Default Sorting</option>
-            <option value="price-low-high">Price: Low to High</option>
-            <option value="price-high-low">Price: High to Low</option>
-            <option value="best-selling">Best Selling</option>
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="alphabetical-asc">Name: A-Z</option>
-            <option value="alphabetical-desc">Name: Z-A</option>
-          </select>
+              <option value="default">{language === "en" ? "Default Sorting" : "الترتيب الافتراضي"}</option>
+              <option value="price-low-high">{language === "en" ? "Price: Low to High" : "السعر: من الأقل للأعلى"}</option>
+              <option value="price-high-low">{language === "en" ? "Price: High to Low" : "السعر: من الأعلى للأقل"}</option>
+              <option value="best-selling">{language === "en" ? "Best Selling" : "الأكثر مبيعًا"}</option>
+              <option value="newest">{language === "en" ? "Newest" : "الأحدث"}</option>
+              <option value="oldest">{language === "en" ? "Oldest" : "الأقدم"}</option>
+              <option value="alphabetical-asc">{language === "en" ? "Name: A-Z" : "الاسم: أ-ي"}</option>
+              <option value="alphabetical-desc">{language === "en" ? "Name: Z-A" : "الاسم: ي-أ"}</option>
+            </select>
           </div>
 
           <div className="products-grid">
@@ -215,9 +231,9 @@ function Shop() {
                         : `/images/${product.images[0]}`
                       : "/placeholder.png"
                     }
-                    alt={product.name}
+                    alt={language === "en" ? product.name : product.name_ar || product.name}
                   />
-                  <h3>{product.name}</h3>
+                  <h3>{language === "en" ? product.name : product.name_ar || product.name}</h3>
                   <p>₪{product.price}</p>
                 </Link>
               </div>

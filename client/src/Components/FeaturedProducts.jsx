@@ -5,6 +5,7 @@ import { getProducts } from "../api";
 
 function FeaturedProducts() {
   const [products, setProducts] = useState([]);
+  const [language, setLanguage] = useState("en");
   const cardsRef = useRef([]);
   const navigate = useNavigate();
 
@@ -20,6 +21,23 @@ function FeaturedProducts() {
     fetchProducts();
   }, []);
 
+  useEffect(() => {
+    const storedLang = localStorage.getItem("language") || "en";
+    setLanguage(storedLang);
+
+    const handleLangChange = () => {
+      const updatedLang = localStorage.getItem("language") || "en";
+      setLanguage(updatedLang);
+    };
+
+    window.addEventListener("storageLanguageChanged", handleLangChange);
+
+    return () => {
+      window.removeEventListener("storageLanguageChanged", handleLangChange);
+    };
+  }, []);
+
+  
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -47,7 +65,8 @@ function FeaturedProducts() {
 
   return (
     <section className="featured-section">
-      <h2>Featured products</h2>
+      <h2>{language === "en" ? "Featured products" : "منتجات مميزة"}</h2>
+
       <div className="products-grid">
         {products.map((product, index) => (
           <div
@@ -56,25 +75,26 @@ function FeaturedProducts() {
             ref={(el) => (cardsRef.current[index] = el)}
           >
             <Link to={`/product/${product.id}`} className="product-link">
-             <img
-              src={
-                process.env.PUBLIC_URL +
-                (Array.isArray(product.images) && product.images.length > 0
-                   ? product.images[0].startsWith("/")
-                        ? product.images[0]
-                        : `/images/${product.images[0]}`
-                      : "/placeholder.png")
-              }
-              alt={product.name}
-            />
-              <h4>{product.name}</h4>
+              <img
+                src={
+                  process.env.PUBLIC_URL +
+                  (Array.isArray(product.images) && product.images.length > 0
+                    ? product.images[0].startsWith("/")
+                      ? product.images[0]
+                      : `/images/${product.images[0]}`
+                    : "/placeholder.png")
+                }
+                alt={language === "en" ? product.name : product.name_ar}
+              />
+              <h4>{language === "en" ? product.name : product.name_ar}</h4>
               <p>{product.price} ₪</p>
             </Link>
           </div>
         ))}
       </div>
+
       <button className="see-all-btn" onClick={() => navigate("/Shop")}>
-        See all →
+        {language === "en" ? "See all →" : "عرض الكل →"}
       </button>
     </section>
   );

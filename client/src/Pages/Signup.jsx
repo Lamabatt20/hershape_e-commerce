@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { signup } from "../api";
 import { useNavigate, Link } from "react-router-dom";
 import Footer from "../Components/Footer";
@@ -11,7 +11,24 @@ export default function Signup() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [language, setLanguage] = useState("en");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedLang = localStorage.getItem("language") || "en";
+    setLanguage(storedLang);
+
+    const handleLangChange = () => {
+      const updatedLang = localStorage.getItem("language") || "en";
+      setLanguage(updatedLang);
+    };
+
+    window.addEventListener("storageLanguageChanged", handleLangChange);
+
+    return () => {
+      window.removeEventListener("storageLanguageChanged", handleLangChange);
+    };
+  }, []);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -35,12 +52,15 @@ export default function Signup() {
       <div className="signup-page">
         <div className="signup-card">
           <h2 className="signup-title">
-            Sign up <span className="brand-name">her shape.</span>
+            {language === "en" ? "Sign up" : "إنشاء حساب"}{" "}
+            <span className="brand-name">her shape.</span>
           </h2>
           <p className="signup-subtitle">
-            Already have an account?{" "}
+            {language === "en"
+              ? "Already have an account?"
+              : "لديك حساب بالفعل؟"}{" "}
             <Link to="/login" className="signin-link">
-              Log in
+              {language === "en" ? "Log in" : "تسجيل الدخول"}
             </Link>
           </p>
 
@@ -48,7 +68,7 @@ export default function Signup() {
             <input
               className="signup-input"
               name="username"
-              placeholder="Your Name"
+              placeholder={language === "en" ? "Your Name" : "اسمك"}
               value={form.username}
               onChange={handleChange}
               required
@@ -56,39 +76,42 @@ export default function Signup() {
             <input
               className="signup-input"
               name="email"
-              placeholder="Your Email"
+              placeholder={language === "en" ? "Your Email" : "بريدك الإلكتروني"}
               type="email"
               value={form.email}
               onChange={handleChange}
               required
             />
 
-           
             <div className="password-wrapper">
               <input
                 className="signup-input password-input"
                 name="password"
-                placeholder="Password"
+                placeholder={language === "en" ? "Password" : "كلمة المرور"}
                 type={showPassword ? "text" : "password"}
                 value={form.password}
                 onChange={handleChange}
                 required
               />
-             <img
+              <img
                 src={showPassword ? hiddenIcon : showIcon}
                 alt="toggle password"
                 className="password-toggle-icon"
                 onClick={() => setShowPassword(!showPassword)}
-                />
+              />
             </div>
 
             <div className="checkbox-container">
               <input type="checkbox" required />
-              <span>I accept the terms of the Service & Privacy Policy.</span>
+              <span>
+                {language === "en"
+                  ? "I accept the terms of the Service & Privacy Policy."
+                  : "أوافق على شروط الخدمة وسياسة الخصوصية."}
+              </span>
             </div>
 
             <button type="submit" className="signup-btn">
-              Sign up
+              {language === "en" ? "Sign up" : "إنشاء حساب"}
             </button>
           </form>
 

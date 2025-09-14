@@ -190,3 +190,54 @@
 .sidebar-overlay.show {
   display: block;
 }
+.language-selector {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid #FCF8F0;
+  border-radius: 25px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-left: 15px;
+  line-height: 1;
+  font-size: 14px;
+  position: relative;
+}
+
+.language-selector:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.globe-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.language-text {
+  color: #FCF8F0;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+
+.language-dropdown {
+  background: #6E3C74;
+  color: #FCF8F0;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  appearance: none; 
+  padding: 0;
+  margin: 0;
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+

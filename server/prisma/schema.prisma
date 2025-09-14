@@ -36,19 +36,22 @@ model Customer {
 }
 
 model Product {
-  id          Int              @id @default(autoincrement())
-  name        String
-  price       Int
-  images      String[]        
-  sizes       String?           
-  colors      String?           
-  available   String?
-  description String
-  createdAt   DateTime         @default(now())
-  stock       Int              @default(0)
-  cartItems   CartItem[]
-  orderItems  OrderItem[]
+  id              Int        @id @default(autoincrement())
+  name            String     
+  name_ar         String     @default("")
+  description     String     
+  description_ar  String     @default("")
+  price           Int
+  images          String[]        
+  sizes           String?           
+  colors          String?           
+  available       String?
+  createdAt       DateTime   @default(now())
+  stock           Int        @default(0)
+  cartItems       CartItem[]
+  orderItems      OrderItem[]
 }
+
 
 
 
