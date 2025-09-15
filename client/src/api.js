@@ -197,6 +197,14 @@ export const clearCart = async (customerId) => {
     return { error: error.response?.data?.error || error.message };
   }
 };
+export const updateCartItem = async (cartId, updates) => {
+  try {
+    const response = await API.put(`/cart/${cartId}`, updates);
+    return response.data;
+  } catch (error) {
+    return { error: error.response?.data?.error || error.message };
+  }
+};
 
 
 export default API;

@@ -42,15 +42,22 @@ const Checkout = () => {
     const cityLower = city.toLowerCase();
 
     
-    const westBankCities = [
-      "رام الله", "ramallah",
-      "الخليل", "hebron",
-      "نابلس", "nablus",
-      "طولكرم", "tulkarm",
-      "جنين", "jenin",
-      "بيت لحم", "bethlehem",
-      "قلقيلية", "qalqilya",
-      "سلفيت", "salfit"
+     const westBankCities = [
+      "رام الله","ramallah",
+      "البيرة","al-bireh",
+      "الخليل","hebron",
+      "نابلس","nablus",
+      "طولكرم","tulkarm",
+      "جنين","jenin",
+      "بيت لحم","bethlehem",
+      "قلقيلية","qalqilya",
+      "سلفيت","salfit",
+      "أريحا","jericho",
+      "طوباس","tubas",
+      "دورا","dura",
+      "يطا","yatta",
+      "بيت جالا","beit jala",
+      "بيت ساحور","beit sahour"
     ];
 
     
@@ -58,11 +65,17 @@ const Checkout = () => {
 
    
     const inside48Cities = [
-      "حيفا", "haifa",
-      "عكا", "acre",
-      "يافا", "jaffa",
-      "اللد", "lod",
-      "الناصرة", "nazareth"
+      "حيفا","haifa",
+      "عكا","acre",
+      "يافا","jaffa",
+      "اللد","lod",
+      "الرملة","ramla",
+      "الناصرة","nazareth",
+      "شفاعمرو","shefa-'amr",
+      "أم الفحم","umm al-fahm",
+      "سخنين","sakhnin",
+      "الطيبة","tayibe",
+      "رهط","rahat"
     ];
 
     if (westBankCities.some((c) => cityLower.includes(c))) {
@@ -328,7 +341,7 @@ const Checkout = () => {
           ))}
           <hr />
           <div className="summary-total">
-            <p>{language === "ar" ? "الإجمالي" : "Total"}</p>
+            <p>{language === "ar" ? "الفرعي" : "Subtotal"}</p>
             <span>₪{subtotal}</span>
           </div>
           <div className="summary-total">
@@ -336,7 +349,7 @@ const Checkout = () => {
             <span>₪{shippingCost}</span>
           </div>
           <div className="summary-total final">
-            <p>{language === "ar" ? "الإجمالي الكلي" : "Grand Total"}</p>
+            <p>{language === "ar" ? "الإجمالي " : "Total"}</p>
             <span>₪{total}</span>
           </div>
         </div>

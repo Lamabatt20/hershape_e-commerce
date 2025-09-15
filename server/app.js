@@ -94,26 +94,29 @@ app.post("/signup", async (req, res) => {
     });
 
     await transporter.sendMail({
-      from: `"Her shape" <${process.env.EMAIL_USER}>`,
-      to: email,
-      subject: "Email Verification Code",
-      html: `
-        <div style="background-color:#6f3d6d;padding:30px;color:#fcf8f0;font-family:Arial,sans-serif;max-width:600px;margin:auto;border-radius:8px;">
-          <h2 style="color:#F7B6FF;text-align:center;">🔒 Email Verification</h2>
-          <p style="text-align:center;">Hello,</p>
-          <p style="text-align:center;">Thank you for signing up with <strong>Her shape</strong>. To complete your registration, please use the verification code below:</p>
-          <div style="display:flex; justify-content:center; margin:30px 0;">
-            <div style="background:#F7B6FF; justify-content:center; align-item:center; padding:10px 30px; border-radius:8px; font-size:28px; font-weight:bold; color:#fcf8f0; letter-spacing:5px;">
-              ${code}
-            </div>
-          </div>
-          <p style="text-align:center;">This code will expire in <strong>15 minutes</strong>. Please do not share it with anyone.</p>
-          <hr style="border:0;border-top:1px solid #F7B6FF;margin:20px 0;">
-          <p style="text-align:center;">If you did not request this verification, please ignore this email or contact our support team.</p>
-          <p style="text-align:center;">Regards,<br><strong>The her shape Team</strong></p>
+  from: `"Her shape" <${process.env.EMAIL_USER}>`,
+  to: email,
+  subject: "Email Verification Code",
+  html: `
+    <div style="background-color:#6f3d6d;padding:30px;color:#fcf8f0;font-family:Arial,sans-serif;max-width:600px;margin:auto;border-radius:8px;">
+      <h2 style="color:#F7B6FF;text-align:center;">🔒 Email Verification</h2>
+      <p style="text-align:center;">Hello,</p>
+      <p style="text-align:center;">Thank you for signing up with <strong>Her shape</strong>. To complete your registration, please use the verification code below:</p>
+      
+      <div style="display:flex; justify-content:center; margin:30px 0;">
+        <div style="background:#F7B6FF; width:200px; text-align:center; padding:15px 0; border-radius:8px; font-size:28px; font-weight:bold; color:#fcf8f0; letter-spacing:5px; margin:auto;">
+          ${code}
         </div>
-      `,
-    });
+      </div>
+      
+      <p style="text-align:center;">This code will expire in <strong>15 minutes</strong>. Please do not share it with anyone.</p>
+      <hr style="border:0;border-top:1px solid #F7B6FF;margin:20px 0;">
+      <p style="text-align:center;">If you did not request this verification, please ignore this email or contact our support team.</p>
+      <p style="text-align:center;">Regards,<br><strong>The Her shape Team</strong></p>
+    </div>
+  `,
+});
+
 
     res.json({ message: "Verification code sent to email", user, customer });
   } catch (err) {
@@ -533,6 +536,36 @@ app.delete("/cart/customer/:customerId", async (req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+
+// UPDATE cart item
+app.put("/cart/:cartId", async (req, res) => {
+  const { cartId } = req.params;
+  const { quantity, color, size } = req.body;
+
+  try {
+    const cartItem = await prisma.cartItem.findUnique({
+      where: { id: parseInt(cartId) },
+    });
+
+    if (!cartItem) return res.status(404).json({ error: "Cart item not found" });
+
+    const updatedItem = await prisma.cartItem.update({
+      where: { id: parseInt(cartId) },
+      data: {
+        quantity: quantity !== undefined ? parseInt(quantity) : cartItem.quantity,
+        color: color !== undefined ? color : cartItem.color,
+        size: size !== undefined ? size : cartItem.size,
+      },
+      include: { product: true },
+    });
+
+    res.json(updatedItem);
+  } catch (err) {
+    console.error("Update cart item error:", err);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
 
 // ====== SERVER ======
 const port = process.env.PORT || 5000;

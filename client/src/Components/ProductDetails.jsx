@@ -4,12 +4,12 @@ import API, { addToCart as addToCartAPI } from "../api";
 import Footer from "../Components/Footer";
 import "./ProductDetails.css";
 
-const ProductDetails = () => {
+const ProductDetails = ({ modal = false, initialProduct = null, onUpdate, onClose }) => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const [product, setProduct] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState(initialProduct);
+  const [loading, setLoading] = useState(!initialProduct);
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
   const [quantity, setQuantity] = useState(1);
@@ -26,94 +26,120 @@ const ProductDetails = () => {
     { name: "beige", hex: "#e0c7a0" },
   ];
 
- 
   const translateAvailability = (status, lang) => {
-  if (lang === "en") return status;
+    if (lang === "en") return status;
+    switch (status.toLowerCase()) {
+      case "in stock":
+        return "متوفر";
+      case "out of stock":
+        return "غير متوفر";
+      default:
+        return status;
+    }
+  };
 
-  switch (status.toLowerCase()) {
-    case "in stock":
-      return "متوفر";
-    case "out of stock":
-      return "غير متوفر";
-    default:
-      return status;
-  }
-};
-
-
+  // Load language from localStorage
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
-
     const handleLangChange = () => {
-      const updatedLang = localStorage.getItem("language") || "en";
-      setLanguage(updatedLang);
+      setLanguage(localStorage.getItem("language") || "en");
     };
-
     window.addEventListener("storageLanguageChanged", handleLangChange);
-
-    return () => {
-      window.removeEventListener("storageLanguageChanged", handleLangChange);
-    };
+    return () => window.removeEventListener("storageLanguageChanged", handleLangChange);
   }, []);
 
+  // Fetch product if not passed via modal
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const res = await API.get(`/products/${id}`);
-        setProduct(res.data);
-      } catch (error) {
-        console.error("Error fetching product:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProduct();
-  }, [id]);
+    if (!product) {
+      const fetchProduct = async () => {
+        try {
+          const res = await API.get(`/products/${id}`);
+          setProduct(res.data);
+        } catch (error) {
+          console.error("Error fetching product:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchProduct();
+    }
+  }, [id, product]);
 
   if (loading) return <h2>{language === "en" ? "Loading..." : "جارٍ التحميل..."}</h2>;
   if (!product) return <h2>{language === "en" ? "Product not found" : "المنتج غير موجود"}</h2>;
 
-  const availableSizes = Array.isArray(product.sizes)
-    ? product.sizes
-    : product.sizes
-    ? product.sizes.split(",")
-    : [];
+ const availableSizes = Array.isArray(product.sizes)
+  ? product.sizes
+  : product.sizes
+  ? product.sizes.replace(/[[\]"]+/g, "").split(",").map(s => s.trim())
+  : [];
 
-  const availableColors = Array.isArray(product.colors)
-    ? product.colors
-    : product.colors
-    ? product.colors.split(",")
-    : [];
+const availableColors = Array.isArray(product.colors)
+  ? product.colors
+  : product.colors
+  ? product.colors.replace(/[[\]"]+/g, "").split(",").map(c => c.trim())
+  : [];
 
   const images =
     Array.isArray(product.images) && product.images.length > 0
-      ? product.images.map((img) =>
-          img.startsWith("/") ? img : `/images/${img}`
-        )
+      ? product.images.map((img) => (img.startsWith("/") ? img : `/images/${img}`))
       : ["/placeholder.png"];
-
   const mainImage = images[currentImageIndex];
 
-  const increment = () => {
-    if (quantity < product.stock) setQuantity(quantity + 1);
-  };
-  const decrement = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
+  const increment = () => quantity < product.stock && setQuantity(quantity + 1);
+  const decrement = () => quantity > 1 && setQuantity(quantity - 1);
+
+  const prevImage = () =>
+    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+  const nextImage = () =>
+    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+
+  // Flying animation function
+  const triggerFlyingAnimation = () => {
+    if (!addBtnRef.current) return;
+    const cartIcon = document.querySelector(".cart-icon");
+    if (!cartIcon) return;
+
+    const btnRect = addBtnRef.current.getBoundingClientRect();
+    const cartRect = cartIcon.getBoundingClientRect();
+
+    setFlyingStyle({
+      display: "block",
+      position: "fixed",
+      width: "100px",
+      height: "100px",
+      top: btnRect.top + "px",
+      left: btnRect.left + "px",
+      transform: "translate(0,0) scale(1)",
+      transition: "transform 1.5s ease-in-out, opacity 1.5s ease-in-out",
+      opacity: 1,
+      borderRadius: "50%",
+      pointerEvents: "none",
+      zIndex: 1000,
+    });
+
+    setTimeout(() => {
+      const deltaX = cartRect.left - btnRect.left;
+      const deltaY = cartRect.top - btnRect.top;
+      setFlyingStyle((prev) => ({
+        ...prev,
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(0) rotate(360deg)`,
+        opacity: 0,
+      }));
+    }, 50);
+
+    setTimeout(() => setFlyingStyle(null), 1600);
   };
 
-  const prevImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === 0 ? images.length - 1 : prev - 1
-    );
-  };
-  const nextImage = () => {
-    setCurrentImageIndex((prev) =>
-      prev === images.length - 1 ? 0 : prev + 1
-    );
-  };
+  const handleAddOrUpdate = async () => {
+    if (modal && onUpdate) {
+      // For modal, just update parent
+      onUpdate({ size: selectedSize, color: selectedColor, quantity });
+      onClose && onClose();
+      return;
+    }
 
-  const addToCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const customerId = localStorage.getItem("customerId");
 
@@ -124,16 +150,26 @@ const ProductDetails = () => {
     }
 
     if (!selectedSize || !selectedColor) {
-      setErrorMessage(language === "en" ? "Please select a size and a color" : "يرجى اختيار المقاس واللون");
+      setErrorMessage(
+        language === "en"
+          ? "Please select a size and a color"
+          : "يرجى اختيار المقاس واللون"
+      );
       return;
     }
 
     if (quantity > product.stock) {
-      setErrorMessage(language === "en" ? "Quantity exceeds available stock" : "الكمية تتجاوز المخزون المتوفر");
+      setErrorMessage(
+        language === "en"
+          ? "Quantity exceeds available stock"
+          : "الكمية تتجاوز المخزون المتوفر"
+      );
       return;
     }
 
     try {
+      triggerFlyingAnimation();
+
       const res = await addToCartAPI({
         customerId: parseInt(customerId),
         productId: parseInt(product.id),
@@ -169,171 +205,138 @@ const ProductDetails = () => {
         window.dispatchEvent(new Event("storageCartChanged"));
       } else {
         alert(
-          (language === "en" ? "Error adding to cart: " : "خطأ في إضافة المنتج للعربة: ") + res.error
+          (language === "en" ? "Error adding to cart: " : "خطأ في إضافة المنتج للعربة: ") +
+            res.error
         );
       }
-
-      const btnRect = addBtnRef.current.getBoundingClientRect();
-      const cartIcon = document.querySelector(".cart-icon");
-      const cartRect = cartIcon.getBoundingClientRect();
-
-      setFlyingStyle({
-        display: "block",
-        position: "fixed",
-        width: "100px",
-        height: "100px",
-        top: btnRect.top + "px",
-        left: btnRect.left + "px",
-        transform: "translate(0,0) scale(1)",
-        transition: "transform 1.5s ease-in-out, opacity 1.5s ease-in-out",
-        opacity: 1,
-        borderRadius: "50%",
-        pointerEvents: "none",
-        zIndex: 1000,
-      });
-
-      setTimeout(() => {
-        const deltaX = cartRect.left - btnRect.left;
-        const deltaY = cartRect.top - btnRect.top;
-        setFlyingStyle((prev) => ({
-          ...prev,
-          transform: `translate(${deltaX}px, ${deltaY}px) scale(0) rotate(360deg)`,
-          opacity: 0,
-        }));
-      }, 50);
-
-      setTimeout(() => setFlyingStyle(null), 1600);
     } catch (err) {
       alert(language === "en" ? "Something went wrong" : "حدث خطأ ما");
     }
   };
 
   return (
-    <>
-      <div className="product-details-container">
-        <div className="image-section">
-          <button className="arrow left" onClick={prevImage}>
-            &#8592;
-          </button>
-          <img
-            src={process.env.PUBLIC_URL + mainImage}
-            alt={language === "en" ? product.name : product.name_ar}
-            className="main-image"
-          />
-          <button className="arrow right" onClick={nextImage}>
-            &#8594;
-          </button>
-          {flyingStyle && (
-            <img
-              src={process.env.PUBLIC_URL + mainImage}
-              style={flyingStyle}
-              alt=""
-            />
-          )}
-        </div>
+      <>
+    <div className={`product-details-container ${modal ? "modal-mode" : ""}`}>
+      {modal && onClose && (
+        <button className="close-modal" onClick={onClose}>
+          ×
+        </button>
+      )}
 
-        <div className="info-section">
-          <h1>{language === "en" ? product.name : product.name_ar}</h1>
-          <p className={`status ${product.available.toLowerCase() === "in stock" ? "in" : "out"}`}>
-            {translateAvailability(product.available, language)}
-          </p>
-          <p className="description">
-            {language === "en" ? product.description : product.description_ar}
-          </p>
-          <p className="price">₪{product.price}</p>
-
-          {errorMessage && (
-            <div className="alert-message">
-              <span className="alert-icon">⚠</span>
-              {errorMessage}
-            </div>
-          )}
-
-          <div className="colors">
-            <h4>
-              {language === "en" ? "Color" : "اللون"}: <span>{selectedColor || ""}</span>
-            </h4>
-            <div className="color-options">
-              {availableColors.map((color, index) => (
-                <button
-                  key={index}
-                  className={`color-btn ${
-                    selectedColor === color ? "selected" : ""
-                  }`}
-                  style={{
-                    backgroundColor:
-                      colorMap.find((c) => c.name === color)?.hex || color,
-                  }}
-                  onClick={() => {
-                    setSelectedColor(color);
-                    setErrorMessage("");
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="sizes">
-            <h4>
-              {language === "en" ? "Size" : "المقاس"}: <span>{selectedSize}</span>
-            </h4>
-            <div className="size-options">
-              {availableSizes.map((size) => (
-                <button
-                  key={size}
-                  disabled={!availableSizes.includes(size)}
-                  className={`size-btn ${
-                    selectedSize === size ? "selected" : ""
-                  }`}
-                  onClick={() => {
-                    setSelectedSize(size);
-                    setErrorMessage("");
-                  }}
-                >
-                  {size}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="quantity">
-            <label>{language === "en" ? "Quantity" : "الكمية"}</label>
-            <div className="quantity-controls">
-              <button
-                onClick={decrement}
-                className="qty-btn"
-                disabled={quantity === 1}
-              >
-                -
-              </button>
-              <span className="qty-number">{quantity}</span>
-              {quantity < product.stock ? (
-                <button onClick={increment} className="qty-btn">
-                  +
-                </button>
-              ) : (
-                <button
-                  className="qty-btn warning"
-                  disabled
-                  title={language === "en" ? "Reached stock limit" : "وصلت للحد الأقصى"}
-                >
-                  ⚠
-                </button>
-              )}
-            </div>
-          </div>
-
-          <button
-            className="add-to-cart"
-            disabled={product.available === "Out of stock"}
-            onClick={addToCart}
-            ref={addBtnRef}
-          >
-            {language === "en" ? "Add to Cart" : "أضف إلى العربة"}
-          </button>
-        </div>
+      <div className="image-section">
+        <button className="arrow left" onClick={prevImage}>
+          &#8592;
+        </button>
+        <img
+          src={process.env.PUBLIC_URL + mainImage}
+          alt={language === "en" ? product.name : product.name_ar}
+          className="main-image"
+        />
+        <button className="arrow right" onClick={nextImage}>
+          &#8594;
+        </button>
+        {flyingStyle && <img src={process.env.PUBLIC_URL + mainImage} style={flyingStyle} alt="" />}
       </div>
-      <Footer />
+
+      <div className="info-section">
+        <h1>{language === "en" ? product.name : product.name_ar}</h1>
+        <p className={`status ${product.available.toLowerCase() === "in stock" ? "in" : "out"}`}>
+          {translateAvailability(product.available, language)}
+        </p>
+        <p className="description">{language === "en" ? product.description : product.description_ar}</p>
+        <p className="price">₪{product.price}</p>
+
+        {errorMessage && (
+          <div className="alert-message">
+            <span className="alert-icon">⚠</span>
+            {errorMessage}
+          </div>
+        )}
+
+        <div className="colors">
+          <h4>
+            {language === "en" ? "Color" : "اللون"}: <span>{selectedColor || ""}</span>
+          </h4>
+          <div className="color-options">
+            {availableColors.map((color, index) => (
+              <button
+                key={index}
+                className={`color-btn ${selectedColor === color ? "selected" : ""}`}
+                style={{ backgroundColor: colorMap.find((c) => c.name === color)?.hex || color }}
+                onClick={() => {
+                  setSelectedColor(color);
+                  setErrorMessage("");
+                }}
+              />
+            ))}
+          </div>
+        </div>
+
+        <div className="sizes">
+          <h4>
+            {language === "en" ? "Size" : "المقاس"}: <span>{selectedSize}</span>
+          </h4>
+          <div className="size-options">
+            {availableSizes.map((size) => (
+              <button
+                key={size}
+                disabled={!availableSizes.includes(size)}
+                className={`size-btn ${selectedSize === size ? "selected" : ""}`}
+                onClick={() => {
+                  setSelectedSize(size);
+                  setErrorMessage("");
+                }}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="quantity">
+          <label>{language === "en" ? "Quantity" : "الكمية"}</label>
+          <div className="quantity-controls">
+            <button onClick={decrement} className="qty-btn" disabled={quantity === 1}>
+              -
+            </button>
+            <span className="qty-number">{quantity}</span>
+            {quantity < product.stock ? (
+              <button onClick={increment} className="qty-btn">
+                +
+              </button>
+            ) : (
+              <button
+                className="qty-btn warning"
+                disabled
+                title={language === "en" ? "Reached stock limit" : "وصلت للحد الأقصى"}
+              >
+                ⚠
+              </button>
+            )}
+          </div>
+        </div>
+
+        <button
+          className="add-to-cart"
+          disabled={product.available === "Out of stock"}
+          onClick={handleAddOrUpdate}
+          ref={addBtnRef}
+        >
+          {modal
+            ? language === "en"
+              ? "Update"
+              : "تحديث"
+            : language === "en"
+            ? "Add to Cart"
+            : "أضف إلى العربة"}
+        </button>
+      </div>
+
+      
+      
+      
+    </div>
+    {!modal && <Footer />}
     </>
   );
 };
