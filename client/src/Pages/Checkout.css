@@ -244,3 +244,51 @@
   accent-color: #6e3c74;
   margin: 0; 
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fcf8f0;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  width: 400px;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  background: #6e3c74;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
+  margin: 0 auto 15px auto;
+  color: #fcf8f0;
+}
+
+.modal-buttons button {
+  margin: 10px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-buttons .continue {
+  background: #6e3c74;
+  color: #fcf8f0;
+}
+

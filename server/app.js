@@ -303,35 +303,34 @@ app.delete("/products/:id", async (req, res) => {
 
 // ====== ORDERS ======
 app.post("/orders", async (req, res) => {
-  const { userId, products, total } = req.body;
+  const { customerId, items, subtotal, shipping, total } = req.body;
 
   try {
-    const customer = await prisma.customer.findUnique({
-      where: { userId: parseInt(userId) },
-    });
+    const customer = await prisma.customer.findUnique({ where: { id: parseInt(customerId) } });
     if (!customer) return res.status(404).json({ error: "Customer not found" });
 
-    const newOrder = await prisma.order.create({
+    const order = await prisma.order.create({
       data: {
         customerId: customer.id,
-        subtotal: parseFloat(total),
+        subtotal,
+        shipping,
         status: "pending",
         items: {
-          create: products.map(p => ({
-            productId: p.productId,
-            quantity: p.quantity,
-            color: p.color || null,
-            size: p.size || null,
-          })),
-        },
+          create: items.map(i => ({
+            productId: i.productId,
+            quantity: i.quantity,
+            color: i.color,
+            size: i.size
+          }))
+        }
       },
-      include: { items: { include: { product: true } }, customer: true,    },
+      include: { items: { include: { product: true } }, customer: true }
     });
 
-    res.json(newOrder);
+    res.json(order);
   } catch (err) {
-    console.error("Add order error:", err);
-    res.status(500).json({ error: "Something went wrong" });
+    console.error("Create order error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -438,16 +437,27 @@ app.get("/customers/:id", async (req, res) => {
 
 app.put("/customers/:id", async (req, res) => {
   const { id } = req.params;
-  const { username, email } = req.body;
+  const { name, email, phone, city, address, postal_code, country_region } = req.body;
+
   try {
-    const updatedUser = await prisma.user.update({
+    const updatedCustomer = await prisma.customer.update({
       where: { id: parseInt(id) },
-      data: { username, email },
+      data: {
+        name,
+        email,
+        phone,
+        city,
+        address,
+        postal_code,
+        country_region,
+      },
+      include: { user: true },
     });
-    res.json(updatedUser);
+
+    res.json(updatedCustomer);
   } catch (err) {
     console.error("Update customer error:", err);
-    res.status(500).json({ error: "Something went wrong" });
+    res.status(500).json({ error: err.message });
   }
 });
 

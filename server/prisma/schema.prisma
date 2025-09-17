@@ -59,6 +59,7 @@ model Order {
   id         Int         @id @default(autoincrement())
   status     String      @default("pending")
   subtotal   Int
+  shipping   Int
   createdAt  DateTime    @default(now())
   customerId Int
   customer   Customer    @relation(fields: [customerId], references: [id])

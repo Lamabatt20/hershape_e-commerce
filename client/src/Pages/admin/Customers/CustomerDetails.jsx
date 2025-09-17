@@ -1,4 +1,4 @@
-// src/Pages/admin/Customers/CustomerDetails.jsx
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link, useLocation } from "react-router-dom";
 import {getCustomerById} from "../../../api"; 
@@ -162,7 +162,7 @@ export default function CustomerDetails() {
               </div>
               <div className="form-group">
                 <label>Country/Region</label>
-                <input type="text" value={customer.country} readOnly />
+                <input type="text" value={customer.country_region} readOnly />
               </div>
               <div className="form-group">
                 <label>City</label>
@@ -170,7 +170,7 @@ export default function CustomerDetails() {
               </div>
               <div className="form-group">
                 <label>Postal code</label>
-                <input type="text" value={customer.postalCode} readOnly />
+                <input type="text" value={customer.postal_code} readOnly />
               </div>
             </div>
           </div>

@@ -133,86 +133,94 @@ const availableColors = Array.isArray(product.colors)
   };
 
   const handleAddOrUpdate = async () => {
-    if (modal && onUpdate) {
-      // For modal, just update parent
-      onUpdate({ size: selectedSize, color: selectedColor, quantity });
-      onClose && onClose();
-      return;
-    }
+  if (modal && onUpdate) {
+    onUpdate({ size: selectedSize, color: selectedColor, quantity });
+    onClose && onClose();
+    return;
+  }
 
-    const user = JSON.parse(localStorage.getItem("user"));
-    const customerId = localStorage.getItem("customerId");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const customerId = localStorage.getItem("customerId");
 
-    if (!user || !customerId) {
-      setErrorMessage(language === "en" ? "Please login first" : "يرجى تسجيل الدخول أولاً");
+  if (!user || !customerId) {
+   
+    setErrorMessage(
+      language === "en"
+        ? "👋 Please login to add products to your cart"
+        : "👋 يرجى تسجيل الدخول لإضافة المنتجات للعربة"
+    );
+
+    setTimeout(() => {
       navigate("/login", { state: { from: `/product/${id}` } });
-      return;
-    }
+    }, 2000);
 
-    if (!selectedSize || !selectedColor) {
-      setErrorMessage(
-        language === "en"
-          ? "Please select a size and a color"
-          : "يرجى اختيار المقاس واللون"
+    return;
+  }
+
+  if (!selectedSize || !selectedColor) {
+    setErrorMessage(
+      language === "en"
+        ? "Please select a size and a color"
+        : "يرجى اختيار المقاس واللون"
+    );
+    return;
+  }
+
+  if (quantity > product.stock) {
+    setErrorMessage(
+      language === "en"
+        ? "Quantity exceeds available stock"
+        : "الكمية تتجاوز المخزون المتوفر"
+    );
+    return;
+  }
+
+  try {
+    triggerFlyingAnimation();
+
+    const res = await addToCartAPI({
+      customerId: parseInt(customerId),
+      productId: parseInt(product.id),
+      quantity: parseInt(quantity),
+      color: selectedColor,
+      size: selectedSize,
+    });
+
+    if (!res.error) {
+      const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+      const existingIndex = storedCart.findIndex(
+        (item) =>
+          item.productId === product.id &&
+          item.size === selectedSize &&
+          item.color === selectedColor
       );
-      return;
-    }
 
-    if (quantity > product.stock) {
-      setErrorMessage(
-        language === "en"
-          ? "Quantity exceeds available stock"
-          : "الكمية تتجاوز المخزون المتوفر"
-      );
-      return;
-    }
-
-    try {
-      triggerFlyingAnimation();
-
-      const res = await addToCartAPI({
-        customerId: parseInt(customerId),
-        productId: parseInt(product.id),
-        quantity: parseInt(quantity),
-        color: selectedColor,
-        size: selectedSize,
-      });
-
-      if (!res.error) {
-        const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-        const existingIndex = storedCart.findIndex(
-          (item) =>
-            item.productId === product.id &&
-            item.size === selectedSize &&
-            item.color === selectedColor
-        );
-
-        if (existingIndex >= 0) {
-          storedCart[existingIndex].quantity += quantity;
-        } else {
-          storedCart.push({
-            productId: product.id,
-            productName: language === "en" ? product.name : product.name_ar,
-            productImage: mainImage,
-            productPrice: product.price,
-            quantity,
-            size: selectedSize,
-            color: selectedColor,
-          });
-        }
-
-        localStorage.setItem("cart", JSON.stringify(storedCart));
-        window.dispatchEvent(new Event("storageCartChanged"));
+      if (existingIndex >= 0) {
+        storedCart[existingIndex].quantity += quantity;
       } else {
-        alert(
-          (language === "en" ? "Error adding to cart: " : "خطأ في إضافة المنتج للعربة: ") +
-            res.error
-        );
+        storedCart.push({
+          productId: product.id,
+          productName: language === "en" ? product.name : product.name_ar,
+          productImage: mainImage,
+          productPrice: product.price,
+          quantity,
+          size: selectedSize,
+          color: selectedColor,
+        });
       }
-    } catch (err) {
-      alert(language === "en" ? "Something went wrong" : "حدث خطأ ما");
+
+      localStorage.setItem("cart", JSON.stringify(storedCart));
+      window.dispatchEvent(new Event("storageCartChanged"));
+    } else {
+      alert(
+        (language === "en" ? "Error adding to cart: " : "خطأ في إضافة المنتج للعربة: ") +
+          res.error
+      );
     }
-  };
+  } catch (err) {
+    alert(language === "en" ? "Something went wrong" : "حدث خطأ ما");
+  }
+};
 
   return (
       <>

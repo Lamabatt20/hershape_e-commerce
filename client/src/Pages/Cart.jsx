@@ -50,6 +50,7 @@ const Cart = () => {
     },
   };
 
+  // Language listener
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
@@ -62,34 +63,54 @@ const Cart = () => {
       window.removeEventListener("storageLanguageChanged", handleLangChange);
   }, []);
 
+  // Fetch cart items
   useEffect(() => {
     const fetchCart = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
-      if (!user || !user.customer?.id) {
+      const customerId = user?.customer?.id;
+
+      console.log("User object:", user);
+      console.log("Customer ID:", customerId);
+
+      if (!user) {
         navigate("/login", { state: { from: "/cart" } });
         return;
       }
 
+      if (!customerId) {
+        console.warn("No customerId found, redirecting to empty-cart");
+        navigate("/EmptyCart");
+        return;
+      }
+
       try {
-        const res = await getCart(user.customer.id);
-        if (res.error) {
-          console.error(res.error);
-          setCartItems([]);
-        } else {
-          setCartItems(res);
-          localStorage.setItem("cart", JSON.stringify(res));
-          window.dispatchEvent(new Event("storageCartChanged"));
-          if (res.length === 0) {
-            navigate("/empty-cart");
-          }
+        const res = await getCart(customerId);
+
+        // Cart empty
+        if (!res || res.length === 0) {
+          console.info("Cart is empty, redirecting to empty-cart");
+          navigate("/EmptyCart");
+          return;
         }
+
+        // API error
+        if (res.error) {
+          console.error("Error fetching cart:", res.error);
+          navigate("/EmptyCart");
+          return;
+        }
+
+        setCartItems(res);
+        localStorage.setItem("cart", JSON.stringify(res));
+        window.dispatchEvent(new Event("storageCartChanged"));
       } catch (err) {
-        console.error(err);
-        setCartItems([]);
+        console.error("Fetch cart failed:", err);
+        navigate("/EmptyCart");
       } finally {
         setLoading(false);
       }
     };
+
     fetchCart();
   }, [navigate]);
 
@@ -98,20 +119,28 @@ const Cart = () => {
     0
   );
 
+  // Clear cart
   const clearCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return;
-    const res = await clearCartAPI(user.customer.id);
-    if (!res.error) {
-      setCartItems([]);
-      localStorage.setItem("cart", JSON.stringify([]));
-      window.dispatchEvent(new Event("storageCartChanged"));
-      navigate("/empty-cart");
-    } else {
-      console.error(res.error);
+    const customerId = user?.customer?.id;
+    if (!user || !customerId) return;
+
+    try {
+      const res = await clearCartAPI(customerId);
+      if (!res.error) {
+        setCartItems([]);
+        localStorage.setItem("cart", JSON.stringify([]));
+        window.dispatchEvent(new Event("storageCartChanged"));
+        navigate("/EmptyCart");
+      } else {
+        console.error(res.error);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
+  // Update cart item quantity
   const updateCartItem = async (updatedItem) => {
     try {
       const res = await updateCartItemAPI(updatedItem.id, updatedItem);
@@ -130,15 +159,22 @@ const Cart = () => {
     }
   };
 
+  // Delete single item
   const deleteItem = async (cartId) => {
-    const res = await deleteCartItemAPI(cartId);
-    if (!res.error) {
-      const updatedCart = cartItems.filter((item) => item.id !== cartId);
-      setCartItems(updatedCart);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
-      window.dispatchEvent(new Event("storageCartChanged"));
-      if (updatedCart.length === 0) navigate("/empty-cart");
-    } else console.error(res.error);
+    try {
+      const res = await deleteCartItemAPI(cartId);
+      if (!res.error) {
+        const updatedCart = cartItems.filter((item) => item.id !== cartId);
+        setCartItems(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        window.dispatchEvent(new Event("storageCartChanged"));
+        if (updatedCart.length === 0) navigate("/EmptyCart");
+      } else {
+        console.error(res.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (loading) return <h2>{translations[language].loading}</h2>;
@@ -169,7 +205,7 @@ const Cart = () => {
                   style={{ cursor: "pointer" }}
                 />
                 <div className="item-info">
-                   <p
+                  <p
                     className="product-name"
                     onClick={() => setModalProduct(item)}
                     style={{ cursor: "pointer" }}
@@ -180,39 +216,39 @@ const Cart = () => {
                   </p>
                   <p>₪{item.product.price}</p>
 
-                  
-                 <div
-                  className="item-size"
-                  onClick={() => setModalProduct(item)}
-                  style={{
-                    cursor: "pointer",
-                    border: "1px solid #ccc",
-                    padding: "5px 10px",
-                    borderRadius: "12px",
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "5px",
-                  }}
-                >
-                  <span>{item.size}</span>
-                  <span
-                    className="color-circle"
+                  <div
+                    className="item-size"
+                    onClick={() => setModalProduct(item)}
                     style={{
-                      backgroundColor:
-                        colorMap.find((c) => c.name === item.color)?.hex || item.color,
-                      width: "15px",
-                      height: "15px",
-                      borderRadius: "50%",
-                      display: "inline-block",
-                      border: "1px solid #aaa",
+                      cursor: "pointer",
+                      border: "1px solid #ccc",
+                      padding: "5px 10px",
+                      borderRadius: "12px",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "5px",
                     }}
-                  ></span>
-                  <img
-                    src={ExpandArrow}
-                    alt="Expand"
-                    style={{ marginLeft: "auto", width: "16px", height: "16px" }}
-                  />
-                </div>
+                  >
+                    <span>{item.size}</span>
+                    <span
+                      className="color-circle"
+                      style={{
+                        backgroundColor:
+                          colorMap.find((c) => c.name === item.color)?.hex ||
+                          item.color,
+                        width: "15px",
+                        height: "15px",
+                        borderRadius: "50%",
+                        display: "inline-block",
+                        border: "1px solid #aaa",
+                      }}
+                    ></span>
+                    <img
+                      src={ExpandArrow}
+                      alt="Expand"
+                      style={{ marginLeft: "auto", width: "16px", height: "16px" }}
+                    />
+                  </div>
                 </div>
 
                 <div className="quantity-control">

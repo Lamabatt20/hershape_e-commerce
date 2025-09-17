@@ -80,52 +80,65 @@ const OrderCard = ({ order }) => {
       </div>
 
       <div
-        className="order-details"
-        ref={detailsRef}
-        style={{
-          maxHeight: showDetails ? detailsRef.current?.scrollHeight : 0,
-          overflow: "hidden",
-          transition: "max-height 0.3s ease",
-        }}
-      >
-        {order.items.map((item) => (
-          <div className="product-item" key={item.id}>
-            <div className="product-images">
-              <img
-                src={
-                  item.product.images && item.product.images.length > 0
-                    ? item.product.images[0].startsWith("/")
-                      ? item.product.images[0]
-                      : `/images/${item.product.images[0]}`
-                    : "/placeholder.png"
-                }
-                alt={language === "en" ? item.product.name : item.product.name_ar}
-                style={{
-                  width: 50,
-                  height: 50,
-                  objectFit: "cover",
-                  marginRight: 4,
-                }}
-              />
+          className="order-details"
+          ref={detailsRef}
+          style={{
+            maxHeight: showDetails ? detailsRef.current?.scrollHeight : 0,
+            overflow: "hidden",
+            transition: "max-height 0.3s ease",
+          }}
+        >
+          {order.items
+          .slice()
+          .sort((a, b) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            
+            if (dateB === dateA) {
+              return b.id - a.id;
+            }
+            return dateB - dateA;
+          })
+          .map((item) => (
+            <div className="product-item" key={item.id}>
+              <div className="product-images">
+                <img
+                  src={
+                    item.product.images && item.product.images.length > 0
+                      ? item.product.images[0].startsWith("/")
+                        ? item.product.images[0]
+                        : `/images/${item.product.images[0]}`
+                      : "/placeholder.png"
+                  }
+                  alt={language === "en" ? item.product.name : item.product.name_ar || item.product.name}
+                  style={{
+                    width: 50,
+                    height: 50,
+                    objectFit: "cover",
+                    marginRight: 4,
+                  }}
+                />
+              </div>
+              <div className="product-info">
+                <p>
+                  {language === "en"
+                    ? item.product.name
+                    : item.product.name_ar || item.product.name}
+                </p>
+                <p>
+                  {item.color}/{item.size}
+                </p>
+                <p>
+                  {language === "en" ? "x" : "×"}
+                  {item.quantity}
+                </p>
+                <p>₪{item.product.price}</p>
+              </div>
             </div>
-            <div className="product-info">
-              <p>
-                {language === "en"
-                  ? item.product.name
-                  : item.product.name_ar || item.product.name}
-              </p>
-              <p>
-                {item.color}/{item.size}
-              </p>
-              <p>
-                {language === "en" ? "x" : "×"}
-                {item.quantity}
-              </p>
-              <p>₪{item.product.price}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+
+        </div>
+
     </div>
   );
 };

@@ -46,7 +46,7 @@ function AppContent() {
         <Route path="/verify" element={<Verify />} />
         <Route path="/login" element={<Login />} />
         <Route path="/cart" element={<Cart />} />
-        <Route path="/empty-cart" element={<EmptyCart />} />
+        <Route path="/EmptyCart" element={<EmptyCart />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/checkout" element={<Checkout />} />
 

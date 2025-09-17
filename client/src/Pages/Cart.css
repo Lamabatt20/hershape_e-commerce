@@ -1,8 +1,8 @@
 .cart-container {
-   padding: 40px;
+  padding: 40px;
   background-color: #fcf8f0;
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-  min-height: 100vh; 
+  min-height: 100vh;
 }
 
 .cart-content {
@@ -18,31 +18,63 @@
 .cart-item {
   display: flex;
   align-items: center;
+  justify-content: space-between; 
   background: #fcf8f0;
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 15px;
+  gap: 12px;
 }
 
 .cart-item img {
   width: 90px;
   border-radius: 8px;
+  flex-shrink: 0; 
 }
 
 .item-info {
-  flex: 1;
+  flex: 1; 
   margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.item-info .product-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 16px;
+  width: 100%;
+  margin: 0;
 }
 
 .item-size {
   background-color: #e7e7e7;
-  padding: 2px 6px;  
-  font-size: 12px;   
+  padding: 2px 6px;
+  font-size: 12px;
   border-radius: 12px;
-  width: 70px;        
-  text-align: center;  
+  min-width: 45px;
+  text-align: center;
   white-space: nowrap;
-  
+}
+
+.color-circle {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  margin-left: 5px;
+  border: 1px solid #ccc;
+  vertical-align: middle;
+}
+
+.item-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0; 
 }
 
 .quantity-control {
@@ -66,6 +98,7 @@
   color: #b30000;
   font-size: 18px;
 }
+
 .delete-icon {
   width: 20px !important;
   height: 20px !important;
@@ -74,30 +107,19 @@
   margin: 0;
 }
 
-
 .delete-btn:hover .delete-icon {
   transform: scale(1.1);
 }
 
 .cart-summary {
   flex: 1;
-  background: #fcf8f0; 
+  background: #fcf8f0;
   padding: 20px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-   max-height: 300px; 
-  overflow-y: auto; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-height: 300px;
+  overflow-y: auto;
 }
-.color-circle {
-  display: inline-block;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  margin-left: 5px;
-  border: 1px solid #ccc; 
-  vertical-align: middle;
-}
-
 
 .clear-btn {
   background-color: #c8a2c8;
@@ -106,7 +128,7 @@
   width: 100%;
   margin-bottom: 10px;
   cursor: pointer;
-  color:black;
+  color: black;
 }
 
 .checkout-btn {
@@ -122,7 +144,7 @@
   text-align: center;
   padding: 50px;
   background-color: #fcf8f0;
-   min-height: 100vh; 
+  min-height: 100vh;
 }
 
 .continue-btn {
@@ -133,6 +155,8 @@
   cursor: pointer;
   border-radius: 6px;
 }
+
+
 @media (max-width: 780px) {
   .cart-content {
     flex-direction: column;
@@ -150,64 +174,41 @@
   }
 
   .cart-item {
-    flex-direction: row; 
+    flex-direction: row;
     align-items: center;
-    justify-content: space-between;  
-    flex-wrap: nowrap; 
-    gap: 10px;
+    justify-content: space-between; 
+    gap: 12px;
   }
 
   .cart-item img {
     width: 80px;
-    margin-bottom: 0; 
-    margin-right: 10px; 
+    margin-bottom: 0;
+    margin-right: 10px;
   }
 
- 
   .item-info {
-    margin-left: 0;
     flex: 1;
+    margin-left: 10px;
     display: flex;
-    flex-direction: row;      
-    align-items: center;      
-    gap: 6px;
-    flex-wrap: nowrap;   
-      
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
 
   .item-info .product-name {
-    white-space: nowrap;      
-    overflow: hidden;         
-    text-overflow: ellipsis;  
-    font-size: 16px; 
-    flex: 1 1 auto;
-    margin: 0;         
+    font-size: 14px;
   }
 
   .item-size {
-    flex-shrink: 0;           
-  }
-  
-  .item-size {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #e7e7e7;
-    padding: 2px 8px;
-    font-size: 10px;
-    border-radius: 12px;
-    width: 45px;             
-    white-space: nowrap;
-    gap: 12px;
+    padding: 2px 6px;
+    font-size: 12px;
+    min-width: 45px;
   }
 
   .color-circle {
-    width: 14px;             
+    width: 14px;
     height: 14px;
-    margin-left: 0px;        
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    flex-shrink: 0;          
+    margin-left: 4px;
   }
 
   .quantity-control {
@@ -215,9 +216,8 @@
   }
 
   .delete-btn {
-    align-self: center; 
+    align-self: center;
   }
-
 
   .clear-btn,
   .checkout-btn,

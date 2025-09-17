@@ -213,8 +213,8 @@ export default function OrderDetails() {
 
             <div className="order-summary">
               <p>Subtotal: ₪{order.subtotal}</p>
-              <p>Shipping: Calculated at delivery</p>
-              <h4>Total: ₪{order.subtotal}</h4>
+              <p>Shipping: ₪{order.shipping}</p>
+              <h4>Total: ₪{order.subtotal + order.shipping}</h4>
             </div>
 
             <div className="order-actions">
