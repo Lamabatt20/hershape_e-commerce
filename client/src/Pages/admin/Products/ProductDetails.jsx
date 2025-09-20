@@ -43,7 +43,7 @@ export default function ProductDetails() {
   const [nameAr, setNameAr] = useState("");
   const [price, setPrice] = useState("");
   const [availability, setAvailability] = useState("In Stock");
-  const [stockQty, setStockQty] = useState(0); // حقل كمية المخزون
+  const [stockQty, setStockQty] = useState(0); 
   const [description, setDescription] = useState("");
   const [descriptionAr, setDescriptionAr] = useState("");
   const [imageFiles, setImageFiles] = useState([]);
@@ -142,7 +142,7 @@ export default function ProductDetails() {
     formData.append("name_ar", nameAr);
     formData.append("price", price);
     formData.append("available", availability);
-    formData.append("stock", stockQty); // إضافة المخزون
+    formData.append("stock", stockQty); 
     formData.append("description", description);
     formData.append("description_ar", descriptionAr);
     imageFiles.forEach((file) => formData.append("images", file));

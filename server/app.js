@@ -224,7 +224,7 @@ app.get("/products/:id", async (req, res) => {
 
 app.post("/products", upload.array("images"), async (req, res) => {
   try {
-    const { name, description, price, variants } = req.body;
+    const { name, description, price,available, variants } = req.body;
     const images = req.files.map(file => `/images/${file.filename}`);
     const parsedVariants = JSON.parse(variants); 
 
@@ -255,7 +255,7 @@ app.post("/products", upload.array("images"), async (req, res) => {
 
 app.put("/products/:id", upload.array("images"), async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, variants, removedImages } = req.body;
+  const { name, description, price, variants, removedImages,available} = req.body;
   const newImages = req.files.map(file => `/images/${file.filename}`);
 
   try {
