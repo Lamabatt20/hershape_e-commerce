@@ -158,71 +158,88 @@
 
 
 @media (max-width: 780px) {
-  .cart-content {
-    flex-direction: column;
+  .cart-content { flex-direction: column; }
+  .cart-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px 0;
   }
-
-  .cart-items {
-    width: 100%;
-  }
-
-  .cart-summary {
-    width: 100%;
+  .cart-summary { 
+    width: 90%;
     margin-top: 20px;
     margin-left: 0;
-    padding: 20px;
-  }
-
-  .cart-item {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between; 
-    gap: 12px;
+    padding: 20px; 
   }
 
   .cart-item img {
-    width: 80px;
-    margin-bottom: 0;
-    margin-right: 10px;
+    width: 75px;       
+    height: 95px;      
+    object-fit: cover; 
+    flex-shrink: 0;
   }
 
   .item-info {
     flex: 1;
-    margin-left: 10px;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
+    justify-content: space-between;
+    min-height: 90px; 
   }
 
   .item-info .product-name {
     font-size: 14px;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-details {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap; 
   }
 
   .item-size {
-    padding: 2px 6px;
-    font-size: 12px;
-    min-width: 45px;
+    width: 82px;       
+    height: 20px;      
+    padding: 2px 0;    
+    font-size: 11px;
+    border-radius: 6px;
+    text-align: center; 
+    flex-shrink: 0; 
   }
 
   .color-circle {
-    width: 14px;
-    height: 14px;
-    margin-left: 4px;
+    width: 12px;
+    height: 12px;
+    border: 1px solid #888;
+    flex-shrink: 0;
   }
 
   .quantity-control {
-    margin-top: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: auto; 
+  }
+
+  .quantity-control button {
+    padding: 4px 8px;
+    font-size: 13px;
   }
 
   .delete-btn {
-    align-self: center;
+    font-size: 16px;
+    margin-left: auto;
   }
 
   .clear-btn,
   .checkout-btn,
   .continue-btn {
     padding: 12px;
-    font-size: 16px;
+    font-size: 15px;
   }
 }
+

@@ -17,11 +17,11 @@ import DotIcon from "../../../assets/icons/Dot 1.png";
 
 import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 
-const ALL_SIZES = ["XS", "S", "M", "L", "XL", "2X"];
+const ALL_SIZES = ["XS", "S", "M", "L", "XL", "2XL","3XL","4XL","XS-S","M-L","XL-2XL","3XL-4XL"];
 const ALL_COLORS = [
   { name: "nude", hex: "#ecc7b5" },
   { name: "black", hex: "#000000" },
-  {name : "beige", hex: "#e0c7a0"}
+  { name: "beige", hex: "#e0c7a0" }
 ];
 
 export default function AddProduct() {
@@ -33,26 +33,21 @@ export default function AddProduct() {
   const [showDot, setShowDot] = useState(false);
 
   const [name, setName] = useState("");
+  const [nameAr, setNameAr] = useState("");
   const [price, setPrice] = useState("");
-  const [sizes, setSizes] = useState([]);
-  const [colors, setColors] = useState([]);
   const [availability, setAvailability] = useState("In Stock");
-  const [stock, setStock] = useState(0);
   const [description, setDescription] = useState("");
+  const [descriptionAr, setDescriptionAr] = useState("");
   const [imageFiles, setImageFiles] = useState([]); 
-  const [previewImages, setPreviewImages] = useState([]); 
+  const [previewImages, setPreviewImages] = useState([]);
+  
+  const [colors, setColors] = useState([]);
+  const [sizesByColor, setSizesByColor] = useState({});
 
-  // Protect admin
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-    if (!storedUser || storedUser.role !== "admin") {
-      navigate("/login", { replace: true });
-    } else {
-      setUser({
-        name: storedUser.name || "Lara",
-        image: storedUser.image || LaraImage,
-      });
-    }
+    if (!storedUser || storedUser.role !== "admin") navigate("/login", { replace: true });
+    else setUser({ name: storedUser.name || "Lara", image: storedUser.image || LaraImage });
   }, [navigate]);
 
   const handleLogout = () => {
@@ -63,58 +58,63 @@ export default function AddProduct() {
 
   const goToHome = () => navigate("/");
 
-  const toggleSize = (size) => {
-    if (sizes.includes(size)) setSizes(sizes.filter((s) => s !== size));
-    else setSizes([...sizes, size]);
-  };
-
   const toggleColor = (colorName) => {
-    if (colors.includes(colorName)) setColors(colors.filter((c) => c !== colorName));
-    else setColors([...colors, colorName]);
+    if (colors.includes(colorName)) {
+      setColors(colors.filter(c => c !== colorName));
+      setSizesByColor(prev => {
+        const newObj = { ...prev };
+        delete newObj[colorName];
+        return newObj;
+      });
+    } else {
+      setColors([...colors, colorName]);
+      setSizesByColor(prev => ({
+        ...prev,
+        [colorName]: ALL_SIZES.map(size => ({ size, available: false, stock: 0 }))
+      }));
+    }
   };
 
   const handleImageChange = (e) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      setImageFiles((prev) => [...prev, ...filesArray]);
-
-      const newPreviews = filesArray.map((file) => URL.createObjectURL(file));
-      setPreviewImages((prev) => [...prev, ...newPreviews]);
+      setImageFiles(prev => [...prev, ...filesArray]);
+      const newPreviews = filesArray.map(file => URL.createObjectURL(file));
+      setPreviewImages(prev => [...prev, ...newPreviews]);
     }
   };
 
   const handleRemoveImage = (index) => {
     if (index >= previewImages.length - imageFiles.length) {
       const fileIndex = index - (previewImages.length - imageFiles.length);
-      setImageFiles((prev) => prev.filter((_, i) => i !== fileIndex));
+      setImageFiles(prev => prev.filter((_, i) => i !== fileIndex));
     }
-    setPreviewImages((prev) => prev.filter((_, i) => i !== index));
+    setPreviewImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const handleSave = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("name_ar", nameAr);
     formData.append("price", price);
-    formData.append("sizes", JSON.stringify(sizes));
-    formData.append("colors", colors.join(","));
     formData.append("available", availability);
-    formData.append("stock", stock);
     formData.append("description", description);
+    formData.append("description_ar", descriptionAr);
+    imageFiles.forEach(file => formData.append("images", file));
 
-    imageFiles.forEach((file) => {
-      formData.append("images", file);
+    const variants = [];
+    Object.entries(sizesByColor).forEach(([color, arr]) => {
+      arr.forEach(v => {
+        if (v.available) variants.push({ color, size: v.size, stock: v.stock });
+      });
     });
+    formData.append("variants", JSON.stringify(variants));
 
     try {
-      const res = await createProduct(formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      if (res.error) {
-        alert("Failed to add product: " + res.error);
-      } else {
+      const res = await createProduct(formData, { headers: { "Content-Type": "multipart/form-data" } });
+      if (res.error) alert("Failed to add product: " + res.error);
+      else {
         alert("Product added successfully!");
         navigate("/products");
       }
@@ -126,7 +126,6 @@ export default function AddProduct() {
 
   return (
     <div className="orders-page">
-      {/* Sidebar */}
       <aside className={`orders-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div>
           <div className="orders-logo">
@@ -173,7 +172,6 @@ export default function AddProduct() {
         </button>
       </aside>
 
-      {/* Main */}
       <div className="orders-main">
         <header className="orders-header">
           <button className="orders-menu-btn" onClick={() => setIsSidebarOpen(true)}>
@@ -191,40 +189,19 @@ export default function AddProduct() {
 
         <main className="product-details-content">
           <form className="product-edit-form" onSubmit={handleSave}>
-            {/* Name, Price, Sizes, Colors, Availability, Stock, Description */}
             <div className="form-row">
               <label>Product name</label>
               <input type="text" value={name} onChange={(e) => setName(e.target.value)} required />
             </div>
 
             <div className="form-row">
+              <label>Product name (Arabic)</label>
+              <input type="text" value={nameAr} onChange={(e) => setNameAr(e.target.value)} required />
+            </div>
+
+            <div className="form-row">
               <label>Price</label>
               <input type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} required />
-            </div>
-
-            <div className="form-row">
-              <label>Size</label>
-              <div className="checkbox-group horizontal">
-                {ALL_SIZES.map((size) => (
-                  <label key={size} className="checkbox-label">
-                    <input type="checkbox" checked={sizes.includes(size)} onChange={() => toggleSize(size)} />
-                    {size}
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="form-row">
-              <label>Color</label>
-              <div className="checkbox-group horizontal">
-                {ALL_COLORS.map(({ name, hex }) => (
-                  <label key={name} className="checkbox-label color-label">
-                    <input type="checkbox" checked={colors.includes(name)} onChange={() => toggleColor(name)} />
-                    <span className="color-circle" style={{ backgroundColor: hex, marginRight: 8, display: "inline-block", width: 20, height: 20, borderRadius: "50%", border: "1px solid #ccc" }} />
-                    {name}
-                  </label>
-                ))}
-              </div>
             </div>
 
             <div className="form-row">
@@ -235,68 +212,136 @@ export default function AddProduct() {
               </select>
             </div>
 
-            <div className="form-row">
-              <label>Stock</label>
-              <input type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} />
-            </div>
-
             <div className="form-row full-width">
               <label>Description</label>
               <textarea rows="3" value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
 
-            {/* Images */}
-           <div className="image-upload-combined-row">
-            {previewImages.length > 0 ? (
-                previewImages.map((src, index) => (
-                <div key={index} style={{ position: "relative", display: "inline-block", marginRight: 10 }}>
-                    <img
-                    src={
-                        src.startsWith("blob:") || src.startsWith("/") 
-                        ? src 
-                        : `/images/${src}`
-                    }
-                    alt={`Product ${index + 1}`}
-                    style={{ width: 100, height: 100, objectFit: "cover" }}
-                    />
-                    <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    style={{
-                        position: "absolute",
-                        top: 2,
-                        right: 2,
-                        backgroundColor: "rgba(255,0,0,0.7)",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "50%",
-                        width: 20,
-                        height: 20,
-                        cursor: "pointer"
-                    }}
-                    aria-label="Remove image"
-                    >
-                    ×
-                    </button>
-                </div>
-                ))
-            ) : (
-                <img 
-                src="/images/No-Image-Placeholder.svg.png" 
-                alt="No images" 
-                style={{ width: 100, height: 100, objectFit: "cover" }} 
-                />
-            )}
-
-            <input 
-                type="file" 
-                accept="image/*" 
-                multiple 
-                onChange={handleImageChange} 
-                className="upload-input" 
-            />
+            <div className="form-row full-width">
+              <label>Description (Arabic)</label>
+              <textarea rows="3" value={descriptionAr} onChange={(e) => setDescriptionAr(e.target.value)} />
             </div>
 
+       <div className="form-row">
+        <label>Colors & Sizes</label>
+        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-start" }}>
+          {ALL_COLORS.map(color => {
+            const isChecked = colors.includes(color.name);
+            return (
+              <div key={color.name} style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8, minHeight: 28 }}>
+                  <input 
+                    type="checkbox" 
+                    checked={isChecked} 
+                    onChange={() => toggleColor(color.name)} 
+                    style={{ 
+                      transform: "scale(1.5)", 
+                      transformOrigin: "top left", 
+                      margin: 0 
+                    }} 
+                  />
+                  <span style={{
+                    width: 20, 
+                    height: 20, 
+                    borderRadius: "50%", 
+                    border: "1px solid #ccc", 
+                    backgroundColor: color.hex
+                  }} />
+                  {color.name}
+                </label>
+
+                {isChecked && (
+                  <div style={{ marginTop: 8 }}>
+                    {sizesByColor[color.name]?.map((item, index) => (
+                      <div key={index} style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6, minHeight: 24 }}>
+                        <input 
+                          type="checkbox" 
+                          checked={item.available} 
+                          onChange={(e) => {
+                            const available = e.target.checked;
+                            setSizesByColor(prev => ({
+                              ...prev,
+                              [color.name]: prev[color.name].map((s, i) => i === index ? { ...s, available } : s)
+                            }));
+                          }} 
+                          style={{ 
+                            transform: "scale(1.3)", 
+                            transformOrigin: "top left", 
+                            margin: 0 
+                          }} 
+                        />
+                        <span style={{ display: "inline-block", width: 70, margin: "0 8px" }}>{item.size}</span>
+                        <input 
+                          type="number" 
+                          min="0" 
+                          value={item.stock} 
+                          onChange={(e) => {
+                            const stock = Number(e.target.value);
+                            setSizesByColor(prev => ({
+                              ...prev,
+                              [color.name]: prev[color.name].map((s, i) => i === index ? { ...s, stock } : s)
+                            }));
+                          }} 
+                          style={{ width: 60 }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+           <div className="image-upload-combined-row" style={{ marginTop: 20, width: "100%" }}>
+           <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
+                {previewImages.length > 0 ? (
+                  previewImages.map((src, index) => (
+                    <div key={index} style={{ position: "relative" }}>
+                      <img
+                        src={src.startsWith("blob:") || src.startsWith("/") ? src : `/images/${src}`}
+                        alt={`Product ${index + 1}`}
+                        style={{ width: 100, height: 100, objectFit: "cover" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        style={{
+                          position: "absolute",
+                          top: 2,
+                          right: 2,
+                          backgroundColor: "rgba(255,0,0,0.7)",
+                          color: "white",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: 20,
+                          height: 20,
+                          cursor: "pointer"
+                        }}
+                        aria-label="Remove image"
+                      >
+                        ×
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  <img
+                    src="/images/No-Image-Placeholder.svg.png"
+                    alt="No images"
+                    style={{ width: 100, height: 100, objectFit: "cover" }}
+                  />
+                )}
+              </div>
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleImageChange}
+                className="upload-input"
+                style={{ display: "block", marginTop: 10 }}
+              />
+            </div>
 
             <div className="form-row button-row">
               <button type="submit" className="edit-product-btn">Add Product</button>

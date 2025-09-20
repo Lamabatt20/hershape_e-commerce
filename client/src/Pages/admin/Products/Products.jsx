@@ -38,13 +38,15 @@ export default function Products() {
 
   // Fetch products
   const fetchProducts = async () => {
-    try {
-      const res = await getProducts();
-      setProducts(res);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    }
-  };
+  try {
+    const res = await getProducts();
+    console.log("Fetched products:", res);
+    setProducts(Array.isArray(res) ? res : (res.products && Array.isArray(res.products) ? res.products : []));
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    setProducts([]);
+  }
+};
 
   useEffect(() => {
     fetchProducts();
@@ -222,7 +224,6 @@ export default function Products() {
               <tr>
                 <th>Product ID</th>
                 <th>Stock Available</th>
-                <th>Stock</th>
                 <th>Product Name</th>
                 <th>Price</th>
                 <th>Action</th>
@@ -233,7 +234,6 @@ export default function Products() {
                 <tr key={p.id}>
                   <td>{p.id}</td>
                   <td>{p.available}</td>
-                  <td>{p.stock}</td>
                   <td>{p.name}</td>
                   <td>₪{p.price}</td>
                   <td style={{ display: "flex", gap: "8px" }}>

@@ -17,11 +17,16 @@ import DotIcon from "../../../assets/icons/Dot 1.png";
 
 import { Menu as MenuIcon, X as CloseIcon } from "lucide-react";
 
-const ALL_SIZES = ["XS", "S", "M", "L", "XL", "2X"];
 const ALL_COLORS = [
   { name: "nude", hex: "#ecc7b5" },
   { name: "black", hex: "#000000" },
-  {name : "beige", hex: "#e0c7a0"}
+  { name: "beige", hex: "#e0c7a0" }
+];
+
+const ALL_SIZES = [
+  "XS", "S", "M", "L", "XL",
+  "2XL", "3XL", "4XL",
+  "XS-S", "M-L", "XL-2XL", "3XL-4XL"
 ];
 
 export default function ProductDetails() {
@@ -35,41 +40,68 @@ export default function ProductDetails() {
   const [showDot, setShowDot] = useState(false);
 
   const [name, setName] = useState("");
+  const [nameAr, setNameAr] = useState("");
   const [price, setPrice] = useState("");
-  const [sizes, setSizes] = useState([]);
-  const [colors, setColors] = useState([]);
   const [availability, setAvailability] = useState("In Stock");
-  const [stock, setStock] = useState(0);
+  const [stockQty, setStockQty] = useState(0); // حقل كمية المخزون
   const [description, setDescription] = useState("");
-  const [imageFiles, setImageFiles] = useState([]); 
+  const [descriptionAr, setDescriptionAr] = useState("");
+  const [imageFiles, setImageFiles] = useState([]);
   const [previewImages, setPreviewImages] = useState([]);
   const [removedImages, setRemovedImages] = useState([]);
 
+  const [colors, setColors] = useState([]);
+  const [sizesByColor, setSizesByColor] = useState({});
+
+  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       const data = await getProductById(id);
       if (!data.error) {
         setProduct(data);
         setName(data.name || "");
+        setNameAr(data.name_ar || "");
         setPrice(data.price || "");
-        setSizes(data.sizes || []);
-        if (Array.isArray(data.colors)) setColors(data.colors);
-        else if (typeof data.colors === "string") setColors(data.colors.split(","));
-        else setColors([]);
+        setDescription(data.description || "");
+        setDescriptionAr(data.description_ar || "");
         const avail = String(data.available).toLowerCase().trim();
         setAvailability(avail === "out of stock" ? "Out of Stock" : "In Stock");
-        setStock(data.stock || 0);
-        setDescription(data.description || "");
+        setStockQty(data.stock ?? 0);
+
         if (Array.isArray(data.images) && data.images.length > 0) setPreviewImages(data.images);
         else if (typeof data.images === "string" && data.images) setPreviewImages([data.images]);
-        else if (data.image) setPreviewImages([data.image]);
         else setPreviewImages([]);
         setImageFiles([]);
+        setRemovedImages([]);
+
+        if (data.variants && data.variants.length > 0) {
+          const colorMap = {};
+          data.variants.forEach(variant => {
+            if (!colorMap[variant.color]) {
+              colorMap[variant.color] = ALL_SIZES.map((s) => ({
+                size: s,
+                stock: 0,
+                available: false
+              }));
+            }
+            const sizeIndex = colorMap[variant.color].findIndex(s => s.size === variant.size);
+            if (sizeIndex >= 0) {
+              colorMap[variant.color][sizeIndex] = {
+                size: variant.size,
+                stock: variant.stock,
+                available: true
+              };
+            }
+          });
+          setSizesByColor(colorMap);
+          setColors(Object.keys(colorMap));
+        }
       }
     };
     fetchProduct();
   }, [id]);
 
+  // Check user
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || storedUser.role !== "admin") navigate("/login", { replace: true });
@@ -81,20 +113,9 @@ export default function ProductDetails() {
     localStorage.removeItem("userId");
     navigate("/login");
   };
-
   const goToHome = () => navigate("/");
 
   if (!product) return <p style={{ padding: 20 }}>Loading product details...</p>;
-
-  const toggleSize = (size) => {
-    if (sizes.includes(size)) setSizes(sizes.filter((s) => s !== size));
-    else setSizes([...sizes, size]);
-  };
-
-  const toggleColor = (colorName) => {
-    if (colors.includes(colorName)) setColors(colors.filter((c) => c !== colorName));
-    else setColors([...colors, colorName]);
-  };
 
   const handleImageChange = (e) => {
     if (e.target.files) {
@@ -104,7 +125,6 @@ export default function ProductDetails() {
       setPreviewImages((prev) => [...prev, ...newPreviews]);
     }
   };
-
   const handleRemoveImage = (index) => {
     const removed = previewImages[index];
     if (!removed.startsWith("blob:")) setRemovedImages((prev) => [...prev, removed]);
@@ -119,14 +139,25 @@ export default function ProductDetails() {
     e.preventDefault();
     const formData = new FormData();
     formData.append("name", name);
+    formData.append("name_ar", nameAr);
     formData.append("price", price);
-    formData.append("sizes", JSON.stringify(sizes));
-    formData.append("colors", colors.join(","));
     formData.append("available", availability);
-    formData.append("stock", stock);
+    formData.append("stock", stockQty); // إضافة المخزون
     formData.append("description", description);
+    formData.append("description_ar", descriptionAr);
     imageFiles.forEach((file) => formData.append("images", file));
     removedImages.forEach((img) => formData.append("removedImages", img));
+
+    const variantsToSend = [];
+    Object.entries(sizesByColor).forEach(([color, sizesArr]) => {
+      sizesArr.forEach(v => {
+        if (v.available) {
+          variantsToSend.push({ color, size: v.size, stock: v.stock });
+        }
+      });
+    });
+    formData.append("variants", JSON.stringify(variantsToSend));
+
     try {
       const res = await updateProduct(product.id, formData, { headers: { "Content-Type": "multipart/form-data" } });
       if (res.error) alert("Failed to update product: " + res.error);
@@ -197,9 +228,7 @@ export default function ProductDetails() {
           <div className="orders-header-right">
             <button className="orders-icon-btn" style={{ position: "relative" }} onClick={() => setShowDot(false)}>
               <img src={NotificationIcon} alt="Notification" />
-              {showDot && (
-                <img src={DotIcon} alt="Dot" style={{ position: "absolute", top: 0, right: 0, width: 6, height: 6 }} />
-              )}
+              {showDot && <img src={DotIcon} alt="Dot" style={{ position: "absolute", top: 0, right: 0, width: 6, height: 6 }} />}
             </button>
             <img src={user.image} alt={user.name} className="orders-profile" />
           </div>
@@ -213,33 +242,13 @@ export default function ProductDetails() {
             </div>
 
             <div className="form-row">
+              <label>Product name (Arabic)</label>
+              <input type="text" value={nameAr} onChange={(e) => setNameAr(e.target.value)} />
+            </div>
+
+            <div className="form-row">
               <label>Price</label>
               <input type="number" min="0" step="0.01" value={price} onChange={(e) => setPrice(e.target.value)} />
-            </div>
-
-            <div className="form-row">
-              <label>Size</label>
-              <div className="checkbox-group horizontal">
-                {ALL_SIZES.map((size) => (
-                  <label key={size} className="checkbox-label">
-                    <input type="checkbox" checked={sizes.includes(size)} onChange={() => toggleSize(size)} />
-                    {size}
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div className="form-row">
-              <label>Color</label>
-              <div className="checkbox-group horizontal">
-                {ALL_COLORS.map(({ name, hex }) => (
-                  <label key={name} className="checkbox-label color-label">
-                    <input type="checkbox" checked={colors.includes(name)} onChange={() => toggleColor(name)} />
-                    <span className="color-circle" style={{ backgroundColor: hex, marginRight: 8, display: "inline-block", width: 20, height: 20, borderRadius: "50%", border: "1px solid #ccc" }} />
-                    {name}
-                  </label>
-                ))}
-              </div>
             </div>
 
             <div className="form-row">
@@ -250,18 +259,106 @@ export default function ProductDetails() {
               </select>
             </div>
 
-            <div className="form-row">
-              <label>Quantity</label>
-              <input type="number" min="0" value={stock} onChange={(e) => setStock(e.target.value)} />
-            </div>
-
             <div className="form-row full-width">
               <label>Description</label>
               <textarea rows="3" value={description} onChange={(e) => setDescription(e.target.value)} />
             </div>
 
+            <div className="form-row full-width">
+              <label>Description (Arabic)</label>
+              <textarea rows="3" value={descriptionAr} onChange={(e) => setDescriptionAr(e.target.value)} />
+            </div>
+
+            <div className="form-row">
+              <label>Colors & Sizes</label>
+              <div className="checkbox-group" style={{ display: "flex", gap: 20, flexWrap: "wrap", alignItems: "flex-start" }}>
+                {ALL_COLORS.map((color) => {
+                  const isChecked = colors.includes(color.name);
+
+                  return (
+                    <div key={color.name} style={{ minWidth: 150 }}>
+                      <label className="checkbox-label color-label" style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setColors((prev) => [...prev, color.name]);
+                              setSizesByColor((prev) => ({
+                                ...prev,
+                                [color.name]:
+                                  prev[color.name] && prev[color.name].length > 0
+                                    ? prev[color.name]
+                                    : ALL_SIZES.map((s) => ({ size: s, stock: 0, available: false }))
+                              }));
+                            } else {
+                              setColors((prev) => prev.filter((c) => c !== color.name));
+                              setSizesByColor((prev) => {
+                                const newObj = { ...prev };
+                                delete newObj[color.name];
+                                return newObj;
+                              });
+                            }
+                          }}
+                        />
+                        <span className="color-circle" style={{
+                          backgroundColor: color.hex,
+                          display: "inline-block",
+                          width: 20,
+                          height: 20,
+                          borderRadius: "50%",
+                          border: "1px solid #ccc"
+                        }} />
+                        {color.name}
+                      </label>
+
+                      {isChecked && (
+                        <div style={{ marginTop: 10 }}>
+                          {sizesByColor[color.name]?.map((item, index) => (
+                            <div key={index} style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
+                              <input
+                                type="checkbox"
+                                checked={item.available}
+                                onChange={(e) => {
+                                  const available = e.target.checked;
+                                  setSizesByColor((prev) => ({
+                                    ...prev,
+                                    [color.name]: prev[color.name].map((s, i) =>
+                                      i === index ? { ...s, available } : s
+                                    )
+                                  }));
+                                }}
+                              />
+                              <span style={{ display: "inline-block", width: 70, margin: "0 8px" }}>
+                                {item.size}
+                              </span>
+                              <input
+                                type="number"
+                                min="0"
+                                value={item.stock}
+                                onChange={(e) => {
+                                  const newStock = Number(e.target.value);
+                                  setSizesByColor((prev) => ({
+                                    ...prev,
+                                    [color.name]: prev[color.name].map((s, i) =>
+                                      i === index ? { ...s, stock: newStock } : s
+                                    )
+                                  }));
+                                }}
+                                style={{ width: 60 }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
             <div className="image-upload-combined-row">
-              {(previewImages && previewImages.length > 0) ? (
+              {previewImages && previewImages.length > 0 ? (
                 previewImages.map((src, index) => (
                   <div key={index} style={{ position: "relative", display: "inline-block", marginRight: 10 }}>
                     <img
@@ -272,7 +369,18 @@ export default function ProductDetails() {
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(index)}
-                      style={{ position: "absolute", top: 2, right: 2, backgroundColor: "rgba(255,0,0,0.7)", color: "white", border: "none", borderRadius: "50%", width: 20, height: 20, cursor: "pointer" }}
+                      style={{
+                        position: "absolute",
+                        top: 2,
+                        right: 2,
+                        backgroundColor: "rgba(255,0,0,0.7)",
+                        color: "white",
+                        border: "none",
+                        borderRadius: "50%",
+                        width: 20,
+                        height: 20,
+                        cursor: "pointer"
+                      }}
                       aria-label="Remove image"
                     >
                       ×
@@ -280,7 +388,11 @@ export default function ProductDetails() {
                   </div>
                 ))
               ) : (
-                <img src="/images/No-Image-Placeholder.svg.png" alt="No images" style={{ width: 100, height: 100, objectFit: "cover" }} />
+                <img
+                  src="/images/No-Image-Placeholder.svg.png"
+                  alt="No images"
+                  style={{ width: 100, height: 100, objectFit: "cover" }}
+                />
               )}
               <input type="file" accept="image/*" multiple onChange={handleImageChange} className="upload-input" />
             </div>

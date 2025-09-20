@@ -6,9 +6,6 @@ import "./Shop.css";
 
 import filterIcon from "../assets/icons/filter.png";
 
-const sizes = ["XS", "S", "M", "L", "XL", "2XL"];
-const colors = ["black", "nude","beige"]; 
-
 function Shop() {
   const [products, setProducts] = useState([]);
   const [sortOrder, setSortOrder] = useState("default");
@@ -23,6 +20,9 @@ function Shop() {
 
   const productsPerPage = 6;
 
+  const sizes = ["XS", "S", "M", "L", "XL", "2XL","3XL","4XL","XS-S","M-L","XL-2XL","3XL-4XL"];
+  const colors = ["black", "nude","beige"]; 
+
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
@@ -33,85 +33,64 @@ function Shop() {
     };
 
     window.addEventListener("storageLanguageChanged", handleLangChange);
-    return () => {
-      window.removeEventListener("storageLanguageChanged", handleLangChange);
-    };
+    return () => window.removeEventListener("storageLanguageChanged", handleLangChange);
   }, []);
 
-  // ======== Fetch All Products from DB ========
   const fetchProducts = async () => {
     setLoading(true);
-    const data = await getProducts(); 
+    const data = await getProducts();
     if (!data.error && Array.isArray(data)) setProducts(data);
     setCurrentPage(1);
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
+  useEffect(() => { fetchProducts(); }, []);
 
-  // ======== Clear Filters ========
   const clearFilters = () => {
     setSelectedSize(null);
     setSelectedColor(null);
-    setPriceRange([0, 400]); 
+    setPriceRange([0, 400]);
     setAvailability({ inStock: false, outOfStock: false });
     setIsFilterOpen(false);
     setCurrentPage(1);
   };
 
-  // ======== Filter Products ========
   const filteredProducts = Array.isArray(products)
-    ? products.filter((product) => {
-        const productSizes = Array.isArray(product.sizes)
-          ? product.sizes
-          : product.sizes
-          ? product.sizes.split(",").map(s => s.trim())
-          : [];
+  ? products.filter(product => {
+      const matchingVariant = product.variants?.some(variant => {
+        const sizeMatch = selectedSize ? variant.size === selectedSize : true;
+        const colorMatch = selectedColor ? variant.color === selectedColor : true;
+        return sizeMatch && colorMatch;
+      });
 
-        const productColors = Array.isArray(product.colors)
-          ? product.colors
-          : product.colors
-          ? product.colors.split(",").map(c => c.trim())
-          : [];
+      if (!matchingVariant) return false;
 
-        if (selectedSize && !productSizes.includes(selectedSize)) return false;
-        if (selectedColor && !productColors.includes(selectedColor)) return false;
+      if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
 
-        if (product.price < priceRange[0] || product.price > priceRange[1]) return false;
+      
+      const totalStock = product.variants?.reduce((sum, v) => sum + v.stock, 0) || 0;
+      if (availability.inStock && availability.outOfStock) return true;
+      if (availability.inStock && totalStock === 0) return false;
+      if (availability.outOfStock && totalStock > 0) return false;
 
-        if (availability.inStock && availability.outOfStock) return true;
-        if (availability.inStock && product.available !== "In stock") return false;
-        if (availability.outOfStock && product.available !== "Out of stock") return false;
+      return true;
+    })
+  : [];
 
-        return true;
-      })
-    : [];
 
-  // ======== Sorting ========
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     switch (sortOrder) {
-      case "price-low-high":
-        return a.price - b.price;
-      case "price-high-low":
-        return b.price - a.price;
-      case "best-selling":
-        return (b.sold || 0) - (a.sold || 0); 
-      case "newest":
-        return b.id - a.id; 
-      case "oldest":
-        return a.id - b.id;
-      case "alphabetical-asc":
-        return a.name.localeCompare(b.name); 
-      case "alphabetical-desc":
-        return b.name.localeCompare(a.name); 
-      default:
-        return a.id - b.id; 
+      case "price-low-high": return a.price - b.price;
+      case "price-high-low": return b.price - a.price;
+      case "best-selling": return (b.sold || 0) - (a.sold || 0);
+      case "newest": return b.id - a.id;
+      case "oldest": return a.id - b.id;
+      case "alphabetical-asc": return a.name.localeCompare(b.name);
+      case "alphabetical-desc": return b.name.localeCompare(a.name);
+      default: return a.id - b.id;
     }
   });
 
-  // ======== Pagination ========
   const totalPages = Math.ceil(sortedProducts.length / productsPerPage);
   const indexOfLastProduct = currentPage * productsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
@@ -147,7 +126,7 @@ function Shop() {
           <div className="filter-block">
             <label>{language === "en" ? "Size" : "المقاس"}</label>
             <div className="size-options">
-              {sizes.map((size) => (
+              {sizes.map(size => (
                 <button
                   key={size}
                   className={selectedSize === size ? "size-btn active" : "size-btn"}
@@ -165,7 +144,7 @@ function Shop() {
               <input
                 type="checkbox"
                 checked={availability.inStock}
-                onChange={(e) => setAvailability({ ...availability, inStock: e.target.checked })}
+                onChange={e => setAvailability({ ...availability, inStock: e.target.checked })}
               />{" "}
               <span>{language === "en" ? "In stock" : "متوفر"}</span>
             </div>
@@ -173,7 +152,7 @@ function Shop() {
               <input
                 type="checkbox"
                 checked={availability.outOfStock}
-                onChange={(e) => setAvailability({ ...availability, outOfStock: e.target.checked })}
+                onChange={e => setAvailability({ ...availability, outOfStock: e.target.checked })}
               />{" "}
               <span>{language === "en" ? "Out of stock" : "غير متوفر"}</span>
             </div>
@@ -182,7 +161,7 @@ function Shop() {
           <div className="filter-block">
             <label>{language === "en" ? "Filter by color" : "تصفية حسب اللون"}</label>
             <div className="color-options">
-              {colors.map((color) => (
+              {colors.map(color => (
                 <span
                   key={color}
                   className={`color ${color} ${selectedColor === color ? "active" : ""}`}
@@ -208,7 +187,7 @@ function Shop() {
               <span>{language === "en" ? "Filter" : "فلترة"}</span>
             </button>
 
-            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+            <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
               <option value="default">{language === "en" ? "Default Sorting" : "الترتيب الافتراضي"}</option>
               <option value="price-low-high">{language === "en" ? "Price: Low to High" : "السعر: من الأقل للأعلى"}</option>
               <option value="price-high-low">{language === "en" ? "Price: High to Low" : "السعر: من الأعلى للأقل"}</option>
@@ -221,14 +200,12 @@ function Shop() {
           </div>
 
           <div className="products-grid">
-            {currentProducts.map((product) => (
+            {currentProducts.map(product => (
               <div key={product.id} className="product-card">
                 <Link to={`/product/${product.id}`} className="product-link">
                   <img
                     src={product.images && product.images.length > 0
-                      ? product.images[0].startsWith("/")
-                        ? product.images[0]
-                        : `/images/${product.images[0]}`
+                      ? product.images[0].startsWith("/") ? product.images[0] : `/images/${product.images[0]}`
                       : "/placeholder.png"
                     }
                     alt={language === "en" ? product.name : product.name_ar || product.name}
@@ -241,10 +218,7 @@ function Shop() {
           </div>
 
           <div className="pagination">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >←</button>
+            <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>←</button>
             {Array.from({ length: totalPages }, (_, i) => (
               <button
                 key={i + 1}
@@ -254,10 +228,7 @@ function Shop() {
                 {i + 1}
               </button>
             ))}
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              disabled={currentPage === totalPages}
-            >→</button>
+            <button onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages}>→</button>
           </div>
         </main>
       </div>

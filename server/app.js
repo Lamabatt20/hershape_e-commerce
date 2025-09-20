@@ -175,17 +175,25 @@ app.post("/login", async (req, res) => {
 app.get("/products", async (req, res) => {
   try {
     const products = await prisma.product.findMany({
-    include: {
-      orderItems: true, 
-    },
-});
+      include: {
+        variants: true,  
+        orderItems: true,
+      },
+    });
+
     const formatted = products.map(p => ({
-      ...p,
-      sizes: JSON.parse(p.sizes),
-      colors: JSON.parse(p.colors),
+      id: p.id,
+      name: p.name,
+      name_ar: p.name_ar,
+      description: p.description,
+      description_ar: p.description_ar,
+      price: p.price,
+      images: p.images,
       available: p.available,
       sold: p.orderItems.reduce((sum, item) => sum + item.quantity, 0),
+      variants: p.variants, 
     }));
+
     res.json(formatted);
   } catch (err) {
     console.error("Get products error:", err);
@@ -196,13 +204,17 @@ app.get("/products", async (req, res) => {
 app.get("/products/:id", async (req, res) => {
   const { id } = req.params;
   try {
-    const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+    const product = await prisma.product.findUnique({
+      where: { id: parseInt(id) },
+      include: { variants: true, orderItems: true },
+    });
     if (!product) return res.status(404).json({ error: "Product not found" });
+
     res.json({
       ...product,
-      sizes: JSON.parse(product.sizes),
-      colors: JSON.parse(product.colors),
       available: product.available,
+      sold: product.orderItems.reduce((sum, item) => sum + item.quantity, 0),
+      variants: product.variants,
     });
   } catch (err) {
     console.error("Get product error:", err);
@@ -212,22 +224,26 @@ app.get("/products/:id", async (req, res) => {
 
 app.post("/products", upload.array("images"), async (req, res) => {
   try {
-    const { name, description, price, sizes, colors, available, stock } = req.body;
-
+    const { name, description, price, variants } = req.body;
     const images = req.files.map(file => `/images/${file.filename}`);
+    const parsedVariants = JSON.parse(variants); 
 
-    
     const newProduct = await prisma.product.create({
       data: {
         name,
         description,
         price: parseFloat(price),
-        images: images,
-        sizes: JSON.stringify(JSON.parse(sizes)), 
-        colors: JSON.stringify(colors.split(",")), 
+        images,
         available,
-        stock: parseInt(stock),
+        variants: {
+          create: parsedVariants.map(v => ({
+            size: v.size,
+            color: v.color,
+            stock: parseInt(v.stock),
+          })),
+        },
       },
+      include: { variants: true },
     });
 
     res.json(newProduct);
@@ -239,15 +255,16 @@ app.post("/products", upload.array("images"), async (req, res) => {
 
 app.put("/products/:id", upload.array("images"), async (req, res) => {
   const { id } = req.params;
-  const { name, description, price, sizes, colors, available, stock, removedImages } = req.body;
-
+  const { name, description, price, variants, removedImages } = req.body;
   const newImages = req.files.map(file => `/images/${file.filename}`);
 
   try {
-    const product = await prisma.product.findUnique({ where: { id: parseInt(id) } });
+    const product = await prisma.product.findUnique({
+      where: { id: parseInt(id) },
+      include: { variants: true },
+    });
     if (!product) return res.status(404).json({ error: "Product not found" });
 
-   
     if (removedImages) {
       const removedArray = Array.isArray(removedImages) ? removedImages : [removedImages];
       removedArray.forEach(img => {
@@ -256,38 +273,49 @@ app.put("/products/:id", upload.array("images"), async (req, res) => {
       });
     }
 
-    
     let updatedImages = product.images || [];
     if (removedImages) {
       const removedArray = Array.isArray(removedImages) ? removedImages : [removedImages];
       updatedImages = updatedImages.filter(img => !removedArray.includes(img));
     }
-
-   
     updatedImages = [...updatedImages, ...newImages];
 
-    
-    const updated = await prisma.product.update({
+    const updatedProduct = await prisma.product.update({
       where: { id: parseInt(id) },
       data: {
         name,
         description,
         price: parseFloat(price),
-        sizes: sizes ? JSON.stringify(JSON.parse(sizes)) : "[]",
-        colors: colors ? JSON.stringify(colors.split(",")) : "[]",
-        available,
-        stock: parseInt(stock),
         images: updatedImages,
+        available,
       },
     });
 
-    res.json(updated);
+    if (variants) {
+      const parsedVariants = JSON.parse(variants);
+      await prisma.productVariant.deleteMany({ where: { productId: parseInt(id) } });
+      await prisma.productVariant.createMany({
+        data: parsedVariants.map(v => ({
+          productId: parseInt(id),
+          size: v.size,
+          color: v.color,
+          stock: parseInt(v.stock),
+        })),
+      });
+    }
+
+    const productWithVariants = await prisma.product.findUnique({
+      where: { id: parseInt(id) },
+      include: { variants: true },
+    });
+
+    res.json(productWithVariants);
   } catch (err) {
     console.error("Update product error:", err);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
-// DELETE product
+
 app.delete("/products/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -301,6 +329,7 @@ app.delete("/products/:id", async (req, res) => {
   }
 });
 
+
 // ====== ORDERS ======
 app.post("/orders", async (req, res) => {
   const { customerId, items, subtotal, shipping, total } = req.body;
@@ -308,7 +337,25 @@ app.post("/orders", async (req, res) => {
   try {
     const customer = await prisma.customer.findUnique({ where: { id: parseInt(customerId) } });
     if (!customer) return res.status(404).json({ error: "Customer not found" });
+    for (const item of items) {
+      const product = await prisma.product.findUnique({ 
+        where: { id: item.productId },
+        include: { variants: true }
+      });
 
+      if (!product) return res.status(404).json({ error: `Product ${item.productId} not found` });
+
+      const variant = product.variants.find(v => v.color === item.color && v.size === item.size);
+      if (!variant) return res.status(404).json({ error: `Variant not found for ${product.name}` });
+
+      if (variant.stock < item.quantity)
+        return res.status(400).json({ error: `Not enough stock for ${product.name} (${item.size}, ${item.color})` });
+
+      await prisma.productVariant.update({
+        where: { id: variant.id },
+        data: { stock: variant.stock - item.quantity }
+      });
+    }
     const order = await prisma.order.create({
       data: {
         customerId: customer.id,
@@ -328,12 +375,12 @@ app.post("/orders", async (req, res) => {
     });
 
     res.json(order);
+
   } catch (err) {
     console.error("Create order error:", err);
     res.status(500).json({ error: err.message });
   }
 });
-
 app.get("/orders/user/:userId", async (req, res) => {
   const { userId } = req.params;
 
@@ -476,27 +523,40 @@ app.delete("/customers/:id", async (req, res) => {
 
 app.post("/cart", async (req, res) => {
   const { customerId, productId, quantity, color, size } = req.body;
+  const qty = parseInt(quantity);
 
   if (!customerId || !productId)
     return res.status(400).json({ error: "Missing customerId or productId" });
 
-  const qty = parseInt(quantity);
-
   try {
     const customer = await prisma.customer.findUnique({ where: { id: parseInt(customerId) } });
     if (!customer) return res.status(404).json({ error: "Customer not found" });
+
+    // get variant stock
+    const variant = await prisma.productVariant.findFirst({
+      where: { productId, color, size }
+    });
+
+    if (!variant) return res.status(404).json({ error: "Variant not found" });
 
     const existing = await prisma.cartItem.findFirst({
       where: { customerId: customer.id, productId, color, size },
     });
 
     if (existing) {
+      const newQty = existing.quantity + qty;
+      if (newQty > variant.stock)
+        return res.status(400).json({ error: "Quantity exceeds available stock" });
+
       const updated = await prisma.cartItem.update({
         where: { id: existing.id },
-        data: { quantity: existing.quantity + qty },
+        data: { quantity: newQty },
       });
       return res.json(updated);
     }
+
+    if (qty > variant.stock)
+      return res.status(400).json({ error: "Quantity exceeds available stock" });
 
     const newItem = await prisma.cartItem.create({
       data: { customerId: customer.id, productId, quantity: qty, color, size },
@@ -509,14 +569,19 @@ app.post("/cart", async (req, res) => {
   }
 });
 
-
 app.get("/cart/user/:customerId", async (req, res) => {
   const { customerId } = req.params;
 
   try {
     const cart = await prisma.cartItem.findMany({
       where: { customerId: parseInt(customerId) },
-      include: { product: true },
+      include: { 
+        product: {
+          include: { 
+            variants: true 
+          } 
+        }
+      }
     });
     res.json(cart);
   } catch (err) {
@@ -553,19 +618,24 @@ app.put("/cart/:cartId", async (req, res) => {
   const { quantity, color, size } = req.body;
 
   try {
-    const cartItem = await prisma.cartItem.findUnique({
-      where: { id: parseInt(cartId) },
+    const cartItem = await prisma.cartItem.findUnique({ where: { id: parseInt(cartId) } });
+    if (!cartItem) return res.status(404).json({ error: "Cart item not found" });
+
+    const newQty = quantity !== undefined ? parseInt(quantity) : cartItem.quantity;
+    const newColor = color || cartItem.color;
+    const newSize = size || cartItem.size;
+
+    const variant = await prisma.productVariant.findFirst({
+      where: { productId: cartItem.productId, color: newColor, size: newSize },
     });
 
-    if (!cartItem) return res.status(404).json({ error: "Cart item not found" });
+    if (!variant) return res.status(404).json({ error: "Variant not found" });
+    if (newQty > variant.stock)
+      return res.status(400).json({ error: "Quantity exceeds available stock" });
 
     const updatedItem = await prisma.cartItem.update({
       where: { id: parseInt(cartId) },
-      data: {
-        quantity: quantity !== undefined ? parseInt(quantity) : cartItem.quantity,
-        color: color !== undefined ? color : cartItem.color,
-        size: size !== undefined ? size : cartItem.size,
-      },
+      data: { quantity: newQty, color: newColor, size: newSize },
       include: { product: true },
     });
 

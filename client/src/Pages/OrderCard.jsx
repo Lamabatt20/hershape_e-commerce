@@ -8,14 +8,12 @@ const OrderCard = ({ order }) => {
 
   const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
 
-  
   useEffect(() => {
     if (order.updatedAt && order.updatedAt !== order.createdAt) {
       setShowUpdated(true);
     }
   }, [order.updatedAt, order.createdAt]);
 
-  
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
@@ -33,10 +31,7 @@ const OrderCard = ({ order }) => {
 
   const handleToggleDetails = () => {
     setShowDetails(!showDetails);
-
-    if (!showDetails) {
-      setShowUpdated(false);
-    }
+    if (!showDetails) setShowUpdated(false);
   };
 
   return (
@@ -80,23 +75,20 @@ const OrderCard = ({ order }) => {
       </div>
 
       <div
-          className="order-details"
-          ref={detailsRef}
-          style={{
-            maxHeight: showDetails ? detailsRef.current?.scrollHeight : 0,
-            overflow: "hidden",
-            transition: "max-height 0.3s ease",
-          }}
-        >
-          {order.items
+        className="order-details"
+        ref={detailsRef}
+        style={{
+          maxHeight: showDetails ? detailsRef.current?.scrollHeight : 0,
+          overflow: "hidden",
+          transition: "max-height 0.3s ease",
+        }}
+      >
+        {order.items
           .slice()
           .sort((a, b) => {
             const dateA = new Date(a.createdAt).getTime();
             const dateB = new Date(b.createdAt).getTime();
-            
-            if (dateB === dateA) {
-              return b.id - a.id;
-            }
+            if (dateB === dateA) return b.id - a.id;
             return dateB - dateA;
           })
           .map((item) => (
@@ -110,7 +102,11 @@ const OrderCard = ({ order }) => {
                         : `/images/${item.product.images[0]}`
                       : "/placeholder.png"
                   }
-                  alt={language === "en" ? item.product.name : item.product.name_ar || item.product.name}
+                  alt={
+                    language === "en"
+                      ? item.product.name
+                      : item.product.name_ar || item.product.name
+                  }
                   style={{
                     width: 50,
                     height: 50,
@@ -126,19 +122,24 @@ const OrderCard = ({ order }) => {
                     : item.product.name_ar || item.product.name}
                 </p>
                 <p>
-                  {item.color}/{item.size}
+                  {item.variant
+                    ? `${item.variant.color}/${item.variant.size}`
+                    : `${item.color}/${item.size}`}
                 </p>
                 <p>
                   {language === "en" ? "x" : "×"}
                   {item.quantity}
                 </p>
-                <p>₪{item.product.price}</p>
+                <p>
+                  ₪
+                  {item.variant
+                    ? item.variant.price || item.product.price
+                    : item.product.price}
+                </p>
               </div>
             </div>
           ))}
-
-        </div>
-
+      </div>
     </div>
   );
 };

@@ -69,16 +69,12 @@ const Cart = () => {
       const user = JSON.parse(localStorage.getItem("user"));
       const customerId = user?.customer?.id;
 
-      console.log("User object:", user);
-      console.log("Customer ID:", customerId);
-
       if (!user) {
         navigate("/login", { state: { from: "/cart" } });
         return;
       }
 
       if (!customerId) {
-        console.warn("No customerId found, redirecting to empty-cart");
         navigate("/EmptyCart");
         return;
       }
@@ -86,16 +82,7 @@ const Cart = () => {
       try {
         const res = await getCart(customerId);
 
-        // Cart empty
-        if (!res || res.length === 0) {
-          console.info("Cart is empty, redirecting to empty-cart");
-          navigate("/EmptyCart");
-          return;
-        }
-
-        // API error
-        if (res.error) {
-          console.error("Error fetching cart:", res.error);
+        if (!res || res.length === 0 || res.error) {
           navigate("/EmptyCart");
           return;
         }
@@ -119,7 +106,6 @@ const Cart = () => {
     0
   );
 
-  // Clear cart
   const clearCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const customerId = user?.customer?.id;
@@ -140,7 +126,6 @@ const Cart = () => {
     }
   };
 
-  // Update cart item quantity
   const updateCartItem = async (updatedItem) => {
     try {
       const res = await updateCartItemAPI(updatedItem.id, updatedItem);
@@ -159,7 +144,6 @@ const Cart = () => {
     }
   };
 
-  // Delete single item
   const deleteItem = async (cartId) => {
     try {
       const res = await deleteCartItemAPI(cartId);
@@ -196,11 +180,9 @@ const Cart = () => {
                         : `/images/${item.product.images[0]}`
                       : "/placeholder.png"
                   }
-                  alt={
-                    language === "ar"
+                  alt={language === "ar"
                       ? item.product.name_ar || item.product.name
-                      : item.product.name
-                  }
+                      : item.product.name}
                   onClick={() => setModalProduct(item)}
                   style={{ cursor: "pointer" }}
                 />
@@ -215,7 +197,6 @@ const Cart = () => {
                       : item.product.name}
                   </p>
                   <p>₪{item.product.price}</p>
-
                   <div
                     className="item-size"
                     onClick={() => setModalProduct(item)}
@@ -302,7 +283,10 @@ const Cart = () => {
         <div className="modal-overlay">
           <ProductDetails
             modal={true}
-            initialProduct={{ ...modalProduct.product, ...modalProduct }}
+            initialProduct={modalProduct.product}      
+            initialQuantity={modalProduct.quantity}    
+            initialSize=""        
+            initialColor=""       
             onUpdate={(updates) => {
               updateCartItem({ id: modalProduct.id, ...updates });
               setModalProduct(null);
