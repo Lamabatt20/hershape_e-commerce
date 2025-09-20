@@ -319,6 +319,11 @@ app.put("/products/:id", upload.array("images"), async (req, res) => {
 app.delete("/products/:id", async (req, res) => {
   const { id } = req.params;
   try {
+    await prisma.productVariant.deleteMany({
+      where: { productId: parseInt(id) },
+    });
+
+    
     const deleted = await prisma.product.delete({
       where: { id: parseInt(id) },
     });
