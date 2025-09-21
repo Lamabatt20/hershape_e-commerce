@@ -22,8 +22,6 @@ const Checkout = () => {
   const [lastName, setLastName] = useState("");
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
- 
-
   const colorMap = [
     { name: "nude", hex: "#ecc7b5" },
     { name: "black", hex: "#000000" },
@@ -135,6 +133,31 @@ const Checkout = () => {
     }
   };
 
+  const getItemImage = (item) => {
+    if (item.variant?.images?.length > 0) {
+      return item.variant.images[0].startsWith("/")
+        ? item.variant.images[0]
+        : `/images/${item.variant.images[0]}`;
+    }
+
+    const colorVariant = item.product.variants?.find(
+      (v) => v.color === (item.variant?.color || item.color) && v.images?.length > 0
+    );
+    if (colorVariant) {
+      return colorVariant.images[0].startsWith("/")
+        ? colorVariant.images[0]
+        : `/images/${colorVariant.images[0]}`;
+    }
+
+    if (item.product.images?.length > 0) {
+      return item.product.images[0].startsWith("/")
+        ? item.product.images[0]
+        : `/images/${item.product.images[0]}`;
+    }
+
+    return "/placeholder.png";
+  };
+
   return (
     <>
       <div className="checkout-container" dir={language === "ar" ? "rtl" : "ltr"}>
@@ -210,14 +233,17 @@ const Checkout = () => {
           {cartItems.map((item) => (
             <div key={item.id} className="summary-item">
               <img
-                src={Array.isArray(item.product.images) && item.product.images.length > 0 ? item.product.images[0] : "/placeholder.png"}
+                src={getItemImage(item)}
                 alt={language === "ar" ? item.product.name_ar || item.product.name : item.product.name}
               />
               <div className="item-info">
                 <p className="item-name">{language === "ar" ? item.product.name_ar || item.product.name : item.product.name}</p>
                 <div className="item-details">
                   <span className="product-size">{item.size}</span>
-                  <span className="color-circle" style={{ backgroundColor: colorMap.find((c) => c.name === item.color)?.hex || item.color }}></span>
+                  <span
+                    className="color-circle"
+                    style={{ backgroundColor: colorMap.find((c) => c.name === item.color)?.hex || item.color }}
+                  ></span>
                   <span className="item-quantity">x{item.quantity}</span>
                 </div>
               </div>

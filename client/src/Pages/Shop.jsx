@@ -200,23 +200,41 @@ function Shop() {
           </div>
 
           <div className="products-grid">
-            {currentProducts.map(product => (
+          {currentProducts.map(product => {
+            
+            let mainImage = "/placeholder.png";
+
+            if (selectedColor) {
+              
+              const colorVariant = product.variants?.find(v => v.color === selectedColor && v.images?.length > 0);
+              if (colorVariant) {
+                mainImage = colorVariant.images[0].startsWith("/") 
+                  ? colorVariant.images[0] 
+                  : `/images/${colorVariant.images[0]}`;
+              }
+            }
+
+            
+            if (mainImage === "/placeholder.png" && product.images?.length > 0) {
+              mainImage = product.images[0].startsWith("/") 
+                ? product.images[0] 
+                : `/images/${product.images[0]}`;
+            }
+
+            return (
               <div key={product.id} className="product-card">
                 <Link to={`/product/${product.id}`} className="product-link">
                   <img
-                    src={product.images && product.images.length > 0
-                      ? product.images[0].startsWith("/") ? product.images[0] : `/images/${product.images[0]}`
-                      : "/placeholder.png"
-                    }
+                    src={mainImage}
                     alt={language === "en" ? product.name : product.name_ar || product.name}
                   />
                   <h3>{language === "en" ? product.name : product.name_ar || product.name}</h3>
                   <p>₪{product.price}</p>
                 </Link>
               </div>
-            ))}
-          </div>
-
+            );
+          })}
+        </div>
           <div className="pagination">
             <button onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} disabled={currentPage === 1}>←</button>
             {Array.from({ length: totalPages }, (_, i) => (

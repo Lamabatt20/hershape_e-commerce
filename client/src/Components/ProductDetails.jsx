@@ -26,8 +26,6 @@ const ProductDetails = ({
   const [flyingStyle, setFlyingStyle] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [language, setLanguage] = useState("en");
-
- 
   const [showSizeGuide, setShowSizeGuide] = useState(false);
 
   const addBtnRef = useRef(null);
@@ -38,12 +36,8 @@ const ProductDetails = ({
     { name: "beige", hex: "#e0c7a0" },
   ];
 
- 
   const productsWithSizeGuide = [16, 18, 20];
-
-  
-  const sizeGuideImages = [sizeGuideImg
-  ];
+  const sizeGuideImages = [sizeGuideImg];
 
   const translateAvailability = (status, lang) => {
     if (lang === "en") return status;
@@ -57,7 +51,6 @@ const ProductDetails = ({
     }
   };
 
- 
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
@@ -69,7 +62,6 @@ const ProductDetails = ({
       window.removeEventListener("storageLanguageChanged", handleLangChange);
   }, []);
 
-  
   useEffect(() => {
     if (!product) {
       const fetchProduct = async () => {
@@ -116,13 +108,36 @@ const ProductDetails = ({
         .reduce((sum, v) => sum + v.stock, 0)
     : availableVariants.reduce((sum, v) => sum + v.stock, 0);
 
-  const images =
-    Array.isArray(product.images) && product.images.length > 0
-      ? product.images.map((img) =>
+  // الصور حسب اللون أو صور المنتج العامة
+  const images = (() => {
+    if (selectedColor) {
+      const colorVariants = availableVariants.filter(
+        (v) => v.color === selectedColor
+      );
+      const colorImages = colorVariants.flatMap((v) => v.images || []);
+      if (colorImages.length > 0)
+        return colorImages.map((img) =>
           img.startsWith("/") ? img : `/images/${img}`
-        )
-      : ["/placeholder.png"];
+        );
+    }
+    if (Array.isArray(product.images) && product.images.length > 0)
+      return product.images.map((img) =>
+        img.startsWith("/") ? img : `/images/${img}`
+      );
+    return ["/placeholder.png"];
+  })();
+
   const mainImage = images[currentImageIndex];
+
+  // التنقل الدائري للصور
+  const prevImage = () =>
+    setCurrentImageIndex(
+      (prev) => (prev === 0 ? images.length - 1 : prev - 1)
+    );
+  const nextImage = () =>
+    setCurrentImageIndex(
+      (prev) => (prev === images.length - 1 ? 0 : prev + 1)
+    );
 
   const increment = () => {
     if (quantity < currentStock) {
@@ -143,11 +158,6 @@ const ProductDetails = ({
       setErrorMessage("");
     }
   };
-
-  const prevImage = () =>
-    setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  const nextImage = () =>
-    setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
 
   const triggerFlyingAnimation = () => {
     if (!addBtnRef.current) return;
@@ -202,9 +212,7 @@ const ProductDetails = ({
           : "👋 يرجى تسجيل الدخول لإضافة المنتجات للعربة"
       );
       setTimeout(
-        () => {
-          navigate("/login", { state: { from: `/product/${id}` } });
-        },
+        () => navigate("/login", { state: { from: `/product/${id}` } }),
         2000
       );
       return;
@@ -346,6 +354,7 @@ const ProductDetails = ({
                     setSelectedSize("");
                     setErrorMessage("");
                     setQuantity(1);
+                    setCurrentImageIndex(0); // إعادة تعيين الصورة عند تغيير اللون
                   }}
                 />
               ))}

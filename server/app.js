@@ -240,6 +240,7 @@ app.post("/products", upload.array("images"), async (req, res) => {
             size: v.size,
             color: v.color,
             stock: parseInt(v.stock),
+            images: v.images || [],
           })),
         },
       },
@@ -300,6 +301,7 @@ app.put("/products/:id", upload.array("images"), async (req, res) => {
           size: v.size,
           color: v.color,
           stock: parseInt(v.stock),
+           images: v.images || [],
         })),
       });
     }

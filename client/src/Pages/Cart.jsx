@@ -161,6 +161,32 @@ const Cart = () => {
     }
   };
 
+  // Unified function to get product image based on variant/color
+  const getItemImage = (item) => {
+    if (item.variant?.images?.length > 0) {
+      return item.variant.images[0].startsWith("/")
+        ? item.variant.images[0]
+        : `/images/${item.variant.images[0]}`;
+    }
+
+    const colorVariant = item.product.variants?.find(
+      (v) => v.color === (item.variant?.color || item.color) && v.images?.length > 0
+    );
+    if (colorVariant) {
+      return colorVariant.images[0].startsWith("/")
+        ? colorVariant.images[0]
+        : `/images/${colorVariant.images[0]}`;
+    }
+
+    if (item.product.images?.length > 0) {
+      return item.product.images[0].startsWith("/")
+        ? item.product.images[0]
+        : `/images/${item.product.images[0]}`;
+    }
+
+    return "/placeholder.png";
+  };
+
   if (loading) return <h2>{translations[language].loading}</h2>;
 
   return (
@@ -172,14 +198,7 @@ const Cart = () => {
             {cartItems.map((item) => (
               <div key={item.id} className="cart-item">
                 <img
-                  src={
-                    Array.isArray(item.product.images) &&
-                    item.product.images.length > 0
-                      ? item.product.images[0].startsWith("/")
-                        ? item.product.images[0]
-                        : `/images/${item.product.images[0]}`
-                      : "/placeholder.png"
-                  }
+                  src={getItemImage(item)}
                   alt={language === "ar"
                       ? item.product.name_ar || item.product.name
                       : item.product.name}
