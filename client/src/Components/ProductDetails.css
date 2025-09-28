@@ -17,6 +17,26 @@
   border-radius: 10px;
   display: block;
 }
+.size-chart {
+  background: #f6f4f4;
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+  line-height: 1.2; 
+}
+
+.size-chart h4 {
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+
+.size-chart p {
+  margin: 0 8px 0 0; 
+  display: inline-block; 
+}
+
 .stock-message {
   margin-top: 8px;
   font-size: 14px;
@@ -403,6 +423,22 @@
   cursor: pointer;
   z-index: 1001;
   color: #000;
+}
+
+.whatsapp-note {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #333;
+}
+
+.whatsapp-link {
+  color: #f5a9f2;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.whatsapp-link:hover {
+  text-decoration: underline;
 }
 
 

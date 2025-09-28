@@ -23,7 +23,7 @@ export default function CustomerDetails() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showDot, setShowDot] = useState(false);
 
-  // Fetch customer
+  
   useEffect(() => {
   const fetchCustomer = async () => {
     try {
@@ -36,7 +36,7 @@ export default function CustomerDetails() {
   fetchCustomer();
 }, [id]);
 
-  // Protect admin route
+  
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || storedUser.role !== "admin") {
@@ -62,7 +62,7 @@ export default function CustomerDetails() {
 
   return (
     <div className="orders-page">
-      {/* Sidebar */}
+      
       <aside className={`orders-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div>
           <div className="orders-logo">
@@ -108,7 +108,7 @@ export default function CustomerDetails() {
         </button>
       </aside>
 
-      {/* Main */}
+     
       <div className="orders-main">
         <header className="orders-header">
           <button className="orders-menu-btn" onClick={() => setIsSidebarOpen(true)}>

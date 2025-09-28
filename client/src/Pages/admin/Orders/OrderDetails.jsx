@@ -32,7 +32,7 @@ export default function OrderDetails() {
   const [showDot, setShowDot] = useState(false);
   const [newStatus, setNewStatus] = useState("");
 
-  // Fetch order
+
   useEffect(() => {
     const fetchOrder = async () => {
       try {
@@ -50,7 +50,7 @@ export default function OrderDetails() {
     fetchOrder();
   }, [id]);
 
-  // Protect admin route
+ 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || storedUser.role !== "admin") {
@@ -85,7 +85,7 @@ export default function OrderDetails() {
 
   return (
     <div className="orders-page">
-      {/* Sidebar */}
+    
       <aside className={`orders-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div>
           <div className="orders-logo">
@@ -144,7 +144,7 @@ export default function OrderDetails() {
         </button>
       </aside>
 
-      {/* Main */}
+     
       <div className="orders-main">
         <header className="orders-header">
           <button

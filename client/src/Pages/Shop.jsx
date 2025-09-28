@@ -20,7 +20,7 @@ function Shop() {
 
   const productsPerPage = 6;
 
-  const sizes = ["XS", "S", "M", "L", "XL", "2XL","3XL","4XL","XS-S","M-L","XL-2XL","3XL-4XL"];
+  const sizes = ["XS", "XS-S", "S", "M", "M-L", "L", "XL", "XL-2XL", "2XL", "3XL", "3XL-4XL", "4XL"]
   const colors = ["black", "nude","beige"]; 
 
   useEffect(() => {

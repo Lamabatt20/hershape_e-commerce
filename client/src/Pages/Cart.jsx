@@ -50,7 +50,7 @@ const Cart = () => {
     },
   };
 
-  // Language listener
+  
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
@@ -63,7 +63,7 @@ const Cart = () => {
       window.removeEventListener("storageLanguageChanged", handleLangChange);
   }, []);
 
-  // Fetch cart items
+  
   useEffect(() => {
     const fetchCart = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
@@ -161,7 +161,7 @@ const Cart = () => {
     }
   };
 
-  // Unified function to get product image based on variant/color
+  
   const getItemImage = (item) => {
     if (item.variant?.images?.length > 0) {
       return item.variant.images[0].startsWith("/")

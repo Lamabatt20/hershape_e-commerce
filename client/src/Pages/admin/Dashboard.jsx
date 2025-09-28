@@ -53,7 +53,7 @@ export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showDot, setShowDot] = useState(false);
 
-  // Fetch data
+  
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser)
@@ -167,7 +167,7 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard">
-      {/* Sidebar */}
+      
       <aside className={`sidebars ${isSidebarOpen ? "open" : ""}`}>
         <div>
           <div className="logo">
@@ -229,7 +229,7 @@ export default function Dashboard() {
         </button>
       </aside>
 
-      {/* Main */}
+     
       <div className="main">
         <header className="header">
           <button

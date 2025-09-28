@@ -29,14 +29,14 @@ export default function Customers() {
   const [customers, setCustomers] = useState([]);
   const [showDot, setShowDot] = useState(false);
 
-  // Pagination
+
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 5;
 
-  // Search
+  
   const [searchValue, setSearchValue] = useState("");
 
-  // Fetch customers
+  
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
@@ -49,7 +49,7 @@ export default function Customers() {
     fetchCustomers();
   }, []);
 
-  // Protect admin route
+  
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || storedUser.role !== "admin") {
@@ -71,14 +71,14 @@ export default function Customers() {
 
   const goToHome = () => navigate("/");
 
-  // Filtered Customers
+  
   const filteredCustomers = customers.filter((c) =>
     searchValue === "" ||
     c.name?.toLowerCase().includes(searchValue.toLowerCase()) ||
     c.email?.toLowerCase().includes(searchValue.toLowerCase())
   );
 
-  // Pagination
+  
   const indexOfLast = currentPage * customersPerPage;
   const indexOfFirst = indexOfLast - customersPerPage;
   const currentCustomers = filteredCustomers.slice(indexOfFirst, indexOfLast);
@@ -86,7 +86,7 @@ export default function Customers() {
 
   return (
     <div className="orders-page">
-      {/* Sidebar */}
+      
       <aside className={`orders-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div>
           <div className="orders-logo">
@@ -145,7 +145,7 @@ export default function Customers() {
         </button>
       </aside>
 
-      {/* Main */}
+     
       <div className="orders-main">
         <header className="orders-header">
           <button
@@ -181,7 +181,7 @@ export default function Customers() {
         </header>
 
         <main className="orders-content">
-          {/* Filters */}
+          
           <div className="orders-filters">
             <div className="search-box">
               <input
@@ -194,7 +194,6 @@ export default function Customers() {
             </div>
           </div>
 
-          {/* Table */}
           <table className="orders-table">
             <thead>
               <tr>
@@ -231,7 +230,7 @@ export default function Customers() {
             </tbody>
           </table>
 
-          {/* Pagination */}
+        
           <div className="orders-pagination">
             <button
               className="page-btn"

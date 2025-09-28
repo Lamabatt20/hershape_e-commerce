@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import "./Contact.css";
 
 import facebookIcon from "../assets/icons/icons8-facebook-48.png";
-import instagramIcon from "../assets/icons/Instagram (1).png";
+import instagramIcon from "../assets/icons/icons8-instagram-logo-48.png";
 import snapchatIcon from "../assets/icons/snap.png";
-import locationIcon from "../assets/icons/loc.png";
+import locationIcon from "../assets/icons/icons8-location-48 (1).png";
 import phoneIcon from "../assets/icons/whats.png";
 import emailIcon from "../assets/icons/email.png";
 import Footer from "../Components/Footer";
@@ -20,7 +20,7 @@ export default function Contact() {
         "If you have any questions or would like to know more about our products, delivery options, or order details",
       location: "Ramallah, Palestine",
       phone: "+972 592743619",
-      email: "Larashareef@hotmail.com",
+      email: "hershape2025@gmail.com",
     },
     ar: {
       getInTouch: "تواصل معنا",
@@ -28,7 +28,7 @@ export default function Contact() {
         "إذا كان لديك أي أسئلة أو ترغب في معرفة المزيد عن منتجاتنا، خيارات التوصيل، أو تفاصيل الطلب",
       location: "رام الله، فلسطين",
       phone: "+972 592743619",
-      email: "Larashareef@hotmail.com",
+      email: "hershape2025@gmail.com",
     },
   };
 

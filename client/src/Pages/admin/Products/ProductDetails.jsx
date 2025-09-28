@@ -53,7 +53,7 @@ export default function ProductDetails() {
   const [colors, setColors] = useState([]);
   const [sizesByColor, setSizesByColor] = useState({});
 
-  // Fetch product details
+  
   useEffect(() => {
     const fetchProduct = async () => {
       const data = await getProductById(id);
@@ -101,7 +101,7 @@ export default function ProductDetails() {
     fetchProduct();
   }, [id]);
 
-  // Check user
+  
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || storedUser.role !== "admin") navigate("/login", { replace: true });

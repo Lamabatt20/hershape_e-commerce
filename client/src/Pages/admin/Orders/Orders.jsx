@@ -29,17 +29,17 @@ export default function Orders() {
   const [orders, setOrders] = useState([]);
   const [highlightOrders, setHighlightOrders] = useState([]);
 
-  // Pagination
+  
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 5;
 
-  // Filters & Search
+  
   const [searchField, setSearchField] = useState("id");
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [showDot, setShowDot] = useState(false);
 
-  // Fetch orders
+  
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -236,7 +236,7 @@ export default function Orders() {
             </div>
           </div>
 
-          {/* Table */}
+          
           <table className="orders-table">
             <thead>
               <tr>
@@ -278,7 +278,7 @@ export default function Orders() {
             </tbody>
           </table>
 
-          {/* Pagination */}
+          
           <div className="orders-pagination">
             <button
               className="page-btn"

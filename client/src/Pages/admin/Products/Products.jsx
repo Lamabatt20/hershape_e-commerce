@@ -29,14 +29,14 @@ export default function Products() {
   const [products, setProducts] = useState([]);
   const [showDot, setShowDot] = useState(false);
 
-  // Pagination
+  
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 8;
 
-  // Search
+  
   const [searchValue, setSearchValue] = useState("");
 
-  // Fetch products
+  
   const fetchProducts = async () => {
   try {
     const res = await getProducts();
@@ -52,7 +52,7 @@ export default function Products() {
     fetchProducts();
   }, []);
 
-  // Protect admin route
+  
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (!storedUser || storedUser.role !== "admin") {
@@ -74,7 +74,7 @@ export default function Products() {
 
   const goToHome = () => navigate("/");
 
-  // Handle Delete Product
+  
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
@@ -87,7 +87,7 @@ export default function Products() {
     }
   };
 
-  // Filtered Products
+  
   const filteredProducts = products.filter(
     (p) =>
       searchValue === "" ||
@@ -95,7 +95,7 @@ export default function Products() {
       p.id.toString().includes(searchValue)
   );
 
-  // Pagination
+  
   const indexOfLast = currentPage * productsPerPage;
   const indexOfFirst = indexOfLast - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
@@ -103,7 +103,7 @@ export default function Products() {
 
   return (
     <div className="orders-page">
-      {/* Sidebar */}
+      
       <aside className={`orders-sidebar ${isSidebarOpen ? "open" : ""}`}>
         <div>
           <div className="orders-logo">
@@ -198,7 +198,7 @@ export default function Products() {
         </header>
 
         <main className="orders-content">
-          {/* Filters */}
+         
           <div className="orders-filters">
             <div className="search-box">
               <input
@@ -218,7 +218,7 @@ export default function Products() {
             </button>
           </div>
 
-          {/* Table */}
+          
           <table className="orders-table">
             <thead>
               <tr>
@@ -237,7 +237,7 @@ export default function Products() {
                   <td>{p.name}</td>
                   <td>₪{p.price}</td>
                   <td style={{ display: "flex", gap: "8px" }}>
-                    {/* Edit Button */}
+                   
                     <button
                       className="orders-edit-btn"
                       onClick={() => navigate(`/products/${p.id}`)}
@@ -245,7 +245,7 @@ export default function Products() {
                       <img src={EditIcon} alt="Edit" />
                     </button>
 
-                    {/* Delete Button */}
+                    
                     <button
                       className="orders-delete-btn"
                       onClick={() => handleDelete(p.id)}
@@ -258,7 +258,7 @@ export default function Products() {
             </tbody>
           </table>
 
-          {/* Pagination */}
+          
           <div className="orders-pagination">
             <button
               className="page-btn"

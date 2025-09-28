@@ -36,8 +36,94 @@ const ProductDetails = ({
     { name: "beige", hex: "#e0c7a0" },
   ];
 
-  const productsWithSizeGuide = [16, 18, 20];
+  const productsWithSizeGuide = [16, 18, 20]; 
   const sizeGuideImages = [sizeGuideImg];
+
+  
+  const sizeOrder = [
+    "XS",
+    "XS-S",
+    "S",
+    "M",
+    "M-L",
+    "L",
+    "XL",
+    "XL-2XL",
+    "2XL",
+    "3XL",
+    "3XL-4XL",
+    "4XL",
+    "5XL",
+  ];
+  const sizeChart = {
+  "XS-S": {
+    Dress: "0-4",
+    Bust: "82-88 cm",
+    Waist: "63-70 cm",
+    HP: "82-88 cm",
+  },
+  "M-L": {
+    Dress: "6-8",
+    Bust: "89-100 cm",
+    Waist: "71-80 cm",
+    HP: "89-102 cm",
+  },
+  "XL-2XL": {
+    Dress: "10-14",
+    Bust: "102-112 cm",
+    Waist: "81-90 cm",
+    HP: "103-114 cm",
+  },
+  "3XL-4XL": {
+    Dress: "16-20",
+    Bust: "113-122 cm",
+    Waist: "91-102 cm",
+    HP: "116-127 cm",
+  },
+  "5XL": {
+    Dress: "22-24",
+    Bust: "123-134 cm",
+    Waist: "103-114 cm",
+    HP: "130-140 cm",
+  },
+  "XXS":{
+    Waist: "21.3-23.6 cm",
+  },
+  "XS":{
+    Waist: "23.6-26 cm",
+  },
+  "S":{
+    Waist: "26-28.3 cm",
+  },
+  "M":{
+    Waist: "28.3-30.7 cm",
+  },
+  "L":{
+    Waist: "30.7-33.1 cm",
+  },
+  "XL":{
+    Waist: "33.1-35.4 cm",
+  },
+  "2XL":{
+    Waist: "35.4-37.8 cm",
+  },
+  "3XL":{
+    Waist: "37.8-40.2 cm",
+  },
+};
+
+  const sortSizes = (sizes) => {
+    return sizes.sort((a, b) => {
+      const aIndex = sizeOrder.indexOf(a.toUpperCase());
+      const bIndex = sizeOrder.indexOf(b.toUpperCase());
+
+      if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+      if (aIndex !== -1) return -1;
+      if (bIndex !== -1) return 1;
+
+      return a.localeCompare(b, "en", { numeric: true });
+    });
+  };
 
   const translateAvailability = (status, lang) => {
     if (lang === "en") return status;
@@ -87,14 +173,14 @@ const ProductDetails = ({
     ...new Set(availableVariants.map((v) => v.color).filter((c) => c)),
   ];
   const availableSizes = selectedColor
-    ? [
+    ? sortSizes([
         ...new Set(
           availableVariants
             .filter((v) => v.color === selectedColor)
             .map((v) => v.size)
         ),
-      ]
-    : [...new Set(availableVariants.map((v) => v.size))];
+      ])
+    : sortSizes([...new Set(availableVariants.map((v) => v.size))]);
 
   const selectedVariant = availableVariants.find(
     (v) => v.size === selectedSize && v.color === selectedColor
@@ -108,7 +194,6 @@ const ProductDetails = ({
         .reduce((sum, v) => sum + v.stock, 0)
     : availableVariants.reduce((sum, v) => sum + v.stock, 0);
 
-  // الصور حسب اللون أو صور المنتج العامة
   const images = (() => {
     if (selectedColor) {
       const colorVariants = availableVariants.filter(
@@ -129,7 +214,6 @@ const ProductDetails = ({
 
   const mainImage = images[currentImageIndex];
 
-  // التنقل الدائري للصور
   const prevImage = () =>
     setCurrentImageIndex(
       (prev) => (prev === 0 ? images.length - 1 : prev - 1)
@@ -209,7 +293,7 @@ const ProductDetails = ({
       setErrorMessage(
         language === "en"
           ? "👋 Please login to add products to your cart"
-          : "👋 يرجى تسجيل الدخول لإضافة المنتجات للعربة"
+          : "👋 يرجى تسجيل الدخول لإضافة المنتجات للسلة"
       );
       setTimeout(
         () => navigate("/login", { state: { from: `/product/${id}` } }),
@@ -274,7 +358,7 @@ const ProductDetails = ({
         alert(
           (language === "en"
             ? "Error adding to cart: "
-            : "خطأ في إضافة المنتج للعربة: ") + res.error
+            : "خطأ في إضافة المنتج للسلة: ") + res.error
         );
       }
     } catch (err) {
@@ -321,9 +405,17 @@ const ProductDetails = ({
           >
             {translateAvailability(product.available, language)}
           </p>
-          <p className="description">
-            {language === "en" ? product.description : product.description_ar}
-          </p>
+          <p
+          className="description"
+          style={{
+            direction: language === "en" ? "ltr" : "rtl",
+            textAlign: language === "en" ? "start" : "End", 
+            width: "100%",
+            overflowWrap: "break-word", 
+          }}
+        >
+          {language === "en" ? product.description : product.description_ar}
+        </p>
           <p className="price">₪{product.price}</p>
 
           {errorMessage && (
@@ -354,7 +446,7 @@ const ProductDetails = ({
                     setSelectedSize("");
                     setErrorMessage("");
                     setQuantity(1);
-                    setCurrentImageIndex(0); // إعادة تعيين الصورة عند تغيير اللون
+                    setCurrentImageIndex(0);
                   }}
                 />
               ))}
@@ -418,6 +510,42 @@ const ProductDetails = ({
                 ) : null}
               </div>
             )}
+            {selectedSize && sizeChart[selectedSize] && ![19, 21, 22].includes(product?.id) && (
+            <div className="size-chart">
+              <h4>{language === "en" ? "Product Measurement" : "مقاسات المنتج"}</h4>
+
+              {product?.id === 17 ? (
+                <p><b>Waist:</b> {sizeChart[selectedSize].Waist}</p>
+              ) : (
+                <>
+                  <p><b>Dress:</b> {sizeChart[selectedSize].Dress}</p>
+                  <p><b>Bust:</b> {sizeChart[selectedSize].Bust}</p>
+                  <p><b>Waist:</b> {sizeChart[selectedSize].Waist}</p>
+                  <p><b>HIP:</b> {sizeChart[selectedSize].HP}</p>
+                </>
+              )}
+            </div>
+          )}
+          <p
+          className="whatsapp-note"
+          style={{
+            direction: language === "en" ? "ltr" : "rtl",
+            textAlign: language === "en" ? "start" : "end",
+          }}
+        >
+          {language === "en"
+            ? "If you have questions about sizes, contact us on "
+            : "إذا كان لديك استفسار عن المقاسات تواصل معنا على "}
+          <a
+            href={`https://wa.me/972592743619`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="whatsapp-link"
+          >
+            WhatsApp
+          </a>
+        </p>
+
           </div>
 
           <div className="quantity">
@@ -472,7 +600,7 @@ const ProductDetails = ({
                 : "تحديث"
               : language === "en"
               ? "Add to Cart"
-              : "أضف إلى العربة"}
+              : "أضف إلى السلة"}
           </button>
         </div>
       </div>
@@ -488,11 +616,7 @@ const ProductDetails = ({
             </button>
             <div className="size-guide-images">
               {sizeGuideImages.map((img, i) => (
-                <img
-                  key={i}
-                  src={process.env.PUBLIC_URL + img}
-                  alt="Size Guide"
-                />
+                <img key={i} src={img} alt="Size Guide" />
               ))}
             </div>
           </div>

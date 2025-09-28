@@ -83,7 +83,7 @@ function Navbar() {
         <ul className="navbar-links">
           <li><Link to="/">{language === 'en' ? 'Home' : 'الرئيسية'}</Link></li>
           <li><Link to="/shop">{language === 'en' ? 'Shop' : 'المتجر'}</Link></li>
-          <li><Link to="/contact">{language === 'en' ? 'Contact' : 'اتصل بنا'}</Link></li>
+          <li><Link to="/contact">{language === 'en' ? 'Contact' : 'تواصل معنا'}</Link></li>
         </ul>
 
         <div className="navbar-icons">
@@ -151,7 +151,7 @@ function Navbar() {
         <ul>
           <li><Link to="/" onClick={closeMenu}>{language === 'en' ? 'Home' : 'الرئيسية'}</Link></li>
           <li><Link to="/shop" onClick={closeMenu}>{language === 'en' ? 'Shop' : 'المتجر'}</Link></li>
-          <li><Link to="/contact" onClick={closeMenu}>{language === 'en' ? 'Contact' : 'اتصل بنا'}</Link></li>
+          <li><Link to="/contact" onClick={closeMenu}>{language === 'en' ? 'Contact' : 'تواصل معنا'}</Link></li>
         </ul>
       </aside>
     </>
