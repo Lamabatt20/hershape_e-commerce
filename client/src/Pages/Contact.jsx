@@ -82,7 +82,7 @@ export default function Contact() {
               <div className="info-item">
                 <img src={emailIcon} alt="Email" className="info-icon" />
                 <span className="support-info">
-                  <a href="mailto:Larashareef@hotmail.com">
+                  <a href="mailto:hershape2025@gmail.com">
                     {translations[language].email}
                   </a>
                 </span>
