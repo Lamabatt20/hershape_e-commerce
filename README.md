@@ -3,8 +3,10 @@
 **Hershape** is an online store specialized in selling **high-quality Colombian shapewear** for women.  
 The platform is designed to be elegant, user-friendly, and fully responsive on all devices.
 
-🔗 **Figma Design:** [Insert Figma Link Here]  
-🌐 **Live Demo:** [Insert Demo Link Here]
+🔗 **Figma Design:** [View Design](https://www.figma.com/design/CEmXGJ5qrz62hOZTQsL6na/hershape?fuid=1324734562379279366)
+
+🔗 **Live Demo:** [Visit Hershape](https://hershape.vercel.app)
+
 
 ---
 
