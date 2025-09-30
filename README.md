@@ -17,7 +17,7 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
 - 🛍️ Shopping cart and checkout functionality  
 - 📱 Fully responsive design for mobile and desktop
 - 🛠️ **Admin Panel:** Full control over products, orders, and customers
-
+- 🌐 **Multi-language Support:** Switch between English and Arabic
 ---
 
 ## ⚙️ Tech Stack
