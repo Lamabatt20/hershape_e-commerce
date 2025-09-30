@@ -34,4 +34,10 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
 - The **backend API** is hosted on **Render**, providing scalable and secure endpoints.  
 - **PostgreSQL database** is hosted on **Neon**, a cloud-native database platform, ensuring high performance and availability.
 
+  
+## 🎬 Demo Video
+
+[![Demo Video](https://drive.google.com/uc?export=view&id=1VhoE4ZZi1FRudf_d10GcNODMTcX2c1Kr)](https://drive.google.com/file/d/1VhoE4ZZi1FRudf_d10GcNODMTcX2c1Kr/view?usp=drivesdk)
+ 
+
 
