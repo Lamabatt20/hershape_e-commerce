@@ -5,7 +5,7 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
 
 🔗 **Figma Design:** [View Design](https://www.figma.com/design/CEmXGJ5qrz62hOZTQsL6na/hershape?fuid=1324734562379279366)
 
-🔗 **Live Demo:** [Visit Hershape](https://hershape.vercel.app)
+🔗 **Live Demo:** [Visit Hershape](https://www.hershape.online)
 
 
 ---
