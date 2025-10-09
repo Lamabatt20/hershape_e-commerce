@@ -37,6 +37,9 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
   
 ## Screen Record
 
+
+![Image](https://github.com/user-attachments/assets/a99f4a2e-b512-4782-a0ea-203b514f503e)
+
 <video width="700" controls autoplay loop muted>
   <source src="https://raw.githubusercontent.com/Lamabatt20/hershape_e-commerce/refs/heads/main/Demo.mp4" type="video/mp4">
   Your browser does not support the video tag.
