@@ -35,7 +35,7 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
 - **PostgreSQL database** is hosted on **Neon**, a cloud-native database platform, ensuring high performance and availability.
 
   
-## 🔗 Screen Record
+## Screen Record
 
 <video width="700" controls autoplay loop muted>
   <source src="https://github.com/Lamabatt20/hershape_e-commerce/blob/main/Demo.mp4" type="video/mp4">
