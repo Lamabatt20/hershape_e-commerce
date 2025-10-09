@@ -36,4 +36,5 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
 
   
 
+<video src="https://github.com/Lamabatt20/hershape_e-commerce/raw/main/Demo.mov" controls width="700"></video>
 
