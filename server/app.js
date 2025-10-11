@@ -384,8 +384,6 @@ app.post("/orders", async (req, res) => {
       },
       include: { items: { include: { product: true } }, customer: true }
     });
-
-    
     try {
       await transporter.sendMail({
         from: `"Her Shape Orders" <${process.env.EMAIL_USER}>`,
@@ -409,7 +407,6 @@ app.post("/orders", async (req, res) => {
     } catch (emailErr) {
       console.error("❌ Error sending order email:", emailErr);
     }
-
     res.json(order);
 
   } catch (err) {
