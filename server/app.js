@@ -93,8 +93,6 @@ app.post("/signup", async (req, res) => {
 });
 
 
-
-
 app.post("/verify", async (req, res) => {
   const { email, code } = req.body;
   try {
