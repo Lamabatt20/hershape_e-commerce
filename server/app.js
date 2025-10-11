@@ -304,71 +304,54 @@ app.delete("/products/:id", async (req, res) => {
 
 
 // ====== ORDERS ======
+import sgMail from "@sendgrid/mail";
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 app.post("/orders", async (req, res) => {
   const { customerId, items, subtotal, shipping, total } = req.body;
 
   try {
     const customer = await prisma.customer.findUnique({ where: { id: parseInt(customerId) } });
     if (!customer) return res.status(404).json({ error: "Customer not found" });
+
+    // stock update & order creation
     for (const item of items) {
       const product = await prisma.product.findUnique({ 
         where: { id: item.productId },
         include: { variants: true }
       });
-
       if (!product) return res.status(404).json({ error: `Product ${item.productId} not found` });
-
       const variant = product.variants.find(v => v.color === item.color && v.size === item.size);
       if (!variant) return res.status(404).json({ error: `Variant not found for ${product.name}` });
-
       if (variant.stock < item.quantity)
         return res.status(400).json({ error: `Not enough stock for ${product.name} (${item.size}, ${item.color})` });
-
-      await prisma.productVariant.update({
-        where: { id: variant.id },
-        data: { stock: variant.stock - item.quantity }
-      });
+      await prisma.productVariant.update({ where: { id: variant.id }, data: { stock: variant.stock - item.quantity } });
     }
+
     const order = await prisma.order.create({
       data: {
         customerId: customer.id,
         subtotal,
         shipping,
         status: "pending",
-        items: {
-          create: items.map(i => ({
-            productId: i.productId,
-            quantity: i.quantity,
-            color: i.color,
-            size: i.size
-          }))
-        }
+        items: { create: items.map(i => ({ productId: i.productId, quantity: i.quantity, color: i.color, size: i.size })) }
       },
       include: { items: { include: { product: true } }, customer: true }
     });
-    try {
-      await transporter.sendMail({
-        from: `"Her Shape Orders" <${process.env.EMAIL_USER}>`,
-        to: process.env.EMAIL_USER, 
-        subject: "🛍️ New Order Received",
-        html: `
-          <div style="background:#f8f2fc;padding:25px;border-radius:10px;font-family:Arial,sans-serif;line-height:1.6;">
-            <h2 style="color:#6f3d6d;">New Order Received!</h2>
-            <p>You have a new order from <strong>${order.customer.name}</strong>.</p>
-            <p><strong>Order ID:</strong> #${order.id}</p>
-            <p style="margin-top:10px;">Click below to view it on your dashboard using email (Larashareef@hotmail.com) $ password (lara1996):</p>
-            <a href="https://www.hershape.online/dashboard"
-              style="display:inline-block;margin-top:15px;background:#6f3d6d;color:#fff;padding:10px 20px;border-radius:8px;text-decoration:none;">
-              🔍 Go to Dashboard
-            </a>
-          </div>
-        `,
-      });
 
-      console.log("📩 Order notification email sent to admin successfully");
+    // SendGrid email
+    try {
+      await sgMail.send({
+        to: process.env.EMAIL_USER, 
+        from: process.env.EMAIL_USER, 
+        subject: "🛍️ New Order Received",
+        html: `<div>New order from <strong>${order.customer.name}</strong>. Order ID: #${order.id}</div>`
+      });
+      console.log("📩 Order notification email sent successfully");
     } catch (emailErr) {
       console.error("❌ Error sending order email:", emailErr);
     }
+
     res.json(order);
 
   } catch (err) {
@@ -376,6 +359,7 @@ app.post("/orders", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+
 app.get("/orders/user/:userId", async (req, res) => {
   const { userId } = req.params;
 
