@@ -69,65 +69,33 @@ app.post("/signup", async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const code = Math.floor(1000 + Math.random() * 9000).toString();
-    const expiry = new Date(Date.now() + 15 * 60 * 1000);
-
-  
+    
     const user = await prisma.user.create({
       data: {
         username,
         email,
         role: "customer",
         password: hashedPassword,
-        verificationCode: code,
-        codeExpiry: expiry,
-        isVerified: false,
+        isVerified: true,  
       },
     });
 
- 
     const customer = await prisma.customer.create({
       data: {
         userId: user.id,
         name: username,
         address: "",
-        phone:"",
-        email:email,
-        
+        phone: "",
+        email: email,
       },
     });
-
-    await transporter.sendMail({
-  from: `"Her shape" <${process.env.EMAIL_USER}>`,
-  to: email,
-  subject: "Email Verification Code",
-  html: `
-    <div style="background-color:#6f3d6d;padding:30px;color:#fcf8f0;font-family:Arial,sans-serif;max-width:600px;margin:auto;border-radius:8px;">
-      <h2 style="color:#F7B6FF;text-align:center;">🔒 Email Verification</h2>
-      <p style="text-align:center;">Hello,</p>
-      <p style="text-align:center;">Thank you for signing up with <strong>Her shape</strong>. To complete your registration, please use the verification code below:</p>
-      
-      <div style="display:flex; justify-content:center; margin:30px 0;">
-        <div style="background:#F7B6FF; width:200px; text-align:center; padding:15px 0; border-radius:8px; font-size:28px; font-weight:bold; color:#fcf8f0; letter-spacing:5px; margin:auto;">
-          ${code}
-        </div>
-      </div>
-      
-      <p style="text-align:center;">This code will expire in <strong>15 minutes</strong>. Please do not share it with anyone.</p>
-      <hr style="border:0;border-top:1px solid #F7B6FF;margin:20px 0;">
-      <p style="text-align:center;">If you did not request this verification, please ignore this email or contact our support team.</p>
-      <p style="text-align:center;">Regards,<br><strong>The Her shape Team</strong></p>
-    </div>
-  `,
-});
-
-
-    res.json({ message: "Verification code sent to email", user, customer });
+    res.json({ message: "Signup successful", user, customer });
   } catch (err) {
     console.error("Error in /signup:", err);
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+
 
 
 

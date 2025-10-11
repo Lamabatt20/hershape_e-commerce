@@ -14,9 +14,7 @@ model user {
   email            String    @unique
   password         String
   role             String    @default("customer")
-  verificationCode String?
-  codeExpiry       DateTime?
-  isVerified       Boolean   @default(false)
+  isVerified       Boolean   @default(true)
   customer         Customer?
 }
 

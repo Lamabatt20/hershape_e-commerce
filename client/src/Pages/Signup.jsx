@@ -35,17 +35,17 @@ export default function Signup() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const res = await signup(form);
-    if (res.error) {
-      setMessage(res.error);
-      setError(true);
-    } else {
-      setMessage(res.message);
-      setError(false);
-      navigate("/verify", { state: { email: form.email } });
-    }
-  };
+  e.preventDefault();
+  const res = await signup(form);
+  if (res.error) {
+    setMessage(res.error);
+    setError(true);
+  } else {
+    setMessage("Account created successfully. Please log in.");
+    setError(false);
+    navigate("/login");
+  }
+};
 
   return (
     <>
