@@ -10,6 +10,7 @@ import {
   deleteCartItem as deleteCartItemAPI,
   clearCart as clearCartAPI,
   updateCartItem as updateCartItemAPI,
+  fetchProduct,
 } from "../api";
 
 const Cart = () => {
@@ -36,6 +37,7 @@ const Cart = () => {
       size: "Size",
       quantity: "Quantity",
       color: "Color",
+      soldOut: "Sold Out",
     },
     ar: {
       shoppingCart: "عربة التسوق",
@@ -47,10 +49,10 @@ const Cart = () => {
       size: "المقاس",
       quantity: "الكمية",
       color: "اللون",
+      soldOut: "انتهى المخزون",
     },
   };
 
-  
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
@@ -63,17 +65,14 @@ const Cart = () => {
       window.removeEventListener("storageLanguageChanged", handleLangChange);
   }, []);
 
-  
   useEffect(() => {
     const fetchCart = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
       const customerId = user?.customer?.id;
-
       if (!user) {
         navigate("/login", { state: { from: "/cart" } });
         return;
       }
-
       if (!customerId) {
         navigate("/EmptyCart");
         return;
@@ -81,17 +80,29 @@ const Cart = () => {
 
       try {
         const res = await getCart(customerId);
-
         if (!res || res.length === 0 || res.error) {
           navigate("/EmptyCart");
           return;
         }
 
-        setCartItems(res);
-        localStorage.setItem("cart", JSON.stringify(res));
+        const updatedCart = await Promise.all(
+          res.map(async (item) => {
+            const product = await fetchProduct(item.product.id);
+            const variant = product.variants.find(
+              (v) => v.color === (item.variant?.color || item.color) && v.size === (item.variant?.size || item.size)
+            );
+            if (!variant || variant.stock < item.quantity) {
+              return { ...item, soldOut: true };
+            }
+            return { ...item, soldOut: false };
+          })
+        );
+
+        setCartItems(updatedCart);
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
         window.dispatchEvent(new Event("storageCartChanged"));
       } catch (err) {
-        console.error("Fetch cart failed:", err);
+        console.error(err);
         navigate("/EmptyCart");
       } finally {
         setLoading(false);
@@ -102,7 +113,8 @@ const Cart = () => {
   }, [navigate]);
 
   const subtotal = cartItems.reduce(
-    (total, item) => total + Number(item.product.price) * item.quantity,
+    (total, item) =>
+      total + (item.soldOut ? 0 : Number(item.product.price) * item.quantity),
     0
   );
 
@@ -110,7 +122,6 @@ const Cart = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const customerId = user?.customer?.id;
     if (!user || !customerId) return;
-
     try {
       const res = await clearCartAPI(customerId);
       if (!res.error) {
@@ -118,8 +129,6 @@ const Cart = () => {
         localStorage.setItem("cart", JSON.stringify([]));
         window.dispatchEvent(new Event("storageCartChanged"));
         navigate("/EmptyCart");
-      } else {
-        console.error(res.error);
       }
     } catch (err) {
       console.error(err);
@@ -136,8 +145,6 @@ const Cart = () => {
         setCartItems(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
         window.dispatchEvent(new Event("storageCartChanged"));
-      } else {
-        console.error(res.error);
       }
     } catch (err) {
       console.error("Error updating cart item:", err);
@@ -153,22 +160,18 @@ const Cart = () => {
         localStorage.setItem("cart", JSON.stringify(updatedCart));
         window.dispatchEvent(new Event("storageCartChanged"));
         if (updatedCart.length === 0) navigate("/EmptyCart");
-      } else {
-        console.error(res.error);
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  
   const getItemImage = (item) => {
     if (item.variant?.images?.length > 0) {
       return item.variant.images[0].startsWith("/")
         ? item.variant.images[0]
         : `/images/${item.variant.images[0]}`;
     }
-
     const colorVariant = item.product.variants?.find(
       (v) => v.color === (item.variant?.color || item.color) && v.images?.length > 0
     );
@@ -177,13 +180,11 @@ const Cart = () => {
         ? colorVariant.images[0]
         : `/images/${colorVariant.images[0]}`;
     }
-
     if (item.product.images?.length > 0) {
       return item.product.images[0].startsWith("/")
         ? item.product.images[0]
         : `/images/${item.product.images[0]}`;
     }
-
     return "/placeholder.png";
   };
 
@@ -196,7 +197,10 @@ const Cart = () => {
         <div className="cart-content">
           <div className="cart-items">
             {cartItems.map((item) => (
-              <div key={item.id} className="cart-item">
+              <div
+                key={item.id}
+                className={`cart-item ${item.soldOut ? "sold-out" : ""}`}
+              >
                 <img
                   src={getItemImage(item)}
                   alt={language === "ar"
@@ -249,10 +253,13 @@ const Cart = () => {
                       style={{ marginLeft: "auto", width: "16px", height: "16px" }}
                     />
                   </div>
+                  {item.soldOut && (
+                    <p className="sold-out-text">{translations[language].soldOut}</p>
+                  )}
                 </div>
-
                 <div className="quantity-control">
                   <button
+                    disabled={item.soldOut || item.quantity <= 1}
                     onClick={() =>
                       item.quantity > 1 &&
                       updateCartItem({
@@ -265,6 +272,7 @@ const Cart = () => {
                   </button>
                   <span>{item.quantity}</span>
                   <button
+                    disabled={item.soldOut}
                     onClick={() =>
                       updateCartItem({
                         id: item.id,
@@ -302,10 +310,10 @@ const Cart = () => {
         <div className="modal-overlay">
           <ProductDetails
             modal={true}
-            initialProduct={modalProduct.product}      
-            initialQuantity={modalProduct.quantity}    
-            initialSize=""        
-            initialColor=""       
+            initialProduct={modalProduct.product}
+            initialQuantity={modalProduct.quantity}
+            initialSize=""
+            initialColor=""
             onUpdate={(updates) => {
               updateCartItem({ id: modalProduct.id, ...updates });
               setModalProduct(null);
