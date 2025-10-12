@@ -1,5 +1,7 @@
-
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import ReactGA from "react-ga4";
+
 import Navbar from "./Components/Navbar";
 
 import Home from "./Pages/Home";  
@@ -24,9 +26,16 @@ import ProductsDetails from "./Pages/admin/Products/ProductDetails";
 import AddProducts from "./Pages/admin/Products/AddProduct";
 
 
+ReactGA.initialize("G-1S8F54N0HD");
 
 function AppContent() {
   const location = useLocation();
+
+  
+  useEffect(() => {
+    ReactGA.send({ hitType: "pageview", page: location.pathname + location.search });
+  }, [location]);
+
   const noNavbarPrefixes = ["/dashboard", "/orders", "/customers", "/products"];
   const hideNavbar = noNavbarPrefixes.some(
     prefix =>
@@ -65,12 +74,9 @@ function AppContent() {
 }
 
 export default function App() {
- 
-
   return (
-    
-      <Router>
-        <AppContent />
-      </Router>
+    <Router>
+      <AppContent />
+    </Router>
   );
 }
