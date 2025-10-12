@@ -36,6 +36,7 @@ const Cart = () => {
       size: "Size",
       quantity: "Quantity",
       color: "Color",
+      soldOut: "Sold Out",
     },
     ar: {
       shoppingCart: "عربة التسوق",
@@ -47,46 +48,38 @@ const Cart = () => {
       size: "المقاس",
       quantity: "الكمية",
       color: "اللون",
+      soldOut: "انتهى المخزون",
     },
   };
 
-  
   useEffect(() => {
     const storedLang = localStorage.getItem("language") || "en";
     setLanguage(storedLang);
-
     const handleLangChange = () => {
       setLanguage(localStorage.getItem("language") || "en");
     };
     window.addEventListener("storageLanguageChanged", handleLangChange);
-    return () =>
-      window.removeEventListener("storageLanguageChanged", handleLangChange);
+    return () => window.removeEventListener("storageLanguageChanged", handleLangChange);
   }, []);
 
-  
   useEffect(() => {
     const fetchCart = async () => {
       const user = JSON.parse(localStorage.getItem("user"));
       const customerId = user?.customer?.id;
-
       if (!user) {
         navigate("/login", { state: { from: "/cart" } });
         return;
       }
-
       if (!customerId) {
         navigate("/EmptyCart");
         return;
       }
-
       try {
         const res = await getCart(customerId);
-
         if (!res || res.length === 0 || res.error) {
           navigate("/EmptyCart");
           return;
         }
-
         setCartItems(res);
         localStorage.setItem("cart", JSON.stringify(res));
         window.dispatchEvent(new Event("storageCartChanged"));
@@ -97,20 +90,32 @@ const Cart = () => {
         setLoading(false);
       }
     };
-
     fetchCart();
   }, [navigate]);
 
-  const subtotal = cartItems.reduce(
-    (total, item) => total + Number(item.product.price) * item.quantity,
-    0
-  );
+  const getStock = (item) => {
+  if (item.product?.variants?.length > 0) {
+    const matchedVariant = item.product.variants.find(
+      (v) =>
+        v.color?.toLowerCase() === item.color?.toLowerCase() &&
+        v.size?.toLowerCase() === item.size?.toLowerCase()
+    );
+    if (matchedVariant && typeof matchedVariant.stock === "number") {
+      return matchedVariant.stock;
+    }
+  }
+  return 0;
+};
+
+  const subtotal = cartItems.reduce((total, item) => {
+    const stock = getStock(item);
+    return total + (stock > 0 ? Number(item.product.price) * item.quantity : 0);
+  }, 0);
 
   const clearCart = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     const customerId = user?.customer?.id;
     if (!user || !customerId) return;
-
     try {
       const res = await clearCartAPI(customerId);
       if (!res.error) {
@@ -118,8 +123,6 @@ const Cart = () => {
         localStorage.setItem("cart", JSON.stringify([]));
         window.dispatchEvent(new Event("storageCartChanged"));
         navigate("/EmptyCart");
-      } else {
-        console.error(res.error);
       }
     } catch (err) {
       console.error(err);
@@ -136,8 +139,6 @@ const Cart = () => {
         setCartItems(updatedCart);
         localStorage.setItem("cart", JSON.stringify(updatedCart));
         window.dispatchEvent(new Event("storageCartChanged"));
-      } else {
-        console.error(res.error);
       }
     } catch (err) {
       console.error("Error updating cart item:", err);
@@ -153,22 +154,18 @@ const Cart = () => {
         localStorage.setItem("cart", JSON.stringify(updatedCart));
         window.dispatchEvent(new Event("storageCartChanged"));
         if (updatedCart.length === 0) navigate("/EmptyCart");
-      } else {
-        console.error(res.error);
       }
     } catch (err) {
       console.error(err);
     }
   };
 
-  
   const getItemImage = (item) => {
     if (item.variant?.images?.length > 0) {
       return item.variant.images[0].startsWith("/")
         ? item.variant.images[0]
         : `/images/${item.variant.images[0]}`;
     }
-
     const colorVariant = item.product.variants?.find(
       (v) => v.color === (item.variant?.color || item.color) && v.images?.length > 0
     );
@@ -177,13 +174,11 @@ const Cart = () => {
         ? colorVariant.images[0]
         : `/images/${colorVariant.images[0]}`;
     }
-
     if (item.product.images?.length > 0) {
       return item.product.images[0].startsWith("/")
         ? item.product.images[0]
         : `/images/${item.product.images[0]}`;
     }
-
     return "/placeholder.png";
   };
 
@@ -195,93 +190,118 @@ const Cart = () => {
         <h2>{translations[language].shoppingCart}</h2>
         <div className="cart-content">
           <div className="cart-items">
-            {cartItems.map((item) => (
-              <div key={item.id} className="cart-item">
-                <img
-                  src={getItemImage(item)}
-                  alt={language === "ar"
-                      ? item.product.name_ar || item.product.name
-                      : item.product.name}
-                  onClick={() => setModalProduct(item)}
-                  style={{ cursor: "pointer" }}
-                />
-                <div className="item-info">
-                  <p
-                    className="product-name"
+            {cartItems.map((item) => {
+              const stock = getStock(item);
+              const isSoldOut = stock <= 0;
+              return (
+                <div key={item.id} className="cart-item">
+                  <img
+                    src={getItemImage(item)}
+                    alt={
+                      language === "ar"
+                        ? item.product.name_ar || item.product.name
+                        : item.product.name
+                    }
                     onClick={() => setModalProduct(item)}
                     style={{ cursor: "pointer" }}
-                  >
-                    {language === "ar"
-                      ? item.product.name_ar || item.product.name
-                      : item.product.name}
-                  </p>
-                  <p>₪{item.product.price}</p>
-                  <div
-                    className="item-size"
-                    onClick={() => setModalProduct(item)}
-                    style={{
-                      cursor: "pointer",
-                      border: "1px solid #ccc",
-                      padding: "5px 10px",
-                      borderRadius: "12px",
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: "5px",
-                    }}
-                  >
-                    <span>{item.size}</span>
-                    <span
-                      className="color-circle"
+                  />
+                  <div className="item-info">
+                    <p
+                      className="product-name"
+                      onClick={() => setModalProduct(item)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {language === "ar"
+                        ? item.product.name_ar || item.product.name
+                        : item.product.name}
+                    </p>
+                    <p>₪{item.product.price}</p>
+                    <div
+                      className="item-size"
+                      onClick={() => setModalProduct(item)}
                       style={{
-                        backgroundColor:
-                          colorMap.find((c) => c.name === item.color)?.hex ||
-                          item.color,
-                        width: "15px",
-                        height: "15px",
-                        borderRadius: "50%",
-                        display: "inline-block",
-                        border: "1px solid #aaa",
+                        cursor: "pointer",
+                        border: "1px solid #ccc",
+                        padding: "5px 10px",
+                        borderRadius: "12px",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "5px",
                       }}
-                    ></span>
-                    <img
-                      src={ExpandArrow}
-                      alt="Expand"
-                      style={{ marginLeft: "auto", width: "16px", height: "16px" }}
-                    />
+                    >
+                      <span>{item.size}</span>
+                      <span
+                        className="color-circle"
+                        style={{
+                          backgroundColor:
+                            colorMap.find((c) => c.name === item.color)?.hex ||
+                            item.color,
+                          width: "15px",
+                          height: "15px",
+                          borderRadius: "50%",
+                          display: "inline-block",
+                          border: "1px solid #aaa",
+                        }}
+                      ></span>
+                      <img
+                        src={ExpandArrow}
+                        alt="Expand"
+                        style={{ marginLeft: "auto", width: "16px", height: "16px" }}
+                      />
+                    </div>
                   </div>
-                </div>
+                  <div className="quantity-control">
+  {isSoldOut ? (
+    <span className="sold-out">{translations[language].soldOut}</span>
+  ) : (
+    <>
+      <button
+        onClick={() =>
+          item.quantity > 1 &&
+          updateCartItem({
+            id: item.id,
+            quantity: item.quantity - 1,
+          })
+        }
+      >
+        -
+      </button>
 
-                <div className="quantity-control">
-                  <button
-                    onClick={() =>
-                      item.quantity > 1 &&
-                      updateCartItem({
-                        id: item.id,
-                        quantity: item.quantity - 1,
-                      })
-                    }
-                  >
-                    -
-                  </button>
-                  <span>{item.quantity}</span>
-                  <button
-                    onClick={() =>
-                      updateCartItem({
-                        id: item.id,
-                        quantity: item.quantity + 1,
-                      })
-                    }
-                  >
-                    +
+      <span>{item.quantity}</span>
+
+      {item.quantity < stock ? (
+        <button
+          onClick={() =>
+            updateCartItem({
+              id: item.id,
+              quantity: item.quantity + 1,
+            })
+          }
+        >
+          +
+        </button>
+      ) : (
+        <span
+          style={{
+            color: "orange",
+            fontSize: "20px",
+            marginLeft: "8px",
+            cursor: "not-allowed",
+          }}
+        >
+          ⚠️
+        </span>
+      )}
+    </>
+  )}
+</div>
+                  <button className="delete-btn" onClick={() => deleteItem(item.id)}>
+                    <img src={DeleteIcon} alt="Delete Icon" className="delete-icon" />
                   </button>
                 </div>
-                <button className="delete-btn" onClick={() => deleteItem(item.id)}>
-                  <img src={DeleteIcon} alt="Delete Icon" className="delete-icon" />
-                </button>
-              </div>
-            ))}
+              );
+            })}
           </div>
-
           <div className="cart-summary">
             <h3>{translations[language].subtotal}</h3>
             <p>₪{subtotal}</p>
@@ -291,21 +311,21 @@ const Cart = () => {
             <button
               className="checkout-btn"
               onClick={() => navigate("/checkout")}
+              disabled={cartItems.every((item) => getStock(item) <= 0)}
             >
               {translations[language].proceedToCheckout}
             </button>
           </div>
         </div>
       </div>
-
       {modalProduct && (
         <div className="modal-overlay">
           <ProductDetails
             modal={true}
-            initialProduct={modalProduct.product}      
-            initialQuantity={modalProduct.quantity}    
-            initialSize=""        
-            initialColor=""       
+            initialProduct={modalProduct.product}
+            initialQuantity={modalProduct.quantity}
+            initialSize=""
+            initialColor=""
             onUpdate={(updates) => {
               updateCartItem({ id: modalProduct.id, ...updates });
               setModalProduct(null);
@@ -314,7 +334,6 @@ const Cart = () => {
           />
         </div>
       )}
-
       <Footer />
     </>
   );
