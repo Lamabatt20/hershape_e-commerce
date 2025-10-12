@@ -91,10 +91,8 @@ const Cart = () => {
             const variant = product.variants.find(
               (v) => v.color === (item.variant?.color || item.color) && v.size === (item.variant?.size || item.size)
             );
-            if (!variant || variant.stock < item.quantity) {
-              return { ...item, soldOut: true };
-            }
-            return { ...item, soldOut: false };
+            const soldOut = !variant || variant.stock < item.quantity;
+            return { ...item, soldOut, variant };
           })
         );
 
@@ -137,6 +135,14 @@ const Cart = () => {
 
   const updateCartItem = async (updatedItem) => {
     try {
+      const currentItem = cartItems.find((i) => i.id === updatedItem.id);
+      if (currentItem.soldOut) return;
+
+      if (updatedItem.quantity > (currentItem.variant?.stock || 0)) {
+        alert("Cannot add more than available stock");
+        return;
+      }
+
       const res = await updateCartItemAPI(updatedItem.id, updatedItem);
       if (!res.error) {
         const updatedCart = cartItems.map((item) =>
@@ -200,6 +206,7 @@ const Cart = () => {
               <div
                 key={item.id}
                 className={`cart-item ${item.soldOut ? "sold-out" : ""}`}
+                style={{ opacity: item.soldOut ? 0.5 : 1 }}
               >
                 <img
                   src={getItemImage(item)}
@@ -213,7 +220,7 @@ const Cart = () => {
                   <p
                     className="product-name"
                     onClick={() => setModalProduct(item)}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: "pointer", textDecoration: item.soldOut ? "line-through" : "none" }}
                   >
                     {language === "ar"
                       ? item.product.name_ar || item.product.name
@@ -261,7 +268,6 @@ const Cart = () => {
                   <button
                     disabled={item.soldOut || item.quantity <= 1}
                     onClick={() =>
-                      item.quantity > 1 &&
                       updateCartItem({
                         id: item.id,
                         quantity: item.quantity - 1,
