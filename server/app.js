@@ -3,7 +3,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
-import nodemailer from "nodemailer";
 import bcrypt from "bcrypt";
 
 dotenv.config();
@@ -40,14 +39,6 @@ const prisma = new PrismaClient();
 app.use(cors());
 app.use(express.json());
 
-
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS, 
-  },
-});
 
 // ====== AUTH ======
 
