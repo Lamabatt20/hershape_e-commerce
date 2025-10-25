@@ -1,4 +1,4 @@
-# Hershape E-Commerce 🛍️
+# Hershape E-Commerce
 
 **Hershape** is an online store specialized in selling **high-quality Colombian shapewear** for women.  
 The platform is designed to be elegant, user-friendly, and fully responsive on all devices.
@@ -10,17 +10,17 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
 
 ---
 
-## ✨ Features
-- 🛒 Browse a wide range of Colombian shapewear products with detailed images and descriptions  
-- 🔍 Search and filter by size and category  
-- 👤 User authentication: Sign up and log in  
-- 🛍️ Shopping cart and checkout functionality  
-- 📱 Fully responsive design for mobile and desktop
-- 🛠️ **Admin Panel:** Full control over products, orders, and customers
-- 🌐 **Multi-language Support:** Switch between English and Arabic
+## Features
+- Browse a wide range of Colombian shapewear products with detailed images and descriptions  
+- Search and filter by size and category  
+- User authentication: Sign up and log in  
+- Shopping cart and checkout functionality  
+- Fully responsive design for mobile and desktop
+- **Admin Panel:** Full control over products, orders, and customers
+- **Multi-language Support:** Switch between English and Arabic
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 - **Frontend:** React.js, CSS  
 - **Backend:** Node.js, Express  
 - **Database:** PostgreSQL (hosted on Neon)  
@@ -29,7 +29,7 @@ The platform is designed to be elegant, user-friendly, and fully responsive on a
 
 ---
 
-## 🌐 Deployment & Hosting
+## Deployment & Hosting
 - The **frontend** is deployed on **Vercel**, ensuring fast and reliable access to the React app.  
 - The **backend API** is hosted on **Render**, providing scalable and secure endpoints.  
 - **PostgreSQL database** is hosted on **Neon**, a cloud-native database platform, ensuring high performance and availability.
