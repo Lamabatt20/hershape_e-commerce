@@ -85,19 +85,21 @@ const Checkout = () => {
 
   
   const validate = () => {
-    const newErrors = {};
-    const phoneRegex = /^(059|056)\d{7}$/;
+  const newErrors = {};
+  const phoneRegex = /^(059|056)\d{7}$/;
 
-    if (!firstName.trim()) newErrors.firstName = true;
-    if (!lastName.trim()) newErrors.lastName = true;
-    if (!phone.trim()) newErrors.phone = true;
-    else if (!phoneRegex.test(phone)) newErrors.phone = "invalid";
-    if (!street.trim()) newErrors.street = true;
-    if (!city.trim()) newErrors.city = true;
+  if (!firstName.trim()) newErrors.firstName = true;
+  if (!lastName.trim()) newErrors.lastName = true;
+  if (!phone.trim()) newErrors.phone = true;
+  else if (!phoneRegex.test(phone)) newErrors.phone = "invalid";
+  if (!street.trim()) newErrors.street = true;
+  if (!city.trim()) newErrors.city = true;
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  setErrors(newErrors);
+
+  return Object.keys(newErrors).length === 0;
+
+};
 
   const handlePlaceOrder = async () => {
 
