@@ -117,7 +117,7 @@ const Checkout = () => {
 
     try {
       const customerData = { 
-        name: ${firstName} ${lastName}, 
+        name: '${firstName} ${lastName}', 
         email: user.email, 
         phone, 
         city, 
