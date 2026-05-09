@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import "./Checkout.css";
 import Footer from "../Components/Footer";
