@@ -1,6 +1,6 @@
 /* =========================================
 
-   HERO SECTION - DESKTOP
+   HeroSection.css
 
 ========================================= */
 
@@ -8,17 +8,15 @@
 
   position: relative;
 
-  width: 100%;
-
-  height: clamp(500px, 42vw, 680px);
-
   overflow: hidden;
 
+  height: 600px;
+
+  width: 100%;
+
+  max-width: 100%;
+
   font-family: 'Poppins', 'Open Sans', 'Nunito Sans', 'Segoe UI', sans-serif;
-
-  background-color: #906791;
-
-  isolation: isolate;
 
   box-sizing: border-box;
 
@@ -28,13 +26,15 @@
 
   position: absolute;
 
-  inset: 0;
+  height: 100%;
 
   width: 100%;
 
-  height: 100%;
+  top: 0;
 
-  background-color: rgba(110, 60, 116, 0.18);
+  left: 0;
+
+  background-color: rgba(110, 60, 116, 0.8);
 
   z-index: 1;
 
@@ -46,33 +46,31 @@
 
   position: absolute;
 
-  inset: 0;
+  top: 0;
+
+  left: 0;
 
   display: flex;
 
-  flex-direction: row;
-
   align-items: center;
 
-  justify-content: space-evenly;
+  justify-content: space-between;
 
   width: 100%;
 
   height: 100%;
 
-  padding: 35px 5%;
-
-  box-sizing: border-box;
+  padding: 0 80px;
 
   opacity: 0;
 
   visibility: hidden;
 
-  transition: opacity 0.8s ease, visibility 0.8s ease;
+  transition: opacity 1s ease-in-out;
 
   z-index: 2;
 
-  gap: 4%;
+  box-sizing: border-box;
 
 }
 
@@ -84,109 +82,29 @@
 
 }
 
-/* =========================================
-
-   TEXT
-
-========================================= */
-
 .hero-text {
 
   display: flex;
 
   flex-direction: column;
 
-  align-items: flex-start;
+  align-items: center;
 
-  justify-content: center;
+  justify-content: flex-start;
 
-  flex: 1 1 45%;
+  margin-top: 5px;
+
+  max-width: 70%;
 
   min-width: 0;
 
-  max-width: 48%;
+  margin-left: 200px;
 
-  margin: 0;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 
-  padding: 0;
-
-  font-family: Cambria, Cochin, Georgia, 'Times New Roman', serif;
-
-  text-align: left;
+  text-align: center;
 
   box-sizing: border-box;
-
-}
-
-.hero-text h1 {
-
-  width: 100%;
-
-  margin: 0 0 24px;
-
-  color: #FCF8F0;
-
-  font-size: clamp(25px, 2.5vw, 40px);
-
-  font-weight: bold;
-
-  line-height: 1.2;
-
-  text-align: inherit;
-
-  text-shadow: 2px 2px 0 #6e3c74,
-
-               4px 4px 8px rgba(0, 0, 0, 0.2);
-
-  overflow-wrap: break-word;
-
-  transform: scale(1);
-
-  transition: transform 0.3s ease-in-out;
-
-}
-
-.hero-slide.active .hero-text h1 {
-
-  transform: scale(1.05);
-
-}
-
-.hero-text p {
-
-  width: 100%;
-
-  max-width: 460px;
-
-  margin: 0;
-
-  color: #FCF8F0;
-
-  font-size: clamp(16px, 1.5vw, 23px);
-
-  font-weight: 500;
-
-  line-height: 1.7;
-
-  letter-spacing: 0.5px;
-
-  overflow-wrap: break-word;
-
-  animation: slideInRight 1s ease forwards;
-
-  animation-delay: 0.8s;
-
-}
-
-/* =========================================
-
-   SLIDE 1
-
-========================================= */
-
-.slide-1 .hero-text {
-
-  order: 1;
 
 }
 
@@ -194,395 +112,37 @@
 
   margin-bottom: 10px;
 
+  font-size: 30px;
+
+  font-weight: bold;
+
+  color: #FCF8F0;
+
+  text-align: center !important;
+
+  margin-right: 45px;
+
 }
 
 .slide-1 .hero-text p {
 
-  margin-left: 0;
+  font-size: 18px;
 
-}
+  font-weight: 500;
 
-.hero-image-container {
+  letter-spacing: 1px;
 
-  display: flex;
+  line-height: 1.6;
 
-  align-items: center;
+  animation: slideInRight 1s ease forwards;
 
-  justify-content: center;
+  animation-delay: 0.8s;
 
-  flex: 1 1 48%;
-
-  min-width: 0;
-
-  max-width: 50%;
-
-  height: 100%;
-
-  margin: 0;
-
-  padding: 0;
-
-  box-sizing: border-box;
-
-}
-
-.hero-img {
-
-  display: block;
-
-  width: 100%;
-
-  max-width: 520px;
-
-  max-height: 100%;
-
-  height: auto;
-
-  object-fit: contain;
-
-  object-position: center;
-
-  border-radius: 0;
-
-}
-
-.slide-1 .hero-image-container {
-
-  order: 2;
-
-}
-
-.hero-img-1 {
-
-  width: 100%;
-
-  max-width: 520px;
-
-  height: auto;
-
-  transform: none;
-
-  object-fit: contain;
-
-}
-
-/* =========================================
-
-   SLIDE 2
-
-========================================= */
-
-.slide-2 {
-
-  flex-direction: row-reverse;
-
-}
-
-.slide-2 .hero-text {
-
-  order: 1;
-
-  flex: 1 1 45%;
-
-  max-width: 48%;
-
-  margin: 0;
-
-  text-align: left;
-
-}
-
-.slide-2 .hero-text h1 {
-
-  margin-bottom: 20px;
-
-  line-height: 1.2;
-
-}
-
-.slide-2 .hero-image-container {
-
-  order: 2;
-
-  flex: 1 1 48%;
-
-  max-width: 50%;
-
-  margin: 0;
-
-}
-
-.hero-img-2 {
-
-  width: 100%;
-
-  max-width: 450px;
-
-  height: auto;
-
-  max-height: 100%;
-
-  margin: 0;
-
-  transform: none;
-
-  object-fit: contain;
-
-}
-
-/* =========================================
-
-   BUTTONS
-
-========================================= */
-
-.hero-btn,
-
-.explore-btn {
-
-  display: flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  width: clamp(145px, 15vw, 220px);
-
-  min-height: 52px;
-
-  margin: 32px 0 0;
-
-  padding: 12px 20px;
-
-  background-color: #6e3c74;
+  margin-left: -5px;
 
   color: #FCF8F0;
-
-  border: none;
-
-  border-radius: 4px;
-
-  font-size: 15px;
-
-  font-weight: bold;
-
-  cursor: pointer;
-
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.22);
-
-  transition: background-color 0.3s ease, transform 0.3s ease;
-
-  box-sizing: border-box;
-
-  animation: buttonPop 2s ease-in-out infinite;
-
-}
-
-.hero-btn:hover,
-
-.explore-btn:hover {
-
-  background-color: #5c3062;
-
-  transform: translateY(-2px);
-
-}
-
-.slide-1 .hero-btn,
-
-.slide-2 .hero-btn {
-
-  align-self: flex-start;
-
-}
-
-/* =========================================
-
-   BULLETS
-
-========================================= */
-
-.hero-bullets {
-
-  list-style: none;
-
-  width: 100%;
-
-  margin: 8px 0;
-
-  padding: 0;
-
-  color: #FCF8F0;
-
-  font-family: Cambria, Cochin, Georgia, 'Times New Roman', serif;
-
-}
-
-.hero-bullets li {
-
-  display: flex;
-
-  align-items: center;
-
-  gap: 12px;
-
-  width: 100%;
-
-  margin-bottom: 12px;
-
-  font-size: clamp(14px, 1.4vw, 20px);
-
-  line-height: 1.4;
-
-  opacity: 0;
-
-  animation: bulletZoom 0.8s forwards;
-
-  animation-delay: 0.3s;
-
-}
-
-.bullet-icon {
-
-  display: block;
-
-  flex: 0 0 34px;
-
-  width: 34px;
-
-  height: 34px;
-
-  object-fit: contain;
-
-  margin: 0;
-
-}
-
-.bullet-text {
-
-  min-width: 0;
 
   overflow-wrap: break-word;
-
-}
-
-/* =========================================
-
-   SLIDE DOTS
-
-========================================= */
-
-.hero-dots {
-
-  position: absolute;
-
-  bottom: 20px;
-
-  left: 50%;
-
-  transform: translateX(-50%);
-
-  display: flex;
-
-  gap: 4px;
-
-  width: 48px;
-
-  height: 4px;
-
-  z-index: 3;
-
-}
-
-.hero-dots .dot {
-
-  position: relative;
-
-  flex: 1;
-
-  overflow: hidden;
-
-  background: rgba(255, 255, 255, 0.4);
-
-  border-radius: 3px;
-
-}
-
-.hero-dots .dot .dot-progress {
-
-  height: 100%;
-
-  width: 0;
-
-  background: #fff;
-
-  transition: width 0.05s linear;
-
-}
-
-/* =========================================
-
-   MARQUEE
-
-========================================= */
-
-.hero-marquee {
-
-  width: 100%;
-
-  overflow: hidden;
-
-  white-space: nowrap;
-
-  background: #6e3c74;
-
-  color: #FCF8F0;
-
-  padding: 10px 0;
-
-  font-weight: bold;
-
-  font-size: clamp(14px, 1.5vw, 22px);
-
-  box-sizing: border-box;
-
-}
-
-.hero-marquee span {
-
-  display: inline-block;
-
-  padding-left: 100%;
-
-  animation: marquee 20s linear infinite;
-
-}
-
-.hero-marquee.rtl span {
-
-  animation-direction: reverse;
-
-}
-
-/* =========================================
-
-   ANIMATIONS
-
-========================================= */
-
-@keyframes marquee {
-
-  0% {
-
-    transform: translateX(0%);
-
-  }
-
-  100% {
-
-    transform: translateX(-100%);
-
-  }
 
 }
 
@@ -602,13 +162,411 @@
 
 }
 
+.slide-1 .hero-btn {
+
+  animation: buttonPop 2s ease-in-out infinite;
+
+  margin-top: 50px;
+
+  margin-left: 20px;
+
+  height: 50px;
+
+  width: 160px;
+
+  padding: 10px 20px;
+
+  background-color: #6e3c74;
+
+  color: #fcf8f0;
+
+  border: none;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  border-radius: 3px;
+
+  transition: 0.3s ease;
+
+  display: inline-block;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  box-sizing: border-box;
+
+}
+
+.hero-img-1 {
+
+  width: 50%;
+
+  height: auto;
+
+  border-radius: 0;
+
+  transform: translateX(30%);
+
+  object-fit: cover;
+
+}
+
+.slide-2 .hero-text {
+
+  max-width: 70%;
+
+  min-width: 0;
+
+  text-align: center;
+
+  margin-left: 0;
+
+  margin-right: 400px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  margin-top: 5px;
+
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+}
+
+.slide-2 .hero-text h1 {
+
+  font-size: 30px;
+
+  font-weight: bold;
+
+  margin-bottom: 10px;
+
+  color: #FCF8F0;
+
+  line-height: 1.2;
+
+  align-items: center;
+
+}
+
+.slide-2 .hero-text p {
+
+  color: #fcf8f0;
+
+  line-height: 1.4;
+
+  font-size: 17px;
+
+  animation: slideInRight 1s ease forwards;
+
+  animation-delay: 0.8s;
+
+  margin-left: -10px;
+
+  overflow-wrap: break-word;
+
+}
+
+.slide-2 .hero-btn {
+
+  animation: buttonPop 2s ease-in-out infinite;
+
+  margin-top: 50px;
+
+  margin-left: 20px;
+
+  height: 50px;
+
+  width: 160px;
+
+  padding: 10px 20px;
+
+  background-color: #6e3c74;
+
+  color: #fcf8f0;
+
+  border: none;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  border-radius: 3px;
+
+  transition: 0.3s ease;
+
+  display: inline-block;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  box-sizing: border-box;
+
+}
+
+.hero-img-2 {
+
+  width: 310%;
+
+  max-width: 450px;
+
+  height: auto;
+
+  border-radius: 0;
+
+  object-fit: cover;
+
+  margin-top: 20px;
+
+  margin-left: 200px;
+
+}
+
+.hero-btn {
+
+  padding: 12px 30px;
+
+  border: none;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  border-radius: 5px;
+
+  transition: background 0.3s;
+
+  box-sizing: border-box;
+
+}
+
+.hero-btn:hover {
+
+  background-color: #e5dcd0;
+
+}
+
+.hero-btn,
+
+.hero-btn {
+
+  margin: 50px 0 0 0;
+
+  align-self: flex-start;
+
+}
+
+.slide-1 .hero-text h1,
+
+.slide-2 .hero-text h1 {
+
+  font-size: 30px;
+
+  font-weight: bold;
+
+  color: #FCF8F0;
+
+  text-align: center;
+
+  text-shadow:
+
+    2px 2px 0 #6e3c74,
+
+    4px 4px 8px rgba(0, 0, 0, 0.3);
+
+  transform: scale(1);
+
+  transition: transform 0.3s ease-in-out;
+
+}
+
+.hero-slide.active .hero-text h1 {
+
+  transform: scale(1.1);
+
+}
+
+.hero-dots {
+
+  position: absolute;
+
+  bottom: 20px;
+
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  display: flex;
+
+  gap: 3px;
+
+  width: 5%;
+
+  height: 3px;
+
+  z-index: 3;
+
+}
+
+.hero-dots .dot {
+
+  flex: 1;
+
+  background: rgba(255, 255, 255, 0.3);
+
+  border-radius: 1.5px;
+
+  overflow: hidden;
+
+  position: relative;
+
+}
+
+.hero-dots .dot .dot-progress {
+
+  height: 100%;
+
+  background: #fff;
+
+  width: 0%;
+
+  transition: width 0.05s linear;
+
+}
+
+/* Marquee */
+
+.hero-marquee {
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  background: #6e3c74;
+
+  color: #fcf8f0;
+
+  padding: 10px 0;
+
+  font-weight: bold;
+
+  font-size: 1rem;
+
+  width: 100%;
+
+  max-width: 100%;
+
+  box-sizing: border-box;
+
+}
+
+.hero-marquee span {
+
+  display: inline-block;
+
+  padding-left: 100%;
+
+  animation: marquee 20s linear infinite;
+
+}
+
+.rtl span {
+
+  animation-direction: reverse;
+
+}
+
+@keyframes marquee {
+
+  0% {
+
+    transform: translateX(0%);
+
+  }
+
+  100% {
+
+    transform: translateX(-100%);
+
+  }
+
+}
+
+.hero-bullets {
+
+  list-style: none;
+
+  padding: 0;
+
+  margin: 20px 0;
+
+  color: #fcf8f0;
+
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+}
+
+.hero-bullets li {
+
+  display: flex;
+
+  align-items: center;
+
+  margin-bottom: 10px;
+
+  font-size: 1.1rem;
+
+  transform: scale(0.8);
+
+  opacity: 0;
+
+  animation: bulletZoom 0.8s forwards;
+
+  animation-delay: 0.3s;
+
+  gap: 10px;
+
+}
+
+.bullet-icon {
+
+  flex-shrink: 0;
+
+  width: 40px;
+
+  height: 40px;
+
+  color: #fcf8f0;
+
+  margin-right: 10px;
+
+  font-size: 1.2rem;
+
+}
+
+.hero-section.rtl .bullet-icon {
+
+  margin-right: 0;
+
+  margin-left: 10px;
+
+}
+
 @keyframes bulletZoom {
 
   0% {
 
-    transform: scale(0.95);
+    transform: scale(0.8);
 
     opacity: 0;
+
+  }
+
+  50% {
+
+    transform: scale(1.1);
+
+    opacity: 1;
 
   }
 
@@ -622,175 +580,45 @@
 
 }
 
-/* =========================================
+.explore-btn {
 
-   TABLET
+  animation: buttonPop 2s ease-in-out infinite;
 
-   600px - 1024px
+  margin-top: 50px;
 
-========================================= */
+  margin-left: 80px;
 
-@media (min-width: 600px) and (max-width: 1024px) {
+  height: 50px;
 
-  .hero-section {
+  width: 160px;
 
-    width: 100%;
+  padding: 10px 20px;
 
-    height: clamp(430px, 65vw, 600px);
+  background-color: #6e3c74;
 
-    overflow: hidden;
+  color: #fcf8f0;
 
-  }
+  border: none;
 
-  .hero-slide {
+  font-weight: bold;
 
-    flex-direction: row;
+  cursor: pointer;
 
-    justify-content: space-evenly;
+  border-radius: 3px;
 
-    align-items: center;
+  transition: 0.3s ease;
 
-    padding: 30px 4%;
+  display: inline-block;
 
-    gap: 3%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 
-  }
-
-  .hero-text {
-
-    flex: 1 1 48%;
-
-    max-width: 48%;
-
-    min-width: 0;
-
-    margin: 0;
-
-  }
-
-  .hero-text h1 {
-
-    font-size: clamp(24px, 3.2vw, 34px);
-
-    line-height: 1.25;
-
-  }
-
-  .hero-text p {
-
-    max-width: 100%;
-
-    font-size: clamp(16px, 2vw, 20px);
-
-    line-height: 1.6;
-
-  }
-
-  .hero-image-container {
-
-    flex: 1 1 48%;
-
-    max-width: 48%;
-
-    min-width: 0;
-
-    height: 100%;
-
-  }
-
-  .hero-img-1 {
-
-    width: 100%;
-
-    max-width: 420px;
-
-    max-height: 100%;
-
-    transform: none;
-
-  }
-
-  .hero-img-2 {
-
-    width: 100%;
-
-    max-width: 360px;
-
-    max-height: 100%;
-
-    margin: 0;
-
-    transform: none;
-
-  }
-
-  .slide-2 .hero-text {
-
-    flex: 1 1 48%;
-
-    max-width: 48%;
-
-    margin: 0;
-
-  }
-
-  .slide-2 .hero-image-container {
-
-    flex: 1 1 48%;
-
-    max-width: 48%;
-
-    margin: 0;
-
-  }
-
-  .hero-bullets li {
-
-    font-size: clamp(14px, 1.8vw, 18px);
-
-    gap: 8px;
-
-  }
-
-  .bullet-icon {
-
-    flex-basis: 30px;
-
-    width: 30px;
-
-    height: 30px;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn {
-
-    width: clamp(145px, 20vw, 190px);
-
-    min-height: 48px;
-
-    margin-top: 24px;
-
-    padding: 11px 16px;
-
-  }
-
-  .slide-1 .hero-btn,
-
-  .slide-2 .hero-btn {
-
-    align-self: flex-start;
-
-  }
+  box-sizing: border-box;
 
 }
 
 /* =========================================
 
-   MOBILE
-
-   KEEP THE ORIGINAL PHONE LAYOUT
+   ORIGINAL PHONE DESIGN - PORTRAIT
 
 ========================================= */
 
@@ -822,67 +650,17 @@
 
   .hero-text {
 
-    flex: 0 0 auto;
-
-    width: 100%;
-
     max-width: 100%;
 
-    margin: 0 auto 15px;
+    margin: 0 auto 15px auto;
 
     text-align: center;
-
-    align-items: center;
-
-  }
-
-  .hero-text h1 {
-
-    width: 100%;
-
-    font-size: 22px;
-
-    margin-bottom: 15px;
-
-    line-height: 1.4;
-
-    text-align: center;
-
-  }
-
-  .hero-text p {
-
-    width: 100%;
-
-    font-size: 14px;
-
-    margin-bottom: 15px;
-
-    line-height: 1.5;
-
-  }
-
-  .slide-1 .hero-text h1 {
-
-    margin-right: 0;
-
-    margin-bottom: 10px;
-
-    font-size: 22px;
-
-  }
-
-  .slide-1 .hero-text p {
-
-    margin-left: -5px;
 
   }
 
   .hero-img-1 {
 
     width: 150%;
-
-    max-width: none;
 
     height: auto;
 
@@ -896,93 +674,33 @@
 
   .slide-2 .hero-text {
 
-    flex: 0 0 auto;
-
-    width: 90%;
-
-    max-width: 90%;
-
-    margin: 5px 50px 15px 0;
+    margin: 0 auto 15px auto;
 
     text-align: center;
-
-    align-items: center;
-
-    font-family: Cambria, Cochin, Georgia, 'Times New Roman', serif;
 
   }
 
-  .slide-2 .hero-text h1 {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    text-align: center;
+  .hero-text h1 {
 
     font-size: 22px;
 
+    margin-bottom: 15px;
+
     line-height: 1.4;
 
-    margin-bottom: 10px;
-
   }
 
-  .slide-2 .hero-text h1 span {
-
-    order: 2;
-
-    white-space: nowrap;
-
-  }
-
-  .slide-2 .hero-text p {
+  .hero-text p {
 
     font-size: 14px;
 
+    margin-bottom: 15px;
+
     line-height: 1.5;
-
-    margin-left: -10px;
-
-  }
-
-  .slide-2 .hero-image-container {
-
-    flex: 0 0 auto;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    height: auto;
-
-    overflow: visible;
-
-  }
-
-  .hero-img-2 {
-
-    width: 150%;
-
-    max-width: none;
-
-    height: auto;
-
-    border-radius: 0;
-
-    object-fit: cover;
-
-    transform: translateX(-94%);
-
-    margin-top: 85px;
 
   }
 
   .hero-bullets {
-
-    width: 100%;
 
     margin: 15px 0;
 
@@ -992,19 +710,7 @@
 
   }
 
-  .hero-bullets li {
-
-    gap: 10px;
-
-    margin-bottom: 10px;
-
-    font-size: 0.9rem;
-
-  }
-
   .bullet-icon {
-
-    flex: 0 0 28px;
 
     width: 28px;
 
@@ -1018,35 +724,69 @@
 
     width: 140px;
 
-    min-height: 45px;
+    height: 45px;
 
     font-size: 0.9rem;
 
     margin: 20px auto 0;
 
-    padding: 10px 16px;
-
     display: block;
 
   }
 
-  .slide-1 .hero-btn,
+  .hero-img-2 {
 
-  .slide-2 .hero-btn {
+    width: 150%;
 
-    align-self: center;
+    height: auto;
 
-    margin-left: auto;
+    border-radius: 0;
 
-    margin-right: auto;
+    object-fit: cover;
+
+    transform: translateX(-94%);
+
+    margin-top: 85px;
 
   }
 
-  .hero-dots {
+  .slide-2 .hero-text {
 
-    bottom: 14px;
+    text-align: center;
 
-    width: 46px;
+    margin-left: 0;
+
+    margin-right: 50px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    margin-top: 5px;
+
+    max-width: 90%;
+
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+
+  }
+
+  .slide-2 .hero-text h1 {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    text-align: center;
+
+  }
+
+  .slide-2 .hero-text h1 span {
+
+    order: 2;
+
+    white-space: nowrap;
 
   }
 
@@ -1066,6 +806,102 @@
 
 ========================================= */
 
+@media (max-width: 599px) {
+
+  .hero-section {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    padding: 0;
+
+    overflow: hidden;
+
+  }
+
+  .hero-slide {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    min-width: 0;
+
+    padding-left: 12px;
+
+    padding-right: 12px;
+
+    box-sizing: border-box;
+
+  }
+
+  .hero-text {
+
+    width: 100%;
+
+    min-width: 0;
+
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+  }
+
+  .hero-text h1,
+
+  .hero-text p {
+
+    max-width: 100%;
+
+    overflow-wrap: anywhere;
+
+  }
+
+  .slide-2 .hero-text {
+
+    width: 90%;
+
+    max-width: 90%;
+
+    margin-right: 0;
+
+  }
+
+  .hero-btn,
+
+  .explore-btn {
+
+    max-width: 100%;
+
+    box-sizing: border-box;
+
+  }
+
+  .hero-dots {
+
+    width: 46px;
+
+    max-width: 46px;
+
+  }
+
+  .hero-marquee {
+
+    width: 100%;
+
+    max-width: 100%;
+
+  }
+
+}
+
+/* =========================================
+
+   VERY SMALL PHONES
+
+========================================= */
+
 @media (max-width: 380px) {
 
   .hero-section {
@@ -1076,7 +912,19 @@
 
   .hero-slide {
 
-    padding: 0 16px;
+    padding-left: 10px;
+
+    padding-right: 10px;
+
+  }
+
+  .hero-text,
+
+  .slide-2 .hero-text {
+
+    min-width: 0;
+
+    max-width: 100%;
 
   }
 
@@ -1086,7 +934,9 @@
 
   .slide-2 .hero-text h1 {
 
-    font-size: 22px;
+    font-size: 20px;
+
+    margin-right: 0;
 
   }
 
@@ -1096,25 +946,9 @@
 
   .slide-2 .hero-text p {
 
-    font-size: 14px;
+    font-size: 13px;
 
-  }
-
-  .hero-img-1 {
-
-    width: 150%;
-
-    transform: translateX(-15%);
-
-  }
-
-  .hero-img-2 {
-
-    width: 150%;
-
-    transform: translateX(-94%);
-
-    margin-top: 85px;
+    margin-left: 0;
 
   }
 
@@ -1122,9 +956,475 @@
 
   .explore-btn {
 
-    width: 140px;
+    width: 130px;
 
-    min-height: 45px;
+    font-size: 13px;
+
+  }
+
+}
+
+/* =========================================
+
+   TABLETS - PORTRAIT
+
+========================================= */
+
+@media (min-width: 600px) and (max-width: 1024px) and (orientation: portrait) {
+
+  .hero-section {
+
+    width: 100%;
+
+    height: clamp(500px, 65vh, 650px);
+
+    padding: 0;
+
+  }
+
+  .hero-slide {
+
+    padding: 25px 4%;
+
+    gap: 3%;
+
+  }
+
+  .hero-text {
+
+    flex: 1 1 48%;
+
+    max-width: 48%;
+
+    margin: 0;
+
+    min-width: 0;
+
+  }
+
+  .slide-1 .hero-text h1,
+
+  .slide-2 .hero-text h1 {
+
+    font-size: clamp(22px, 3.2vw, 30px);
+
+    margin-right: 0;
+
+    overflow-wrap: anywhere;
+
+  }
+
+  .slide-1 .hero-text p,
+
+  .slide-2 .hero-text p {
+
+    font-size: clamp(14px, 2vw, 18px);
+
+    line-height: 1.5;
+
+    margin-left: 0;
+
+  }
+
+  .hero-img-1 {
+
+    width: 48%;
+
+    max-width: 360px;
+
+    height: auto;
+
+    transform: none;
+
+    object-fit: contain;
+
+  }
+
+  .hero-img-2 {
+
+    width: 100%;
+
+    max-width: 320px;
+
+    height: auto;
+
+    margin: 0;
+
+    transform: none;
+
+    object-fit: contain;
+
+  }
+
+  .slide-2 .hero-text {
+
+    flex: 1 1 48%;
+
+    max-width: 48%;
+
+    margin: 0;
+
+  }
+
+  .hero-bullets {
+
+    width: 100%;
+
+    max-width: 100%;
+
+  }
+
+  .hero-bullets li {
+
+    gap: 6px;
+
+    font-size: clamp(13px, 1.8vw, 17px);
+
+  }
+
+  .bullet-icon {
+
+    width: 30px;
+
+    height: 30px;
+
+  }
+
+  .hero-btn,
+
+  .explore-btn,
+
+  .slide-1 .hero-btn,
+
+  .slide-2 .hero-btn {
+
+    width: clamp(125px, 20vw, 160px);
+
+    margin-left: 0;
+
+  }
+
+}
+
+/* =========================================
+
+   TABLETS AND SMALL LAPTOPS - LANDSCAPE
+
+========================================= */
+
+@media (min-width: 781px) and (max-width: 1100px) and (orientation: landscape) {
+
+  .hero-section {
+
+    height: clamp(420px, 65vh, 600px);
+
+    width: 100%;
+
+  }
+
+  .hero-slide {
+
+    padding: 0 4%;
+
+    gap: 3%;
+
+  }
+
+  .hero-text {
+
+    flex: 1 1 48%;
+
+    max-width: 48%;
+
+    margin-left: 0;
+
+    margin-right: 0;
+
+    min-width: 0;
+
+  }
+
+  .slide-1 .hero-text h1,
+
+  .slide-2 .hero-text h1 {
+
+    font-size: clamp(23px, 2.8vw, 30px);
+
+    margin-right: 0;
+
+    overflow-wrap: anywhere;
+
+  }
+
+  .slide-1 .hero-text p,
+
+  .slide-2 .hero-text p {
+
+    max-width: 100%;
+
+    font-size: clamp(14px, 1.5vw, 18px);
+
+    margin-left: 0;
+
+    overflow-wrap: anywhere;
+
+  }
+
+  .hero-img-1 {
+
+    width: 48%;
+
+    max-width: 420px;
+
+    height: auto;
+
+    transform: none;
+
+    object-fit: contain;
+
+  }
+
+  .hero-img-2 {
+
+    width: 100%;
+
+    max-width: 360px;
+
+    height: auto;
+
+    margin: 0;
+
+    transform: none;
+
+    object-fit: contain;
+
+  }
+
+  .slide-2 .hero-text {
+
+    flex: 1 1 48%;
+
+    max-width: 48%;
+
+    margin: 0;
+
+  }
+
+  .hero-bullets {
+
+    max-width: 100%;
+
+  }
+
+  .hero-bullets li {
+
+    font-size: clamp(13px, 1.5vw, 17px);
+
+  }
+
+  .bullet-icon {
+
+    width: 30px;
+
+    height: 30px;
+
+  }
+
+  .hero-btn,
+
+  .explore-btn,
+
+  .slide-1 .hero-btn,
+
+  .slide-2 .hero-btn {
+
+    margin-left: 0;
+
+    max-width: 100%;
+
+  }
+
+}
+
+/* =========================================
+
+   PHONES - LANDSCAPE
+
+========================================= */
+
+@media (max-width: 780px) and (orientation: landscape) {
+
+  .hero-section {
+
+    width: 100%;
+
+    height: min(480px, 100svh);
+
+    min-height: 320px;
+
+    padding: 0;
+
+    overflow: hidden;
+
+  }
+
+  .hero-slide {
+
+    flex-direction: row;
+
+    justify-content: space-evenly;
+
+    align-items: center;
+
+    padding: 12px 4%;
+
+    gap: 3%;
+
+  }
+
+  .hero-text {
+
+    width: 48%;
+
+    max-width: 48%;
+
+    min-width: 0;
+
+    margin: 0;
+
+    align-items: center;
+
+    text-align: center;
+
+  }
+
+  .slide-1 .hero-text h1,
+
+  .slide-2 .hero-text h1 {
+
+    font-size: clamp(18px, 3.2vw, 25px);
+
+    margin: 0 0 10px;
+
+    line-height: 1.2;
+
+    overflow-wrap: anywhere;
+
+  }
+
+  .slide-1 .hero-text p,
+
+  .slide-2 .hero-text p {
+
+    font-size: clamp(12px, 2vw, 15px);
+
+    line-height: 1.4;
+
+    margin: 0;
+
+  }
+
+  .hero-img-1 {
+
+    width: 48%;
+
+    max-width: 48%;
+
+    max-height: 90%;
+
+    height: auto;
+
+    transform: none;
+
+    object-fit: contain;
+
+  }
+
+  .hero-img-2 {
+
+    width: 48%;
+
+    max-width: 48%;
+
+    max-height: 90%;
+
+    height: auto;
+
+    margin: 0;
+
+    transform: none;
+
+    object-fit: contain;
+
+  }
+
+  .slide-2 .hero-text {
+
+    width: 48%;
+
+    max-width: 48%;
+
+    margin: 0;
+
+  }
+
+  .hero-bullets {
+
+    margin: 8px 0;
+
+  }
+
+  .hero-bullets li {
+
+    font-size: 12px;
+
+    margin-bottom: 5px;
+
+    gap: 5px;
+
+  }
+
+  .bullet-icon {
+
+    width: 22px;
+
+    height: 22px;
+
+  }
+
+  .hero-btn,
+
+  .explore-btn,
+
+  .slide-1 .hero-btn,
+
+  .slide-2 .hero-btn {
+
+    width: 120px;
+
+    height: 38px;
+
+    margin: 12px 0 0;
+
+    padding: 6px 10px;
+
+    font-size: 12px;
+
+  }
+
+  .hero-dots {
+
+    bottom: 8px;
+
+    width: 42px;
+
+  }
+
+  .hero-marquee {
+
+    font-size: 12px;
+
+    padding: 5px 0;
 
   }
 
@@ -1164,9 +1464,7 @@
 
 }
 
-/* RTL MOBILE */
-
-@media (max-width: 780px) {
+@media (max-width: 599px) {
 
   [dir='rtl'] .hero-text,
 
@@ -1189,235 +1487,10 @@
   }
 
 }
-/* =========================================
-
-   RESPONSIVE OVERFLOW FIX
-
-========================================= */
-
-.hero-section,
-
-.hero-slide,
-
-.hero-text,
-
-.hero-image-container {
-
-  box-sizing: border-box;
-
-  min-width: 0;
-
-}
 
 /* =========================================
 
-   TABLET FIX
-
-========================================= */
-
-@media (min-width: 600px) and (max-width: 1024px) {
-
-  .hero-section {
-
-    width: 100%;
-
-    max-width: 100%;
-
-    overflow: hidden;
-
-  }
-
-  .hero-slide {
-
-    width: 100%;
-
-    max-width: 100%;
-
-    padding: 25px 3%;
-
-    gap: 2%;
-
-  }
-
-  .hero-text,
-
-  .slide-2 .hero-text {
-
-    flex: 1 1 50%;
-
-    width: 50%;
-
-    max-width: 50%;
-
-    margin: 0;
-
-  }
-
-  .hero-text h1 {
-
-    font-size: clamp(23px, 3vw, 32px);
-
-    overflow-wrap: anywhere;
-
-  }
-
-  .hero-text p {
-
-    max-width: 100%;
-
-    font-size: clamp(15px, 1.8vw, 19px);
-
-    overflow-wrap: anywhere;
-
-  }
-
-  .hero-image-container,
-
-  .slide-2 .hero-image-container {
-
-    flex: 1 1 48%;
-
-    width: 48%;
-
-    max-width: 48%;
-
-    height: 100%;
-
-    margin: 0;
-
-  }
-
-  .hero-img-1,
-
-  .hero-img-2 {
-
-    width: 100%;
-
-    max-width: 100%;
-
-    max-height: 100%;
-
-    height: auto;
-
-    margin: 0;
-
-    transform: none;
-
-    object-fit: contain;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn {
-
-    max-width: 100%;
-
-    margin-top: 24px;
-
-  }
-
-  .hero-marquee {
-
-    width: 100%;
-
-    max-width: 100%;
-
-  }
-
-}
-
-/* =========================================
-
-   MOBILE FIX
-
-========================================= */
-
-@media (max-width: 599px) {
-
-  .hero-section {
-
-    width: 100%;
-
-    max-width: 100%;
-
-    padding: 0;
-
-    overflow: hidden;
-
-  }
-
-  .hero-slide {
-
-    width: 100%;
-
-    max-width: 100%;
-
-    padding: 0 20px;
-
-    overflow: hidden;
-
-  }
-
-  .hero-text,
-
-  .slide-2 .hero-text {
-
-    width: 100%;
-
-    max-width: 100%;
-
-    min-width: 0;
-
-    margin-left: 0;
-
-    margin-right: 0;
-
-  }
-
-  .hero-text h1,
-
-  .hero-text p {
-
-    max-width: 100%;
-
-    overflow-wrap: break-word;
-
-  }
-
-  .hero-image-container,
-
-  .slide-2 .hero-image-container {
-
-    min-width: 0;
-
-    max-width: 100%;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn {
-
-    max-width: 100%;
-
-  }
-
-  .hero-marquee {
-
-    width: 100%;
-
-    max-width: 100%;
-
-    overflow: hidden;
-
-  }
-
-}
-
-/* =========================================
-
-   PREVENT PAGE HORIZONTAL SCROLL
+   GLOBAL HORIZONTAL OVERFLOW PROTECTION
 
 ========================================= */
 
@@ -1427,26 +1500,12 @@ body {
 
   max-width: 100%;
 
-  overflow-x: clip;
+  overflow-x: hidden;
 
 }
-/* التلفون بالطول */
-@media (max-width: 599px) and (orientation: portrait) {
-  /* تصميم التلفون الأصلي بالطول */
-}
 
-/* التلفون بالعرض */
-@media (max-width: 932px) and (orientation: landscape) {
-  /* تنسيق خاص للتلفون بالعرض */
-}
+img {
 
-/* التابلت بالطول */
-@media (min-width: 600px) and (max-width: 1024px)
-and (orientation: portrait) {
-  /* تصميم التابلت بالطول */
-}
+  max-width: 100%;
 
-/* اللابتوب والتابلت بالعرض */
-@media (min-width: 600px) and (orientation: landscape) {
-  /* التصميم الأفقي */
 }
