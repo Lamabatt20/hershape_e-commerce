@@ -1430,3 +1430,23 @@ body {
   overflow-x: clip;
 
 }
+/* التلفون بالطول */
+@media (max-width: 599px) and (orientation: portrait) {
+  /* تصميم التلفون الأصلي بالطول */
+}
+
+/* التلفون بالعرض */
+@media (max-width: 932px) and (orientation: landscape) {
+  /* تنسيق خاص للتلفون بالعرض */
+}
+
+/* التابلت بالطول */
+@media (min-width: 600px) and (max-width: 1024px)
+and (orientation: portrait) {
+  /* تصميم التابلت بالطول */
+}
+
+/* اللابتوب والتابلت بالعرض */
+@media (min-width: 600px) and (orientation: landscape) {
+  /* التصميم الأفقي */
+}
