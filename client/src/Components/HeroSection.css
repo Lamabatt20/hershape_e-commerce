@@ -1,8 +1,8 @@
-/* =========================
+/* =========================================
 
-   HERO SECTION - BASE
+   HERO SECTION
 
-========================= */
+========================================= */
 
 .hero-section {
 
@@ -84,11 +84,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    TEXT
 
-========================= */
+========================================= */
 
 .hero-text {
 
@@ -164,11 +164,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    IMAGES
 
-========================= */
+========================================= */
 
 .hero-image-container {
 
@@ -238,11 +238,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    SLIDE 2
 
-========================= */
+========================================= */
 
 .slide-2 {
 
@@ -298,11 +298,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    BULLETS
 
-========================= */
+========================================= */
 
 .hero-bullets {
 
@@ -368,11 +368,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    BUTTONS
 
-========================= */
+========================================= */
 
 .hero-btn,
 
@@ -424,11 +424,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    SLIDE DOTS
 
-========================= */
+========================================= */
 
 .hero-dots {
 
@@ -478,11 +478,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    MARQUEE
 
-========================= */
+========================================= */
 
 .hero-marquee {
 
@@ -522,11 +522,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    ANIMATIONS
 
-========================= */
+========================================= */
 
 @keyframes marquee {
 
@@ -564,21 +564,23 @@
 
 }
 
-/* ==================================================
+/* =========================================
 
    TABLET
 
    600px - 1024px
 
-================================================== */
+========================================= */
 
 @media (min-width: 600px) and (max-width: 1024px) {
 
   .hero-section {
 
+    height: clamp(430px, 65vw, 600px);
+
     width: 100%;
 
-    height: clamp(440px, 58vw, 580px);
+    padding: 0;
 
     overflow: hidden;
 
@@ -586,7 +588,7 @@
 
   .hero-slide {
 
-    padding: 28px 4%;
+    padding: 30px 4%;
 
     gap: 3%;
 
@@ -596,19 +598,15 @@
 
     flex: 1 1 48%;
 
-    width: 48%;
-
     max-width: 48%;
 
   }
 
   .hero-text h1 {
 
-    font-size: clamp(24px, 3vw, 34px);
+    font-size: clamp(24px, 3.2vw, 34px);
 
     line-height: 1.25;
-
-    margin-bottom: 18px;
 
   }
 
@@ -616,11 +614,9 @@
 
     max-width: 100%;
 
-    font-size: clamp(15px, 1.8vw, 19px);
+    font-size: clamp(16px, 2vw, 20px);
 
     line-height: 1.6;
-
-    letter-spacing: 0.2px;
 
   }
 
@@ -628,59 +624,37 @@
 
     flex: 1 1 48%;
 
-    width: 48%;
-
     max-width: 48%;
-
-    height: 100%;
 
   }
 
   .hero-img-1 {
 
-    width: 100%;
-
     max-width: 420px;
-
-    max-height: 100%;
 
   }
 
   .hero-img-2 {
 
-    width: 100%;
-
     max-width: 360px;
-
-    max-height: 100%;
-
-  }
-
-  .hero-bullets {
-
-    margin: 6px 0;
 
   }
 
   .hero-bullets li {
 
+    font-size: clamp(14px, 1.8vw, 18px);
+
     gap: 8px;
-
-    margin-bottom: 9px;
-
-    font-size: clamp(13px, 1.6vw, 17px);
-
-    line-height: 1.4;
 
   }
 
   .bullet-icon {
 
-    flex: 0 0 28px;
+    flex-basis: 30px;
 
-    width: 28px;
+    width: 30px;
 
-    height: 28px;
+    height: 30px;
 
   }
 
@@ -688,45 +662,29 @@
 
   .explore-btn {
 
-    width: clamp(145px, 20vw, 190px);
-
-    min-height: 48px;
-
-    margin-top: 20px;
-
-    padding: 11px 16px;
-
-    font-size: 14px;
-
-  }
-
-  .hero-dots {
-
-    bottom: 15px;
+    margin-top: 24px;
 
   }
 
 }
 
-/* ==================================================
+/* =========================================
 
    MOBILE
 
-   381px - 599px
+   ORIGINAL LAYOUT
 
-================================================== */
+========================================= */
 
-@media (min-width: 381px) and (max-width: 599px) {
+@media (max-width: 599px) {
 
   .hero-section {
 
     width: 100%;
 
-    height: auto;
+    min-height: 680px;
 
-    min-height: 0;
-
-    height: clamp(650px, 145svh, 800px);
+    height: clamp(680px, 150svh, 850px);
 
     overflow: hidden;
 
@@ -740,9 +698,9 @@
 
     align-items: center;
 
-    gap: 12px;
+    gap: 8px;
 
-    padding: 26px 20px 48px;
+    padding: 30px 22px 48px;
 
   }
 
@@ -774,7 +732,7 @@
 
     margin: 0 0 12px;
 
-    font-size: clamp(26px, 6.5vw, 34px);
+    font-size: clamp(27px, 7vw, 36px);
 
     line-height: 1.25;
 
@@ -786,15 +744,15 @@
 
     width: 100%;
 
-    max-width: 380px;
+    max-width: 360px;
 
     margin: 0 auto;
 
-    font-size: clamp(15px, 4vw, 18px);
+    font-size: clamp(16px, 4.2vw, 19px);
 
-    line-height: 1.55;
+    line-height: 1.6;
 
-    letter-spacing: 0.2px;
+    letter-spacing: 0.3px;
 
     text-align: center;
 
@@ -802,7 +760,7 @@
 
   .hero-image-container {
 
-    flex: 1 1 0;
+    flex: 1 1 auto;
 
     order: 2;
 
@@ -824,7 +782,7 @@
 
     width: 100%;
 
-    max-width: 320px;
+    max-width: 340px;
 
     max-height: 100%;
 
@@ -872,7 +830,7 @@
 
     margin: 0 0 10px;
 
-    font-size: clamp(24px, 6vw, 32px);
+    font-size: clamp(25px, 6.5vw, 33px);
 
     line-height: 1.25;
 
@@ -884,7 +842,7 @@
 
     order: 2;
 
-    flex: 1 1 0;
+    flex: 1 1 auto;
 
     width: 100%;
 
@@ -900,7 +858,7 @@
 
     width: 100%;
 
-    max-width: 270px;
+    max-width: 280px;
 
     max-height: 100%;
 
@@ -918,7 +876,7 @@
 
     width: 100%;
 
-    max-width: 340px;
+    max-width: 320px;
 
     margin: 8px 0;
 
@@ -928,13 +886,11 @@
 
   .hero-bullets li {
 
-    gap: 9px;
+    gap: 10px;
 
     margin-bottom: 8px;
 
-    font-size: clamp(13px, 3.6vw, 16px);
-
-    line-height: 1.4;
+    font-size: clamp(14px, 3.8vw, 17px);
 
     text-align: left;
 
@@ -942,11 +898,11 @@
 
   .bullet-icon {
 
-    flex: 0 0 27px;
+    flex: 0 0 28px;
 
-    width: 27px;
+    width: 28px;
 
-    height: 27px;
+    height: 28px;
 
     margin: 0;
 
@@ -958,15 +914,15 @@
 
     align-self: center;
 
-    width: min(230px, 80%);
+    width: min(240px, 75%);
 
-    min-height: 48px;
+    min-height: 50px;
 
-    margin: 14px auto 0;
+    margin: 15px auto 0;
 
-    padding: 11px 16px;
+    padding: 12px 18px;
 
-    font-size: 14px;
+    font-size: 15px;
 
   }
 
@@ -988,277 +944,61 @@
 
 }
 
-/* ==================================================
+/* =========================================
 
-   SMALL MOBILE
+   VERY SMALL PHONES
 
-   380px and below
+   380px AND BELOW
 
-================================================== */
+========================================= */
 
 @media (max-width: 380px) {
 
   .hero-section {
 
-    width: 100%;
-
-    min-height: 620px;
+    min-height: 650px;
 
     height: 740px;
-
-    overflow: hidden;
 
   }
 
   .hero-slide {
 
-    flex-direction: column;
-
-    justify-content: center;
-
-    align-items: center;
-
-    gap: 8px;
-
-    padding: 22px 15px 42px;
-
-  }
-
-  .hero-text {
-
-    flex: 0 0 auto;
-
-    order: 1;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    min-width: 0;
-
-    margin: 0;
-
-    padding: 0;
-
-    align-items: center;
-
-    text-align: center;
+    padding: 25px 16px 42px;
 
   }
 
   .hero-text h1 {
 
-    width: 100%;
-
-    margin: 0 0 10px;
-
     font-size: 26px;
-
-    line-height: 1.25;
-
-    text-align: center;
-
-  }
-
-  .hero-text p {
-
-    width: 100%;
-
-    max-width: 320px;
-
-    margin: 0 auto;
-
-    font-size: 15px;
-
-    line-height: 1.5;
-
-    letter-spacing: 0;
-
-    text-align: center;
-
-  }
-
-  .hero-image-container {
-
-    flex: 1 1 0;
-
-    order: 2;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    min-width: 0;
-
-    min-height: 0;
-
-    height: auto;
-
-    margin: 0;
-
-  }
-
-  .hero-img-1 {
-
-    width: 100%;
-
-    max-width: 270px;
-
-    max-height: 100%;
-
-    height: auto;
-
-    object-fit: contain;
-
-    object-position: center;
-
-    transform: none;
-
-  }
-
-  .slide-2 {
-
-    flex-direction: column;
-
-  }
-
-  .slide-2 .hero-text {
-
-    order: 1;
-
-    flex: 0 0 auto;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    margin: 0;
-
-    padding: 0;
-
-    align-items: center;
-
-    text-align: center;
 
   }
 
   .slide-2 .hero-text h1 {
 
-    width: 100%;
-
-    max-width: 100%;
-
-    margin: 0 0 8px;
-
     font-size: 24px;
-
-    line-height: 1.25;
-
-    text-align: center;
 
   }
 
-  .slide-2 .hero-image-container {
+  .hero-img-1 {
 
-    order: 2;
-
-    flex: 1 1 0;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    height: auto;
-
-    margin: 0;
+    max-width: 290px;
 
   }
 
   .hero-img-2 {
 
-    width: 100%;
-
-    max-width: 230px;
-
-    max-height: 100%;
-
-    height: auto;
-
-    margin: 0;
-
-    object-fit: contain;
-
-    transform: none;
+    max-width: 240px;
 
   }
 
-  .hero-bullets {
+  .hero-text p {
 
-    width: 100%;
-
-    max-width: 300px;
-
-    margin: 6px 0;
-
-    padding: 0;
+    font-size: 15px;
 
   }
 
   .hero-bullets li {
-
-    gap: 8px;
-
-    margin-bottom: 7px;
-
-    font-size: 13px;
-
-    line-height: 1.35;
-
-    text-align: left;
-
-  }
-
-  .bullet-icon {
-
-    flex: 0 0 24px;
-
-    width: 24px;
-
-    height: 24px;
-
-    margin: 0;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn {
-
-    align-self: center;
-
-    width: min(220px, 85%);
-
-    min-height: 46px;
-
-    margin: 12px auto 0;
-
-    padding: 10px 14px;
-
-    font-size: 14px;
-
-  }
-
-  .hero-dots {
-
-    bottom: 12px;
-
-    width: 44px;
-
-  }
-
-  .hero-marquee {
-
-    padding: 8px 0;
 
     font-size: 13px;
 
@@ -1266,11 +1006,11 @@
 
 }
 
-/* =========================
+/* =========================================
 
    RTL SUPPORT
 
-========================= */
+========================================= */
 
 [dir='rtl'] .hero-text {
 
@@ -1300,7 +1040,7 @@
 
 }
 
-/* RTL on mobile */
+/* RTL MOBILE */
 
 @media (max-width: 599px) {
 
@@ -1320,7 +1060,7 @@
 
     flex-direction: row;
 
-    text-align: right;
+    text-align: left;
 
   }
 
