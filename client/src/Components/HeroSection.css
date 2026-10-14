@@ -1189,3 +1189,244 @@
   }
 
 }
+/* =========================================
+
+   RESPONSIVE OVERFLOW FIX
+
+========================================= */
+
+.hero-section,
+
+.hero-slide,
+
+.hero-text,
+
+.hero-image-container {
+
+  box-sizing: border-box;
+
+  min-width: 0;
+
+}
+
+/* =========================================
+
+   TABLET FIX
+
+========================================= */
+
+@media (min-width: 600px) and (max-width: 1024px) {
+
+  .hero-section {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+  }
+
+  .hero-slide {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    padding: 25px 3%;
+
+    gap: 2%;
+
+  }
+
+  .hero-text,
+
+  .slide-2 .hero-text {
+
+    flex: 1 1 50%;
+
+    width: 50%;
+
+    max-width: 50%;
+
+    margin: 0;
+
+  }
+
+  .hero-text h1 {
+
+    font-size: clamp(23px, 3vw, 32px);
+
+    overflow-wrap: anywhere;
+
+  }
+
+  .hero-text p {
+
+    max-width: 100%;
+
+    font-size: clamp(15px, 1.8vw, 19px);
+
+    overflow-wrap: anywhere;
+
+  }
+
+  .hero-image-container,
+
+  .slide-2 .hero-image-container {
+
+    flex: 1 1 48%;
+
+    width: 48%;
+
+    max-width: 48%;
+
+    height: 100%;
+
+    margin: 0;
+
+  }
+
+  .hero-img-1,
+
+  .hero-img-2 {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    max-height: 100%;
+
+    height: auto;
+
+    margin: 0;
+
+    transform: none;
+
+    object-fit: contain;
+
+  }
+
+  .hero-btn,
+
+  .explore-btn {
+
+    max-width: 100%;
+
+    margin-top: 24px;
+
+  }
+
+  .hero-marquee {
+
+    width: 100%;
+
+    max-width: 100%;
+
+  }
+
+}
+
+/* =========================================
+
+   MOBILE FIX
+
+========================================= */
+
+@media (max-width: 599px) {
+
+  .hero-section {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    padding: 0;
+
+    overflow: hidden;
+
+  }
+
+  .hero-slide {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    padding: 0 20px;
+
+    overflow: hidden;
+
+  }
+
+  .hero-text,
+
+  .slide-2 .hero-text {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    min-width: 0;
+
+    margin-left: 0;
+
+    margin-right: 0;
+
+  }
+
+  .hero-text h1,
+
+  .hero-text p {
+
+    max-width: 100%;
+
+    overflow-wrap: break-word;
+
+  }
+
+  .hero-image-container,
+
+  .slide-2 .hero-image-container {
+
+    min-width: 0;
+
+    max-width: 100%;
+
+  }
+
+  .hero-btn,
+
+  .explore-btn {
+
+    max-width: 100%;
+
+  }
+
+  .hero-marquee {
+
+    width: 100%;
+
+    max-width: 100%;
+
+    overflow: hidden;
+
+  }
+
+}
+
+/* =========================================
+
+   PREVENT PAGE HORIZONTAL SCROLL
+
+========================================= */
+
+html,
+
+body {
+
+  max-width: 100%;
+
+  overflow-x: clip;
+
+}
