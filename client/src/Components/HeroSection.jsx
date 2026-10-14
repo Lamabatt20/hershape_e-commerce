@@ -6,7 +6,7 @@ import woman1 from '../assets/images/W1.png';
 
 import woman2 from '../assets/images/s.png';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 import friendsIcon from '../assets/images/i11.png';
 
@@ -22,21 +22,9 @@ const slides = [
 
     titleAr: 'صمّمي ثقتك بنفسك',
 
-    descEn:
+    descEn: 'Feel comfortable and beautiful with HerShape shaper, designed for all day wear',
 
-      'Feel comfortable and beautiful with HerShape shaper, designed for all day wear',
-
-    descAr: (
-
-      <>
-
-        اشعري بالراحة والجمال مع{' '}
-
-        <span dir="ltr">HerShape</span> المصمم لارتداء يدوم طوال اليوم
-
-      </>
-
-    ),
+    descAr: <>اشعري بالراحة والجمال مع <span dir="ltr">HerShape</span> المصمم لارتداء يدوم طوال اليوم</>,
 
     img: woman1,
 
@@ -48,15 +36,7 @@ const slides = [
 
     titleEn: 'Features hershape shaper',
 
-    titleAr: (
-
-      <>
-
-        <span dir="ltr">HerShape</span> مميزات مشدات
-
-      </>
-
-    ),
+    titleAr: <> <span dir="ltr">HerShape</span> مميزات مشدات </>,
 
     bulletEn: [
 
@@ -96,51 +76,27 @@ function HeroSection() {
 
   const [progress, setProgress] = useState(0);
 
-  const slideDuration = 5000;
+  const slideDuration = 2000;
 
   useEffect(() => {
 
-    const storedLang = localStorage.getItem('language') || 'en';
+    const storedLang = localStorage.getItem("language") || "en";
 
     setLanguage(storedLang);
 
     const handleLangChange = () => {
 
-      setLanguage(localStorage.getItem('language') || 'en');
+      setLanguage(localStorage.getItem("language") || "en");
 
     };
 
-    window.addEventListener(
+    window.addEventListener("storageLanguageChanged", handleLangChange);
 
-      'storageLanguageChanged',
+    return () =>
 
-      handleLangChange
-
-    );
-
-    return () => {
-
-      window.removeEventListener(
-
-        'storageLanguageChanged',
-
-        handleLangChange
-
-      );
-
-    };
+      window.removeEventListener("storageLanguageChanged", handleLangChange);
 
   }, []);
-
-  useEffect(() => {
-
-    document.documentElement.lang = language;
-
-    document.documentElement.dir =
-
-      language === 'ar' ? 'rtl' : 'ltr';
-
-  }, [language]);
 
   useEffect(() => {
 
@@ -150,11 +106,7 @@ function HeroSection() {
 
       const elapsed = Date.now() - startTime;
 
-      setProgress(
-
-        Math.min((elapsed / slideDuration) * 100, 100)
-
-      );
+      setProgress((elapsed / slideDuration) * 100);
 
       if (elapsed >= slideDuration) {
 
@@ -186,21 +138,11 @@ function HeroSection() {
 
             key={index}
 
-            className={`hero-slide ${
-
-              index === currentSlide ? 'active' : ''
-
-            } slide-${index + 1}`}
+            className={`hero-slide ${index === currentSlide ? 'active' : ''} slide-${index + 1}`}
 
             style={{
 
-              flexDirection:
-
-                slide.imgPosition === 'left'
-
-                  ? 'row-reverse'
-
-                  : 'row',
+              flexDirection: slide.imgPosition === 'left' ? 'row-reverse' : 'row'
 
             }}
 
@@ -212,9 +154,7 @@ function HeroSection() {
 
               style={{
 
-                textAlign:
-
-                  language === 'ar' ? 'right' : 'left',
+                textAlign: language === 'ar' ? 'right' : 'left'
 
               }}
 
@@ -222,11 +162,7 @@ function HeroSection() {
 
               <h1>
 
-                {language === 'en'
-
-                  ? slide.titleEn
-
-                  : slide.titleAr}
+                {language === 'en' ? slide.titleEn : slide.titleAr}
 
               </h1>
 
@@ -236,43 +172,57 @@ function HeroSection() {
 
                   <ul className="hero-bullets">
 
-                    {(language === 'en'
+                    {(language === 'en' ? slide.bulletEn : slide.bulletAr).map((item, i) => {
 
-                      ? slide.bulletEn
-
-                      : slide.bulletAr
-
-                    ).map((item, i) => {
-
-                      const iconsOrder = [
-
-                        friendsIcon,
-
-                        happyIcon,
-
-                        trustIcon,
-
-                      ];
+                      const iconsOrder = [friendsIcon, trustIcon, happyIcon];
 
                       return (
 
                         <li key={i}>
 
-                          <img
+                          {i === 0 ? (
 
-                            src={iconsOrder[i]}
+                            <img
 
-                            alt=""
+                              src={iconsOrder[0]}
 
-                            className="bullet-icon"
+                              alt="icon"
 
-                          />
+                              className="bullet-icon"
 
-                          <span className="bullet-text">
+                            />
 
-                            {item}
+                          ) : null}
 
-                          </span>
+                          {i === 1 ? (
+
+                            <img
+
+                              src={iconsOrder[2]}
+
+                              alt="icon"
+
+                              className="bullet-icon"
+
+                            />
+
+                          ) : null}
+
+                          {i === 2 ? (
+
+                            <img
+
+                              src={iconsOrder[1]}
+
+                              alt="icon"
+
+                              className="bullet-icon"
+
+                            />
+
+                          ) : null}
+
+                          <span className="bullet-text">{item}</span>
 
                         </li>
 
@@ -286,15 +236,11 @@ function HeroSection() {
 
                     className={`hero-btn hero-btn-${index + 1} explore-btn`}
 
-                    onClick={() => navigate('/shop')}
+                    onClick={() => navigate("/shop")}
 
                   >
 
-                    {language === 'en'
-
-                      ? 'SHOP NOW'
-
-                      : 'تسوّقي الآن'}
+                    {language === 'en' ? 'SHOP NOW' : 'تسوّقي الآن'}
 
                   </button>
 
@@ -302,63 +248,39 @@ function HeroSection() {
 
               ) : (
 
-                <>
+                <p className={`arabic-sub arabic-sub-${index + 1}`}>
 
-                  <p
+                  {language === 'en' ? slide.descEn : slide.descAr}
 
-                    className={`arabic-sub arabic-sub-${index + 1}`}
+                </p>
 
-                  >
+              )}
 
-                    {language === 'en'
+              {index === 0 && (
 
-                      ? slide.descEn
+                <button
 
-                      : slide.descAr}
+                  className={`hero-btn hero-btn-${index + 1}`}
 
-                  </p>
+                  onClick={() => navigate("/shop")}
 
-                  <button
+                >
 
-                    className={`hero-btn hero-btn-${index + 1}`}
+                  {language === 'en' ? 'SHOP NOW' : 'تسوّقي الآن'}
 
-                    onClick={() => navigate('/shop')}
-
-                  >
-
-                    {language === 'en'
-
-                      ? 'SHOP NOW'
-
-                      : 'تسوّقي الآن'}
-
-                  </button>
-
-                </>
+                </button>
 
               )}
 
             </div>
 
-            <div
-
-              className={`hero-image-container hero-image-${index + 1}`}
-
-            >
+            <div className={`hero-image-container hero-image-${index + 1}`}>
 
               <img
 
                 src={slide.img}
 
-                alt={
-
-                  language === 'en'
-
-                    ? slide.titleEn
-
-                    : 'HerShape'
-
-                }
+                alt="Hero"
 
                 className={`hero-img hero-img-${index + 1}`}
 
@@ -378,21 +300,11 @@ function HeroSection() {
 
               <div
 
-                className={`dot-progress ${
-
-                  currentSlide === index ? 'active' : ''
-
-                }`}
+                className={`dot-progress ${currentSlide === index ? 'active' : ''}`}
 
                 style={{
 
-                  width:
-
-                    currentSlide === index
-
-                      ? `${progress}%`
-
-                      : '0%',
+                  width: currentSlide === index ? `${progress}%` : '0%'
 
                 }}
 
@@ -406,33 +318,25 @@ function HeroSection() {
 
       </section>
 
-      <div
-
-        className={`hero-marquee ${
-
-          language === 'ar' ? 'rtl' : ''
-
-        }`}
-
-      >
+      <div className={`hero-marquee ${language === "ar" ? "rtl" : ""}`}>
 
         <span>
 
-          {language === 'en'
+          {language === "en"
 
-            ? 'Ready to be the best version of yourself'
+            ? "Ready to be the best version of yourself"
 
-            : 'هل أنتِ مستعدة لتكوني أفضل نسخة من نفسك؟'}
+            : "هل أنتِ مستعدة لتكوني أفضل نسخة من نفسك؟"}
 
         </span>
 
         <span>
 
-          {language === 'en'
+          {language === "en"
 
-            ? 'Ready to be the best version of yourself'
+            ? "Ready to be the best version of yourself"
 
-            : 'هل أنتِ مستعدة لتكوني أفضل نسخة من نفسك؟'}
+            : "هل أنتِ مستعدة لتكوني أفضل نسخة من نفسك؟"}
 
         </span>
 
