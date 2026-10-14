@@ -70,7 +70,7 @@
 
   flex-direction: column;
 
-  align-items: flex-start;
+  align-items: center;
 
   justify-content: flex-start;
 
@@ -82,15 +82,11 @@
 
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 
-  align-items: center;
-
   text-align: center;
 
 }
 
 .slide-1 .hero-text h1 {
-
-  margin-bottom: 100px;
 
   font-size: 30px;
 
@@ -192,7 +188,7 @@
 
 .slide-2 .hero-text {
 
-  max-width: 20%;
+  max-width: 70%;
 
   text-align: center;
 
@@ -206,11 +202,7 @@
 
   margin-top: 5px;
 
-  max-width: 70%;
-
   font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-
-  text-align: center;
 
 }
 
@@ -225,8 +217,6 @@
   color: #FCF8F0;
 
   line-height: 1.2;
-
-  align-items: center;
 
 }
 
@@ -776,11 +766,25 @@
 
     padding: 0;
 
+    overflow: hidden;
+
   }
 
   .hero-slide {
 
-    padding: 20px 4%;
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    width: 100%;
+
+    height: 100%;
+
+    padding: 20px 5%;
+
+    box-sizing: border-box;
 
     gap: 3%;
 
@@ -790,87 +794,89 @@
 
     flex: 0 1 45%;
 
+    width: 45%;
+
     max-width: 45%;
 
-    margin-left: 0;
+    margin: 0;
 
-    margin-right: 0;
+    padding: 0;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
 
   }
 
   .slide-1 .hero-text h1 {
 
+    width: 100%;
+
+    margin: 0 0 15px;
+
     font-size: clamp(26px, 3vw, 32px);
 
-    margin-right: 0;
-
-    margin-bottom: 15px;
+    text-align: center !important;
 
   }
 
   .slide-1 .hero-text p {
 
+    width: 100%;
+
+    max-width: 340px;
+
+    margin: 0;
+
     font-size: clamp(16px, 1.8vw, 19px);
 
-    margin-left: 0;
+    line-height: 1.6;
+
+    text-align: center;
 
   }
 
-  .hero-img-1 {
+  .slide-1 .hero-btn {
 
-    width: 100%;
+    margin: 25px auto 0;
 
-    max-width: 420px;
+    width: 160px;
 
-    height: auto;
-
-    transform: none;
-
-    object-fit: contain;
+    height: 50px;
 
   }
 
   .slide-1 .hero-image-container {
 
-    flex: 0 1 48%;
-
-    max-width: 48%;
-
-  }
-
-  .slide-2 .hero-text {
+    display: flex;
 
     flex: 0 1 48%;
 
+    width: 48%;
+
     max-width: 48%;
 
-    margin-left: 0;
+    height: 100%;
 
-    margin-right: 0;
+    align-items: center;
 
-  }
+    justify-content: center;
 
-  .slide-2 .hero-text h1 {
-
-    font-size: clamp(24px, 2.8vw, 32px);
-
-    margin-right: 0;
+    margin: 0;
 
   }
 
-  .slide-2 .hero-image-container {
+  .hero-img-1 {
 
-    flex: 0 1 45%;
-
-    max-width: 45%;
-
-  }
-
-  .hero-img-2 {
+    display: block;
 
     width: 100%;
 
-    max-width: 350px;
+    max-width: 420px;
+
+    max-height: 100%;
 
     height: auto;
 
@@ -880,41 +886,161 @@
 
     object-fit: contain;
 
+    object-position: center;
+
   }
 
-  .hero-bullets li {
+  .slide-2 {
+
+    flex-direction: row-reverse;
+
+  }
+
+  .slide-2 .hero-text {
+
+    flex: 0 1 48%;
+
+    width: 48%;
+
+    max-width: 48%;
+
+    margin: 0;
+
+    padding: 0;
+
+    align-items: center;
+
+    justify-content: center;
+
+    text-align: center;
+
+  }
+
+  .slide-2 .hero-text h1 {
+
+    width: 100%;
+
+    margin: 0 0 15px;
+
+    font-size: clamp(25px, 2.8vw, 32px);
+
+    line-height: 1.25;
+
+    text-align: center;
+
+  }
+
+  .slide-2 .hero-bullets {
+
+    width: 100%;
+
+    max-width: 300px;
+
+    margin: 15px auto;
+
+    padding: 0;
+
+  }
+
+  .slide-2 .hero-bullets li {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-bottom: 10px;
 
     font-size: clamp(14px, 1.7vw, 18px);
 
-    gap: 8px;
+    text-align: left;
 
   }
 
-  .bullet-icon {
+  .slide-2 .bullet-icon {
+
+    flex: 0 0 30px;
 
     width: 30px;
 
     height: 30px;
 
-  }
+    margin: 0;
 
-  .hero-btn,
-
-  .explore-btn {
-
-    margin-top: 25px;
+    object-fit: contain;
 
   }
 
-  .explore-btn {
+  .slide-2 .hero-btn,
 
-    margin-left: 0;
+  .slide-2 .explore-btn {
+
+    margin: 25px auto 0;
+
+    width: 160px;
+
+    height: 50px;
+
+  }
+
+  .slide-2 .hero-image-container {
+
+    display: flex;
+
+    flex: 0 1 45%;
+
+    width: 45%;
+
+    max-width: 45%;
+
+    height: 100%;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin: 0;
+
+  }
+
+  .hero-img-2 {
+
+    display: block;
+
+    width: 100%;
+
+    max-width: 350px;
+
+    max-height: 100%;
+
+    height: auto;
+
+    margin: 0;
+
+    transform: none;
+
+    object-fit: contain;
+
+    object-position: center;
 
   }
 
   .hero-dots {
 
+    bottom: 15px;
+
     width: 48px;
+
+    height: 4px;
+
+  }
+
+  .hero-marquee {
+
+    font-size: 16px;
+
+    padding: 8px 0;
 
   }
 
