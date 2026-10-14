@@ -1,1219 +1,428 @@
-/* ==================================================
-
-   1. HERO SECTION - GENERAL
-
-================================================== */
-
+/* HeroSection.css */
 .hero-section {
-
   position: relative;
-
-  width: 100%;
-
-  height: clamp(420px, 46.875vw, 600px);
-
-  min-height: 420px;
-
   overflow: hidden;
-
-  isolation: isolate;
-
+  height: 600px;
+  width: 100%;
   font-family: 'Poppins', 'Open Sans', 'Nunito Sans', 'Segoe UI', sans-serif;
-
-  box-sizing: border-box;
-
 }
 
+
 .hero-overlay {
-
   position: absolute;
-
-  inset: 0;
-
-  width: 100%;
-
-  height: 100%;
-
+  height: 100%;         
+  width: 100%; 
+  top: 0;
+  left: 0;
   background-color: rgba(110, 60, 116, 0.8);
-
   z-index: 1;
-
-  pointer-events: none;
-
 }
 
 .hero-slide {
-
   position: absolute;
-
-  inset: 0;
-
+  top: 0;
+  left: 0;
   display: flex;
-
   align-items: center;
-
   justify-content: space-between;
-
-  gap: clamp(15px, 3vw, 45px);
-
   width: 100%;
-
   height: 100%;
-
-  padding-inline: clamp(20px, 5.2vw, 80px);
-
-  box-sizing: border-box;
-
+  padding: 0 80px;
   opacity: 0;
-
-  visibility: hidden;
-
-  transition: opacity 1s ease-in-out, visibility 1s ease-in-out;
-
+  transition: opacity 1s ease-in-out;
   z-index: 2;
-
 }
 
 .hero-slide.active {
-
   opacity: 1;
-
-  visibility: visible;
-
 }
 
-/* ==================================================
-
-   2. HERO TEXT - GENERAL
-
-================================================== */
 
 .hero-text {
-
   display: flex;
-
-  flex: 1 1 50%;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  justify-content: center;
-
-  min-width: 0;
-
+  flex-direction: column; 
+  align-items: flex-start; 
+  justify-content: flex-start; 
+  margin-top: 5px; 
   max-width: 70%;
-
-  margin-top: 5px;
-
-  margin-left: clamp(0px, 10.4vw, 200px);
-
-  font-family: Cambria, Cochin, Georgia, 'Times New Roman', serif;
-
+  margin-left: 200px;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  align-items: center;  
   text-align: center;
-
-  box-sizing: border-box;
-
 }
 
-.hero-text h1 {
-
-  margin-bottom: 10px;
-
-  color: #FCF8F0;
-
-  font-size: clamp(23px, 2.35vw, 30px);
-
-  font-weight: bold;
-
-  line-height: 1.3;
-
-  text-align: center;
-
-  text-shadow:
-
-    2px 2px 0 #6e3c74,
-
-    4px 4px 8px rgba(0, 0, 0, 0.3);
-
-  transform: scale(1);
-
-  transition: transform 0.3s ease-in-out;
-
-  overflow-wrap: anywhere;
-
-}
-
-.hero-slide.active .hero-text h1 {
-
-  transform: scale(1.05);
-
-}
-
-.hero-text p {
-
-  max-width: 100%;
-
-  overflow-wrap: anywhere;
-
-  color: #FCF8F0;
-
-}
-
-/* ==================================================
-
-   3. SLIDE 1
-
-================================================== */
-
-.slide-1 .hero-text {
-
-  margin-left: clamp(0px, 10.4vw, 200px);
-
-}
 
 .slide-1 .hero-text h1 {
-
-  margin-right: clamp(0px, 2.35vw, 45px);
-
+  margin-bottom: 100px;
+  font-size: 30px;           
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #FCF8F0;
+  text-align: center !important; 
+  margin-right: 45px;
+  
 }
-
 .slide-1 .hero-text p {
-
-  margin-left: -5px;
-
-  font-size: clamp(14px, 1.4vw, 18px);
-
+  font-size: 18px;
   font-weight: 500;
-
-  letter-spacing: 1px;
-
-  line-height: 1.6;
-
+  letter-spacing: 1px; 
+  line-height: 1.6; 
   animation: slideInRight 1s ease forwards;
-
   animation-delay: 0.8s;
-
+  margin-left: -5px; 
+  color:#FCF8F0;
 }
+
+@keyframes buttonPop {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+.slide-1 .hero-btn {
+  animation: buttonPop 2s ease-in-out infinite;
+  margin-top: 50px;
+  margin-left: 20px;
+  height: 50px;
+  width: 160px;
+  padding: 10px 20px;
+  background-color: #6e3c74;
+  color: #fcf8f0;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  
+}
+
 
 .hero-img-1 {
-
-  display: block;
-
-  flex: 0 1 48%;
-
-  width: clamp(250px, 42vw, 620px);
-
-  max-width: 52%;
-
+  width: 50%; 
   height: auto;
-
   border-radius: 0;
-
-  object-fit: contain;
-
-  transform: translateX(10%);
-
+  transform: translateX(30%); 
+  object-fit: cover; 
 }
 
-/* ==================================================
-
-   4. SLIDE 2
-
-================================================== */
 
 .slide-2 .hero-text {
-
-  flex: 1 1 50%;
-
+  max-width: 20%; 
+  text-align: center; 
+  margin-left: 0;   
+  margin-right: 400px;  
+  display: flex;
+  flex-direction: column;  
+  margin-top: 5px; 
   max-width: 70%;
-
-  margin-top: 5px;
-
-  margin-right: clamp(30px, 20.8vw, 400px);
-
-  margin-left: 0;
-
-  font-family: Cambria, Cochin, Georgia, 'Times New Roman', serif;
-
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
   text-align: center;
-
 }
 
 .slide-2 .hero-text h1 {
-
-  margin-bottom: 10px;
-
-  color: #FCF8F0;
-
-  font-size: clamp(23px, 2.35vw, 30px);
-
+  font-size: 30px;           
   font-weight: bold;
-
-  line-height: 1.3;
-
+  margin-bottom: 10px;
+  color: #FCF8F0;
+  line-height: 1.2;
+  align-items: center;  
 }
 
 .slide-2 .hero-text p {
-
-  margin-left: -10px;
-
-  color: #FCF8F0;
-
-  font-size: clamp(14px, 1.3vw, 17px);
-
-  line-height: 1.5;
-
+  color: #fcf8f0;
+  line-height: 1.4;
+  font-size: 17px;
   animation: slideInRight 1s ease forwards;
-
   animation-delay: 0.8s;
-
+  margin-left: -10px; 
 }
-
-.hero-img-2 {
-
-  display: block;
-
-  flex: 0 1 45%;
-
-  width: 100%;
-
-  max-width: clamp(280px, 35vw, 450px);
-
-  height: auto;
-
-  margin-top: 20px;
-
-  margin-left: 0;
-
-  border-radius: 0;
-
-  object-fit: contain;
-
-}
-
-/* ==================================================
-
-   5. BUTTONS
-
-================================================== */
-
-@keyframes buttonPop {
-
-  0%,
-
-  100% {
-
-    transform: scale(1);
-
-  }
-
-  50% {
-
-    transform: scale(1.05);
-
-  }
-
-}
-
-.hero-btn,
-
-.explore-btn {
-
-  display: inline-flex;
-
-  align-items: center;
-
-  justify-content: center;
-
-  align-self: center;
-
-  flex-shrink: 0;
-
-  width: 160px;
-
-  max-width: 100%;
-
-  height: 50px;
-
-  min-height: 44px;
-
-  margin: 35px 0 0;
-
-  padding: 10px 20px;
-
-  border: none;
-
-  border-radius: 3px;
-
-  background-color: #6e3c74;
-
-  color: #FCF8F0;
-
-  font-size: 14px;
-
-  font-weight: bold;
-
-  text-align: center;
-
-  text-decoration: none;
-
-  cursor: pointer;
-
-  box-sizing: border-box;
-
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-
-  animation: buttonPop 2s ease-in-out infinite;
-
-  transition: background-color 0.3s ease;
-
-}
-
-.hero-btn:hover,
-
-.explore-btn:hover {
-
-  background-color: #e5dcd0;
-
-  color: #6e3c74;
-
-}
-
-.slide-1 .hero-btn,
 
 .slide-2 .hero-btn {
-
-  margin-top: clamp(20px, 3vw, 50px);
-
+  animation: buttonPop 2s ease-in-out infinite;
+  margin-top: 50px;
+  margin-left: 20px;
+  height: 50px;
+  width: 160px;
+  padding: 10px 20px;
+  background-color: #6e3c74;
+  color: #fcf8f0;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* ==================================================
 
-   6. SLIDER DOTS
+.hero-img-2 {
+  width: 310%; 
+  max-width: 450px; 
+  height: auto;
+  border-radius: 0;
+  object-fit: cover; 
+  margin-top: 20px;
+  margin-left: 200px;
+}
+.hero-btn {
+  padding: 12px 30px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+.hero-btn:hover {
+  background-color: #e5dcd0;
+}
+.hero-btn, .hero-btn {
+  margin: 50px 0 0 0; 
+  align-self: flex-start; 
+}
+.slide-1 .hero-text h1,
+.slide-2 .hero-text h1 {
+  font-size: 30px;
+  font-weight: bold;
+  color: #FCF8F0;
+  text-align: center;
 
-================================================== */
+
+  text-shadow: 
+    2px 2px 0 #6e3c74,   
+    4px 4px 8px rgba(0,0,0,0.3); 
+  transform: scale(1.0); 
+  transition: transform 0.3s ease-in-out;
+}
+
+
+.hero-slide.active .hero-text h1 {
+  transform: scale(1.1); 
+}
+
 
 .hero-dots {
-
   position: absolute;
-
-  bottom: clamp(12px, 2vw, 20px);
-
+  bottom: 20px;
   left: 50%;
-
-  z-index: 3;
-
-  display: flex;
-
-  gap: 3px;
-
-  width: clamp(55px, 5vw, 90px);
-
-  height: 3px;
-
   transform: translateX(-50%);
-
+  display: flex;
+  gap: 3px; 
+  width: 5%; 
+  height: 3px; 
+  z-index: 3;
 }
-
 .hero-dots .dot {
-
-  position: relative;
-
   flex: 1;
-
-  overflow: hidden;
-
-  border-radius: 1.5px;
-
   background: rgba(255, 255, 255, 0.3);
-
-}
-
-.hero-dots .dot .dot-progress {
-
-  width: 0%;
-
-  height: 100%;
-
-  background: #fff;
-
-  transition: width 0.05s linear;
-
-}
-
-/* ==================================================
-
-   7. MARQUEE
-
-================================================== */
-
-.hero-marquee {
-
-  width: 100%;
-
+  border-radius: 1.5px; 
   overflow: hidden;
+  position: relative;
+}
+.hero-dots .dot .dot-progress {
+  height: 100%;
+  background: #fff; 
+  width: 0%;
+  transition: width 0.05s linear;
+}
 
-  padding: 10px 0;
-
-  background: #6e3c74;
-
-  color: #FCF8F0;
-
-  font-size: clamp(12px, 1.3vw, 16px);
-
-  font-weight: bold;
-
+/* Marquee */
+.hero-marquee {
+  overflow: hidden;
   white-space: nowrap;
-
-  box-sizing: border-box;
-
+  background: #6e3c74; 
+  color: #fcf8f0; 
+  padding: 10px 0;
+  font-weight: bold;
+  font-size: 1rem;
 }
-
 .hero-marquee span {
-
   display: inline-block;
-
   padding-left: 100%;
-
   animation: marquee 20s linear infinite;
-
 }
-
 .rtl span {
-
   animation-direction: reverse;
-
 }
-
 @keyframes marquee {
-
-  0% {
-
-    transform: translateX(0%);
-
-  }
-
-  100% {
-
-    transform: translateX(-100%);
-
-  }
-
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-100%); }
 }
-
-/* ==================================================
-
-   8. HERO BULLETS
-
-================================================== */
 
 .hero-bullets {
-
-  width: 100%;
-
-  margin: 20px 0;
-
-  padding: 0;
-
-  color: #FCF8F0;
-
-  font-family: Cambria, Cochin, Georgia, 'Times New Roman', serif;
-
   list-style: none;
-
-  box-sizing: border-box;
+  padding: 0;
+  margin: 20px 0;
+  color: #fcf8f0;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
 
 }
 
 .hero-bullets li {
-
   display: flex;
-
   align-items: center;
-
-  gap: 10px;
-
   margin-bottom: 10px;
-
-  font-size: clamp(14px, 1.45vw, 18px);
-
-  line-height: 1.5;
-
-  transform: scale(0.8);
-
-  opacity: 0;
-
+  font-size: 1.1rem;
+  transform: scale(0.8);      
+  opacity: 0;                  
   animation: bulletZoom 0.8s forwards;
-
-  animation-delay: 0.3s;
-
+  animation-delay: 0.3s;       
+  gap: 10px;          
 }
 
 .bullet-icon {
-
-  flex-shrink: 0;
-
-  width: clamp(24px, 3vw, 40px);
-
-  height: clamp(24px, 3vw, 40px);
-
+  flex-shrink: 0;     
+  width: 40px;        
+  height: 40px;  
+  color: #fcf8f0;    
+}
+@keyframes bulletZoom {
+  0% {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.bullet-icon {
   margin-right: 10px;
-
-  color: #ff69b4;
-
+  color: #ff69b4; 
   font-size: 1.2rem;
-
 }
 
 .hero-section.rtl .bullet-icon {
-
   margin-right: 0;
-
   margin-left: 10px;
-
 }
-
-@keyframes bulletZoom {
-
-  0% {
-
-    transform: scale(0.8);
-
-    opacity: 0;
-
-  }
-
-  50% {
-
-    transform: scale(1.1);
-
-    opacity: 1;
-
-  }
-
-  100% {
-
-    transform: scale(1);
-
-    opacity: 1;
-
-  }
-
+.explore-btn {
+  animation: buttonPop 2s ease-in-out infinite;
+  margin-top: 50px;
+  margin-left: 80px; 
+  height: 50px;
+  width: 160px;
+  padding: 10px 20px;
+  background-color: #6e3c74;
+  color: #fcf8f0;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: 0.3s ease;
+  display: inline-block;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
-/* ==================================================
-
-   9. TABLETS & SMALL LAPTOPS
-
-================================================== */
-
-@media (min-width: 781px) and (max-width: 1100px) {
-
+@media (max-width: 780px) {
   .hero-section {
-
-    height: clamp(450px, 55vw, 580px);
-
+    height: 480px;
+    padding: 0 20px;
+    width: 90%;
   }
 
   .hero-slide {
-
-    gap: 20px;
-
-    padding-inline: clamp(25px, 4vw, 45px);
-
-  }
-
-  .hero-text,
-
-  .slide-1 .hero-text {
-
-    max-width: 52%;
-
-    margin-left: 0;
-
-  }
-
-  .slide-1 .hero-text h1 {
-
-    margin-right: 0;
-
-  }
-
-  .hero-img-1 {
-
-    width: 48%;
-
-    max-width: 48%;
-
-    transform: none;
-
-  }
-
-  .slide-2 .hero-text {
-
-    max-width: 55%;
-
-    margin-right: 0;
-
-  }
-
-  .hero-img-2 {
-
-    width: 45%;
-
-    max-width: 400px;
-
-  }
-
-}
-
-/* ==================================================
-
-   10. MOBILE PORTRAIT
-
-================================================== */
-
-@media (max-width: 780px) and (orientation: portrait) {
-
-  .hero-section {
-
-    width: 100%;
-
-    height: clamp(580px, 90svh, 760px);
-
-    min-height: 560px;
-
-    padding: 0;
-
-  }
-
-  .hero-slide {
-
     flex-direction: column;
-
     justify-content: center;
-
-    align-items: center;
-
-    gap: clamp(8px, 2svh, 18px);
-
-    padding: 28px 20px 45px;
-
+    align-items: center; 
+    padding: 0 20px;
     text-align: center;
-
   }
 
-  .hero-text,
+  .hero-text {
+    max-width: 100%;
+    margin: 0 auto 15px auto;
+    text-align: center;
+  }
 
-  .slide-1 .hero-text,
+  
+.hero-img-1 {
+  width: 150%; 
+  height: auto;
+  border-radius: 0;
+  transform: translateX(-15%); 
+  object-fit: cover; 
+}
 
   .slide-2 .hero-text {
-
-    flex: 0 1 auto;
-
-    width: 100%;
-
-    max-width: 100%;
-
-    min-width: 0;
-
-    margin: 0;
-
-    align-items: center;
-
-    justify-content: center;
-
+    margin: 0 auto 15px auto; 
     text-align: center;
-
   }
 
-  .hero-text h1,
 
-  .slide-1 .hero-text h1,
-
-  .slide-2 .hero-text h1 {
-
-    margin: 0 0 10px;
-
-    font-size: clamp(21px, 5.5vw, 28px);
-
-    line-height: 1.3;
-
-    text-align: center;
-
+  .hero-text h1 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    line-height: 1.4;
   }
 
-  .slide-1 .hero-text p,
-
-  .slide-2 .hero-text p {
-
-    max-width: 100%;
-
-    margin: 0;
-
-    font-size: clamp(13px, 3.6vw, 16px);
-
-    line-height: 1.55;
-
-    letter-spacing: 0.3px;
-
+  .hero-text p {
+    font-size: 14px;
+    margin-bottom: 15px;
+    line-height: 1.5;
   }
 
-  .hero-img-1 {
-
-    flex: 0 1 auto;
-
-    width: 100%;
-
-    max-width: 440px;
-
-    max-height: 34svh;
-
-    height: auto;
-
-    margin: 0;
-
-    object-fit: contain;
-
-    transform: none;
-
+  .hero-bullets {
+    margin: 15px 0;
+    font-size: 0.9rem;
+    text-align: left;
   }
 
-  .hero-img-2 {
-
-    flex: 0 1 auto;
-
-    width: 100%;
-
-    max-width: min(100%, 380px);
-
-    max-height: 32svh;
-
-    height: auto;
-
-    margin: 0;
-
-    object-fit: contain;
-
-    transform: none;
-
+  .bullet-icon {
+    width: 28px;
+    height: 28px;
   }
 
-  .slide-2 .hero-text h1 {
-
+  .hero-btn,
+  .explore-btn {
+    width: 140px;
+    height: 45px;
+    font-size: 0.9rem;
+    margin: 20px auto 0;
     display: block;
+  }
+  .hero-img-2 {
+  width: 150%; 
+  height: auto;
+  border-radius: 0;
+  object-fit: cover; 
+  transform: translateX(-94%); 
+  margin-top: 85px;
 
+}
+.slide-2 .hero-text {
+  text-align: center; 
+  margin-left: 0;   
+  margin-right: 50px;  
+  display: flex;
+  flex-direction: column;  
+  margin-top: 5px; 
+  max-width: 90%;
+  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+  text-align: center;
+}
+  .slide-2 .hero-text h1 {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;   
+    text-align: center;
   }
 
   .slide-2 .hero-text h1 span {
-
-    white-space: normal;
-
+    order: 2;          
+    white-space: nowrap; 
   }
-
-  .hero-bullets {
-
-    margin: 12px 0;
-
-    text-align: start;
-
-  }
-
-  .hero-bullets li {
-
-    gap: 8px;
-
-    margin-bottom: 8px;
-
-    font-size: clamp(13px, 3.5vw, 15px);
-
-  }
-
-  .bullet-icon {
-
-    width: 25px;
-
-    height: 25px;
-
-    margin-right: 5px;
-
-  }
-
-  .hero-section.rtl .bullet-icon {
-
-    margin-right: 0;
-
-    margin-left: 5px;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn,
-
-  .slide-1 .hero-btn,
-
-  .slide-2 .hero-btn {
-
-    width: clamp(130px, 40vw, 160px);
-
-    height: 45px;
-
-    margin: 12px auto 0;
-
-    font-size: 13px;
-
-    align-self: center;
-
-  }
-
-  .hero-dots {
-
-    bottom: 15px;
-
-    width: 60px;
-
-  }
-
   .hero-marquee {
-
-    padding: 7px 0;
-
     font-size: 12px;
-
-  }
-
-}
-
-/* ==================================================
-
-   11. MOBILE LANDSCAPE
-
-================================================== */
-
-@media (max-width: 900px) and (orientation: landscape) {
-
-  .hero-section {
-
-    width: 100%;
-
-    height: 100svh;
-
-    min-height: 320px;
-
-    max-height: 600px;
-
-  }
-
-  .hero-slide {
-
-    flex-direction: row;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: clamp(12px, 3vw, 30px);
-
-    padding: 25px clamp(20px, 5vw, 55px) 35px;
-
-  }
-
-  .hero-text,
-
-  .slide-1 .hero-text {
-
-    flex: 1 1 52%;
-
-    width: 52%;
-
-    max-width: 52%;
-
-    margin: 0;
-
-  }
-
-  .slide-1 .hero-text h1,
-
-  .slide-2 .hero-text h1 {
-
-    margin: 0 0 8px;
-
-    font-size: clamp(18px, 3.3vw, 26px);
-
-  }
-
-  .slide-1 .hero-text p,
-
-  .slide-2 .hero-text p {
-
-    margin: 0;
-
-    font-size: clamp(12px, 1.9vw, 15px);
-
-    line-height: 1.4;
-
-  }
-
-  .hero-img-1 {
-
-    flex: 0 1 45%;
-
-    width: 45%;
-
-    max-width: 45%;
-
-    max-height: 65svh;
-
-    margin: 0;
-
-    object-fit: contain;
-
-    transform: none;
-
-  }
-
-  .slide-2 .hero-text {
-
-    flex: 1 1 52%;
-
-    width: 52%;
-
-    max-width: 52%;
-
-    margin: 0;
-
-  }
-
-  .hero-img-2 {
-
-    flex: 0 1 45%;
-
-    width: 45%;
-
-    max-width: 45%;
-
-    max-height: 65svh;
-
-    margin: 0;
-
-    object-fit: contain;
-
-    transform: none;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn,
-
-  .slide-1 .hero-btn,
-
-  .slide-2 .hero-btn {
-
-    width: 135px;
-
-    height: 40px;
-
-    margin: 12px 0 0;
-
-    font-size: 12px;
-
-    align-self: center;
-
-  }
-
-  .hero-bullets {
-
-    margin: 8px 0;
-
-  }
-
-  .hero-bullets li {
-
-    gap: 6px;
-
-    margin-bottom: 5px;
-
-    font-size: 12px;
-
-  }
-
-  .bullet-icon {
-
-    width: 22px;
-
-    height: 22px;
-
-  }
-
-  .hero-dots {
-
-    bottom: 12px;
-
-    width: 55px;
-
-  }
-
-  .hero-marquee {
-
     padding: 6px 0;
-
-    font-size: 12px;
-
   }
-
+ 
 }
-
-/* ==================================================
-
-   12. SHORT SCREENS
-
-================================================== */
-
-@media (max-height: 500px) {
-
-  .hero-section {
-
-    min-height: 300px;
-
-  }
-
-  .hero-slide {
-
-    padding-top: 20px;
-
-    padding-bottom: 32px;
-
-  }
-
-  .hero-text h1,
-
-  .slide-1 .hero-text h1,
-
-  .slide-2 .hero-text h1 {
-
-    margin-bottom: 6px;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn,
-
-  .slide-1 .hero-btn,
-
-  .slide-2 .hero-btn {
-
-    margin-top: 10px;
-
-  }
-
-  .hero-dots {
-
-    bottom: 10px;
-
-  }
-
-}
-
-/* ==================================================
-
-   13. VERY SMALL PHONES
-
-================================================== */
-
-@media (max-width: 380px) and (orientation: portrait) {
-
-  .hero-section {
-
-    height: 620px;
-
-    min-height: 540px;
-
-  }
-
-  .hero-slide {
-
-    padding-inline: 14px;
-
-  }
-
-  .hero-text h1,
-
-  .slide-1 .hero-text h1,
-
-  .slide-2 .hero-text h1 {
-
-    font-size: 21px;
-
-  }
-
-  .slide-1 .hero-text p,
-
-  .slide-2 .hero-text p {
-
-    font-size: 13px;
-
-  }
-
-  .hero-img-1 {
-
-    max-height: 28svh;
-
-  }
-
-  .hero-img-2 {
-
-    max-height: 27svh;
-
-  }
-
-  .hero-btn,
-
-  .explore-btn,
-
-  .slide-1 .hero-btn,
-
-  .slide-2 .hero-btn {
-
-    width: 130px;
-
-  }
-
-}
-
-/* ==================================================
-
-   14. REDUCED MOTION
-
-================================================== */
-
-@media (prefers-reduced-motion: reduce) {
-
-  .hero-slide,
-
-  .hero-text h1,
-
-  .hero-btn,
-
-  .explore-btn,
-
-  .hero-marquee span,
-
-  .hero-bullets li {
-
-    animation: none;
-
-    transition: none;
-
-  }
-
-  .hero-slide.active .hero-text h1 {
-
-    transform: none;
-
-  }
-
-}
+شايف هون بدي  تعملي اياه انه تحافظ على نفس الاشي بس تاخذ بعين الاعتبار حجم الشاشات وحجم الشاشات الي بتاخذ بالعرض وبالطول  
