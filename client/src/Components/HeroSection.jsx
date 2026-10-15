@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './HeroSection.css';
-import woman1 from '../assets/images/W1.png';
-import woman2 from '../assets/images/s.png';
+import woman1 from '../assets/images/shap1.jpeg';
+import woman2 from '../assets/images/shap2.jpeg';
 import { useNavigate } from "react-router-dom";
 import friendsIcon from '../assets/images/i11.png';
 import happyIcon from '../assets/images/i12.png';
@@ -18,7 +18,7 @@ const slides = [
   },
   {
   titleEn: 'Features hershape shaper',
-  titleAr: <> <span dir="ltr">HerShape</span> مميزات مشدات </>,
+  titleAr: <>مميزات مشدات <span dir="ltr">HerShape</span></>,
   bulletEn: [
     'Waist shaping',
     'Posture correction',
@@ -77,9 +77,22 @@ function HeroSection() {
           <div
             key={index}
             className={`hero-slide ${index === currentSlide ? 'active' : ''} slide-${index + 1}`}
-            style={{ flexDirection: slide.imgPosition === 'left' ? 'row-reverse' : 'row' }}
+            style={{
+              flexDirection: slide.imgPosition === 'left' ? 'row-reverse' : 'row',
+              backgroundImage: `linear-gradient(90deg, rgba(245, 232, 223, 0.9) 0%, rgba(245, 232, 223, 0.68) 32%, rgba(110, 60, 116, 0.16) 100%), url(${slide.img})`,
+              backgroundSize: 'cover',
+              backgroundPosition: slide.imgPosition === 'left' ? 'center left' : 'center right',
+              backgroundRepeat: 'no-repeat'
+            }}
           >
-            <div className={`hero-text hero-text-${index + 1}`} style={{ textAlign: language === 'ar' ? 'right' : 'left' }}>
+            <div
+              className={`hero-text hero-text-${index + 1}`}
+              dir={language === 'ar' ? 'rtl' : 'ltr'}
+              style={{
+                textAlign: language === 'ar' ? 'right' : 'left',
+                alignItems: 'flex-start'
+              }}
+            >
               <h1>{language === 'en' ? slide.titleEn : slide.titleAr}</h1>
 
               {slide.bulletEn ? (
@@ -119,9 +132,6 @@ function HeroSection() {
               )}
             </div>
 
-            <div className={`hero-image-container hero-image-${index + 1}`}>
-              <img src={slide.img} alt="Hero" className={`hero-img hero-img-${index + 1}`} />
-            </div>
           </div>
         ))}
 
